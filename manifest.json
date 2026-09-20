@@ -1,7 +1,7 @@
 {
-  "name": "Polizei Lernapp",
-  "short_name": "LernSide",
-  "description": "Nachschlagwerk für Diverse Polizeisachen wie Dienstgrade, Aufbau, ...",
+  "name": "NachSchlagWerk",
+  "short_name": "NSW",
+  "description": "Nachschlagewerk für diverse Behörden Sachen",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

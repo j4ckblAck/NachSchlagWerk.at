@@ -1,11 +1,17 @@
-const CACHE_NAME = "dienstgrade-cache-v1";
+const CACHE_NAME = "dienstgrade-cache-v29";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
+// Alte Caches (z.B. "v1") loeschen, damit auch schon mal offline
+// geladene, veraltete Dateien (style.css usw.) nicht liegen bleiben.
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys()
+      .then((namen) => Promise.all(namen.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))))
+      .then(() => self.clients.claim())
+  );
 });
 
 // Einfache Strategie: erst versuchen aus dem Netz zu laden, bei Erfolg

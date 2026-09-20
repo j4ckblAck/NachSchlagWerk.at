@@ -104,7 +104,6 @@ body {
   border: 1px solid var(--linie);
   border-radius: 999px;
   color: var(--text-leise);
-  order: 1;
 }
 .kopf h1 {
   margin: 0;
@@ -302,6 +301,18 @@ main {
   font-size: .8rem;
   color: var(--text-leise);
 }
+
+/* Land-Ueberschrift in der Kennzeichen-Liste: deutlich kraeftiger als
+   die Bundesland-/Regions-Unterueberschrift darunter. */
+.stat-land {
+  margin: 1.8rem 0 .3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--linie);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.stat-land:first-child { margin-top: 0; padding-top: 0; border-top: none; }
 
 .reset {
   width: 100%;
@@ -524,10 +535,6 @@ main {
   background: linear-gradient(135deg, #2a2050, #4a1f5c);
   border-color: #6b3f8a;
 }
-.kachel-schwierig {
-  background: linear-gradient(135deg, #4a2e10, #5c3a12);
-  border-color: #8a5f2f;
-}
 .kachel-duell {
   background: linear-gradient(135deg, #3a1010, #5c1818);
   border-color: #8a2f2f;
@@ -547,7 +554,8 @@ main {
   padding: .6rem .8rem;
 }
 .ueberblick-item img {
-  width: 68px; height: 68px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   border-radius: 6px;
   background: rgba(255,255,255,.04);
@@ -864,3 +872,501 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   font-size: .82rem;
   color: var(--text-leise);
 }
+
+/* ============ Kennzeichen-Modul ============ */
+
+.kz-simulator {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem 1.3rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+.kz-label {
+  display: block;
+  font-size: .8rem;
+  color: var(--text-leise);
+  margin-bottom: .5rem;
+  text-align: left;
+}
+.kz-eingabe {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: .7rem;
+  border-radius: 10px;
+  border: 1px solid var(--linie);
+  background: var(--nacht-hell);
+  color: var(--text);
+  margin-bottom: 1.1rem;
+}
+.kz-eingabe:focus { outline: 2px solid var(--gold); }
+
+.kz-land-auswahl {
+  width: 100%;
+  font-family: inherit;
+  font-size: .98rem;
+  padding: .65rem .8rem;
+  border-radius: 10px;
+  border: 1px solid var(--linie);
+  background: var(--nacht-hell);
+  color: var(--text);
+  margin-bottom: .9rem;
+}
+
+/* Nachgebaute Kennzeichentafel: weiss, schwarze Schrift, blaues
+   EU-Feld links, Landes-/Bundeslandwappen mittig - rein optisch,
+   keine echten Kennzeichen. Schriftart lehnt sich an die echte
+   europaeische Kennzeichenschrift (FE-Schrift) an: Barlow Condensed
+   ist frei lizenziert (SIL OFL) und wurde bewusst mit schmalen,
+   schilderaehnlichen Proportionen gezeichnet - naeher am echten Look
+   als eine gewoehnliche Groteskschrift, ohne eine Nachbau-Schriftart
+   mit unklarer Lizenz einzubinden. Das Kuerzel wird DIREKT auf der
+   Tafel eingetippt. */
+.kz-schild {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: #fff;
+  border: 3px solid #111;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 80px;
+  /* Seitenverhaeltnis eines echten oesterreichischen Kennzeichens
+     (520 x 110mm, ca. 4.73:1) - bei 80px Hoehe also ca. 378px Breite. */
+  max-width: 378px;
+  margin: 0 auto;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .3);
+  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  transition: background .2s ease;
+}
+/* Rot-weiss-rote Randstreifen oben und unten - nur beim
+   oesterreichischen Kennzeichen, nicht bei den anderen Laendern. */
+.kz-schild-at::before,
+.kz-schild-at::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(#d52b1e 33%, #fff 33% 66%, #d52b1e 66%);
+  z-index: 2;
+}
+.kz-schild-at::before { top: 0; }
+.kz-schild-at::after { bottom: 0; }
+/* Liechtenstein: traditionell schwarze Tafel mit weisser Schrift -
+   einziges Land in Europa mit dieser Farbgebung fuer Privatfahrzeuge. */
+.kz-schild-dunkel { background: #111; border-color: #555; }
+/* Ungarn-Taxi: gelbe Tafel statt weiss. */
+.kz-schild-gelb { background: #ffd200; }
+.kz-schild-gelb .kz-schild-code,
+.kz-schild-gelb .kz-schild-nr { background: transparent; }
+/* Rahmenfarbe passend zur Schriftfarbe bei Polizei (blau) bzw.
+   Diplomaten-Sonderkennzeichen (gruen). */
+.kz-schild-rahmen-blau { border-color: #0047ab; }
+.kz-schild-rahmen-gruen { border-color: #0a7a3d; }
+/* Schweiz: Kantonswappen steht am echten Schild ganz rechts hinter
+   der Nummer, nicht zwischen Kuerzel und Nummer wie bei Oesterreich. */
+.kz-schild-wappen-hinten .kz-schild-nr {
+  order: 2;
+  /* buendig/nah am Punkt in der Mitte statt am Wappen ganz rechts. */
+  padding: 0 6px 0 2px;
+}
+.kz-schild-wappen-hinten .kz-schild-wappen { order: 3; }
+.kz-schild-dunkel .kz-schild-code,
+.kz-schild-dunkel .kz-schild-nr,
+.kz-schild-dunkel .kz-wappen-text { color: #f4f3ef; }
+.kz-schild-dunkel .kz-schild-code { background: #111; }
+.kz-schild-dunkel .kz-schild-code:focus { background: #1d1d1d; }
+.kz-schild-dunkel .kz-schild-code::placeholder { color: #555; }
+
+.kz-schild-eu {
+  background: #1450a4;
+  color: #fff;
+  width: 40px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 3px 0;
+}
+.kz-sterne { width: 30px; height: 30px; line-height: 0; }
+/* Slowenisches Militaer "SV": kein EU-Band, eigenes Kennzeichensystem. */
+.kz-schild-eu-leer { width: 0; padding: 0; overflow: hidden; }
+.kz-sterne:empty { display: none; }
+.kz-sterne svg { width: 100%; height: 100%; display: block; }
+.kz-schild-a:empty { display: none; }
+.kz-schild-a { font-weight: 600; line-height: 1; letter-spacing: .03em; }
+/* Alle Laender-Kuerzel unterm Euro-Sternenkranz (A, D, CH, FL, I, SLO,
+   H, SK, CZ, ...) IMMER in derselben Groesse - egal ob 1 oder 3
+   Buchstaben, wie bei Slowenien ("SLO", der laengste Fall). */
+.kz-schild-a-kurz,
+.kz-schild-a-mittel,
+.kz-schild-a-lang { font-size: 1.0rem; letter-spacing: .02em; }
+
+.kz-schild-code {
+  width: 100px;
+  flex-shrink: 0;
+  /* Eingabefelder zentrieren ihren Text nicht zuverlaessig, wenn sie
+     ueber "stretch" auf volle Zeilenhoehe gezogen werden - "align-self:
+     center" gibt dem Feld stattdessen seine natuerliche Texthoehe und
+     zentriert dieses dann als Ganzes, wie bei Wappen und Nummer. */
+  align-self: center;
+  color: #111;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .01em;
+  font-family: inherit;
+  /* rechtsbuendig statt zentriert - so ruecken Kuerzel, Wappen und
+     Nummer als ein zusammenhaengender Block in die Mitte, statt
+     jedes Feld einzeln fuer sich zu zentrieren. */
+  text-align: right;
+  text-transform: uppercase;
+  background: #fff;
+  border: none;
+  padding: 0 2px 0 0;
+}
+.kz-schild-code:focus { outline: none; box-shadow: inset 0 0 0 2px #f0c419; }
+/* Laender mit nur einem Kennzeichen (FL, H): Feld zeigt es fix an,
+   ohne wie ein deaktiviertes/ausgegraues Feld auszusehen. */
+.kz-schild-code:disabled { opacity: 1; -webkit-text-fill-color: #111; cursor: default; }
+.kz-schild-dunkel .kz-schild-code:disabled { -webkit-text-fill-color: #f4f3ef; }
+
+/* Kein Platzhaltertext mehr - stattdessen zeigt die Feldfarbe den
+   Zustand: leer = orange (bitte eintippen), unbekanntes Kuerzel = rot. */
+.kz-schild-code-leer { background: #ffddab; }
+.kz-schild-code-unbekannt { background: #ffc6c6; color: #7a1414; }
+.kz-schild-dunkel .kz-schild-code-leer { background: #4a3416; color: #ffddab; }
+.kz-schild-dunkel .kz-schild-code-unbekannt { background: #4a1414; color: #ffb3b3; }
+/* Diplomaten-Sonderkennzeichen (z.B. slowenisch CMD/CD/CC/M): gruene
+   Schrift statt schwarz/weiss, wie am echten Kennzeichen. */
+.kz-schild-code-gruen { color: #0a7a3d !important; }
+/* Slowenische Polizei "P": blaue Schrift statt schwarz. */
+.kz-schild-code-blau { color: #0047ab !important; }
+
+/* Wappen-/Flaggensymbol plus - wie am echten Kennzeichen - ganz
+   klein der Bundesland-/Ortsname darunter. */
+/* Das Wappen-Bild wird ueber Flex zentriert (einziges Element im
+   normalen Fluss - der Text ist "position: absolute" und zaehlt dafuer
+   nicht mit). Der Name haengt als Caption mit FIXEM Abstand (2px) direkt
+   unter dem Bild: "top" wird aus der Boxmitte plus halber Bildhoehe
+   plus 2px berechnet, statt am unteren Rand zu kleben - so bleibt der
+   Abstand zum Wappen immer klein, unabhaengig von der Boxhoehe. */
+.kz-schild-wappen {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 2px 8px 4px;
+}
+/* Ganz ohne Bild/Text (z.B. Italien, oder Schweiz-Militaerkennzeichen
+   "M") wird die Box eingeklappt - der Platz kommt sonst der Nummer
+   daneben zugute, statt ungenutzt zu bleiben. */
+.kz-schild-wappen-leer { width: 0; padding: 0; }
+.kz-wappen-bild { width: 38px; height: 38px; line-height: 0; }
+.kz-wappen-bild img,
+.kz-wappen-bild .kz-flagge-svg,
+.kz-wappen-bild .kz-li-svg { width: 100%; height: 100%; object-fit: contain; display: block; }
+.kz-flagge-svg { border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
+.kz-wappen-text:empty { display: none; }
+.kz-wappen-text {
+  position: absolute;
+  top: calc(50% + 16px);
+  left: 2px;
+  right: 2px;
+  max-width: none;
+  font-family: "Barlow Condensed", Arial, sans-serif;
+  font-size: .34rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: #333;
+  text-align: center;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Normalerweise nur ein Anzeigefeld ("readonly") mit dem Beispielmuster
+   des Landes - bei einzelnen Sonderkennzeichen (z.B. slowenisches
+   Militaer "SV") wird das "readonly" entfernt, dann kann man die echte
+   Nummer daneben eintippen. Deshalb wie ".kz-schild-code" ein <input>
+   statt eines <span>, inkl. "align-self: center" aus demselben Grund
+   (Eingabefelder zentrieren ihren Text sonst nicht zuverlaessig, wenn
+   sie ueber "stretch" auf volle Zeilenhoehe gezogen werden). */
+.kz-schild-nr {
+  align-self: center;
+  color: #111;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .05em;
+  flex: 1;
+  min-width: 0;
+  padding: 0 2px 0 10px;
+  white-space: nowrap;
+  text-align: left;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+.kz-schild-nr:not(:read-only):focus { outline: none; box-shadow: inset 0 0 0 2px #f0c419; }
+.kz-schild-nr::placeholder { color: inherit; opacity: .5; }
+/* Nur bei Sonderkennzeichen mit eintippbarer Nummer (z.B. SV, CD): das
+   Eingabefeld ist dann nur 2 Zeichen breit (statt "flex:1" ueber die
+   ganze Breite), der fixe Rest ("-400" o.ae.) steht als eigenes,
+   nicht editierbares Element direkt daneben. */
+.kz-schild-nr-kurz {
+  flex: 0 0 auto;
+  width: 1.35em;
+  min-width: 1.35em;
+  text-align: center;
+  padding: 0 0 0 10px;
+}
+.kz-schild-nr-suffix {
+  align-self: center;
+  color: #111;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-left: 1px;
+}
+.kz-schild-nr-suffix:empty { display: none; }
+.kz-schild-dunkel .kz-schild-nr-suffix { color: #f4f3ef; }
+/* Kuerzel-Feld und Nummer bekommen IMMER dieselbe Schriftgroesse -
+   eine gemeinsame Stufe pro Land (nach der Laenge des Nummernmusters),
+   statt dass jedes Feld fuer sich eine eigene Groesse waehlt. */
+/* Kuerzel und Musertext ueberall gleich gross - in der Groesse von
+   Liechtenstein (kuerzestes Muster, bisher die "kurz"-Stufe), egal wie
+   lang das jeweilige Nummernmuster des Landes ist. */
+/* Kurze Muster (wie Liechtenstein "1234") duerfen ganz gross sein -
+   laengere (z.B. Schweiz "123456", 6-stellig) MUESSEN aber kleiner
+   bleiben, sonst passt der Text nicht mehr in den verfuegbaren Platz
+   und ueberlappt mit dem Kuerzel davor (bei der Schweiz besonders
+   sichtbar, da die Nummer dort rechtsbuendig/"flex-end" waechst). */
+.kz-schild-txt-kurz.kz-schild-code,
+.kz-schild-txt-kurz.kz-schild-nr,
+.kz-schild-txt-kurz.kz-schild-nr-suffix { font-size: 4.7rem; }
+.kz-schild-txt-mittel.kz-schild-code,
+.kz-schild-txt-mittel.kz-schild-nr,
+.kz-schild-txt-mittel.kz-schild-nr-suffix { font-size: 4.05rem; letter-spacing: .02em; }
+.kz-schild-txt-lang.kz-schild-code,
+.kz-schild-txt-lang.kz-schild-nr,
+.kz-schild-txt-lang.kz-schild-nr-suffix { font-size: 3.98rem; letter-spacing: 0; }
+
+/* Mittiger Punkt zwischen Kuerzel und Nummer - nur bei der Schweiz
+   ("AA·000 000" am echten Schild), sonst leer und unsichtbar. */
+.kz-schild-punkt:empty { display: none; }
+.kz-schild-punkt {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: #111;
+  font-weight: 700;
+  font-size: 1.6rem;
+  /* Abstand zum Kuerzel davor und zum Musertext danach (z.B. Schweiz
+     "M . 123456") - sonst kleben alle drei aneinander. */
+  padding: 0 8px;
+}
+.kz-schild-dunkel .kz-schild-punkt { color: #f4f3ef; }
+
+/* Zweites blaues Euro-Feld ganz rechts - nur bei Italien (dort steht
+   traditionell links UND rechts ein blauer Streifen). Standardmaessig
+   0 Breite (unsichtbar), erst die "-sichtbar"-Klasse blendet es ein. */
+.kz-schild-eu2 {
+  background: #003399;
+  width: 0;
+  flex-shrink: 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+.kz-schild-eu2-sichtbar { width: 10px; }
+
+.kz-ergebnis {
+  margin: .9rem 0 0;
+  font-size: .88rem;
+  color: var(--text-leise);
+}
+.kz-ergebnis b { color: var(--gold); }
+
+/* Landkarte: zeigt das gefundene Bundesland eingefaerbt - nur bei
+   Oesterreich, sonst bleibt die Box ausgeblendet. */
+.kz-karte-box {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+  padding: 1rem 1.1rem 1.2rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+.kz-karte-titel {
+  margin: 0 0 .7rem;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-leise);
+}
+.kz-karte { max-width: 510px; margin: 0 auto; }
+.kz-karte svg { width: 100%; height: auto; display: block; }
+.kz-karte-aussen { fill: none; stroke: #334; stroke-width: 5; }
+/* Bewusst feste, theme-unabhaengige Farben statt der App-Variablen -
+   so bleiben die duennen Grenzen in Hell wie Dunkel gut sichtbar.
+   Die Bundesland-Ebene liegt UNTER der Bezirksebene und wird von ihr
+   normalerweise komplett verdeckt (gleiche Grundfarbe, nahtlos) - nur
+   wo kein Bezirk-Umriss vorhanden ist (Wien, ein paar Einzelfaelle),
+   scheint sie sichtbar durch. */
+.kz-karte-bundesland {
+  fill: #cbd0d6;
+  stroke: #98a2b3;
+  stroke-width: 1;
+  transition: fill .2s ease;
+}
+.kz-karte-bundesland.kz-karte-aktiv {
+  fill: var(--gold);
+  stroke: #7a5c00;
+  stroke-width: 1.5;
+}
+.kz-karte-bezirk {
+  fill: #cbd0d6;
+  stroke: #98a2b3;
+  stroke-width: .6;
+  transition: fill .2s ease;
+}
+.kz-karte-bezirk.kz-karte-aktiv {
+  fill: var(--gold);
+  stroke: #7a5c00;
+  stroke-width: 1.2;
+}
+/* Kraeftige Bundeslandgrenzen obendrauf, ohne Fuellung - damit sie
+   trotz der feineren, eingefaerbten Bezirke klar erkennbar bleiben. */
+.kz-karte-grenze {
+  fill: none;
+  stroke: #334;
+  stroke-width: 2.2;
+  pointer-events: none;
+}
+/* Kurze, nach aussen ausblendende Andeutung der weiterlaufenden Grenze
+   zwischen zwei Nachbarlaendern an jedem Dreilaendereck, plus der
+   jeweilige Landesname leicht grau daneben - immer sichtbar. */
+.kz-karte-grenzstrich {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.kz-karte-nachbar-text {
+  fill: #9aa3b2;
+  font-size: 26px;
+  font-family: inherit;
+  font-weight: 600;
+  dominant-baseline: middle;
+}
+
+.kz-filterzeile { display: flex; gap: .6rem; margin-bottom: .8rem; }
+.kz-bundesland-filter {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: .95rem;
+  padding: .65rem .8rem;
+  border-radius: 10px;
+  border: 1px solid var(--linie);
+  background: var(--karte);
+  color: var(--text);
+}
+.kz-bundesland-filter:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.kz-suchleiste {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 12px;
+  padding: .6rem .9rem;
+  margin-bottom: 1rem;
+}
+.kz-lupe { color: var(--text-leise); flex-shrink: 0; }
+.kz-suche-eingabe {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: .95rem;
+  color: var(--text);
+}
+.kz-suche-eingabe:focus { outline: none; }
+
+/* Kleines Kuerzel-Feld links, immer in Grossbuchstaben - fuer die
+   gezielte Suche nach dem Kennzeichen-Kuerzel statt einer Textsuche. */
+.kz-suche-kuerzel {
+  width: 4.2rem;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  font-family: "Barlow Condensed", inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text);
+}
+.kz-suche-kuerzel::placeholder { text-transform: none; letter-spacing: normal; font-weight: 400; }
+.kz-suche-kuerzel:focus { outline: none; }
+.kz-suchleiste-trenner {
+  width: 1px;
+  align-self: stretch;
+  background: var(--linie);
+  flex-shrink: 0;
+}
+
+.kz-liste { padding-bottom: 1rem; }
+.kz-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .8rem;
+  padding: .65rem 0;
+  border-bottom: 1px solid var(--linie);
+}
+/* Laengerer Beschreibungstext (z.B. slowenisch "SV") - eigene Zeile
+   direkt darunter, eingerueckt auf Hoehe des Bezirkstexts (nicht des
+   Kuerzel-Badges davor). */
+.kz-beschreibung {
+  flex-basis: 100%;
+  margin-left: calc(2.6rem + .8rem);
+  font-size: .8rem;
+  color: var(--text-leise);
+}
+.kz-code-badge {
+  flex-shrink: 0;
+  min-width: 2.6rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: .85rem;
+  background: var(--nacht-hell);
+  color: var(--gold);
+  border-radius: 8px;
+  padding: .25rem .4rem;
+}
+.kz-bezirk { font-size: .92rem; }

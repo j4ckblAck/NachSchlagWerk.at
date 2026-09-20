@@ -9,64 +9,54 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Dienstgrade">
-<title>Polizei Lernapp</title>
-<link rel="stylesheet" href="style.css">
+<meta name="apple-mobile-web-app-title" content="Hauptmenü NachSchlagWerk">
+<title>NachSchlagWerk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
 
 <header class="kopf">
   <div class="kopf-titel">
     <span class="rot-weiss-rot" aria-hidden="true"></span>
-    <h1 id="kopfTitel">Polizei Lernapp</h1>
+    <h1 id="kopfTitel">NachSchlagWerk</h1>
+    <button id="themaBtn" class="ikon" aria-label="Theme umschalten">Theme</button>
   </div>
   <div class="kopf-aktionen">
     <button id="navZurueck" class="nav-icon" hidden aria-label="Zurück">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button id="themaBtn" class="ikon" aria-label="Theme umschalten">Theme</button>
     <button id="navHome" class="nav-icon" aria-label="Hauptmenü">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
     </button>
   </div>
 </header>
 
-<!-- ========== STARTSEITE (App-Home) ========== -->
+<!-- ========== STARTSEITE (App-Home / Nachschlagewerk) ========== -->
 <main id="home" class="screen">
-  <p class="intro">Wähl ein Thema aus.</p>
+  <p class="intro">Wählen Sie bitte eine Kategorie.</p>
 
   <button id="gehModulDienstgrade" class="kachel kachel-modul">
     <span class="kachel-titel">Dienstgrade</span>
-    <span class="kachel-text">Abzeichen der österreichischen Polizei lernen und abfragen</span>
+    <span class="kachel-text">Abzeichen und Kurzbezeichnungen nachschlagen, mit eigenem Lernprogramm</span>
+  </button>
+
+  <button id="gehModulKennzeichen" class="kachel kachel-modul">
+    <span class="kachel-titel">KFZ-Kennzeichen</span>
+    <span class="kachel-text">Bezirkskürzel auf Kfz-Kennzeichen nachschlagen</span>
   </button>
 </main>
 
 <!-- ========== MODUL: DIENSTGRADE - GRUPPENUEBERSICHT ========== -->
 <main id="modulStart" class="screen" hidden>
-
-  <button id="gehAbkuerzungen" class="kachel kachel-modul">
-    <span class="kachel-titel">Abkürzungen</span>
-    <span class="kachel-text">Kurzbezeichnungen zum Nachschlagen, kein Quiz</span>
-  </button>
-
-  <a href="tafel.pdf" target="_blank" rel="noopener" class="kachel kachel-pdf">
-    <span class="kachel-titel">Amtliches Referenzdokument (PDF)</span>
-    <span class="kachel-text">Die vollständige BMI-Vorschrift im Original</span>
-  </a>
+  <h2 class="modul-titel">Lernprogramm</h2>
 
   <div id="gruppenListe" class="gruppen-liste"></div>
 
-  <div id="weiteresTraining" class="weiteres-training" hidden>
+  <div id="weiteresTraining" class="weiteres-training">
     <p class="weiteres-titel">Weiteres Training</p>
-
-    <button id="gehSchwierig" class="kachel kachel-klein" disabled>
-      <span class="kachel-kopf">
-        <span class="kachel-titel">Schwierige Ränge</span>
-        <span class="kachel-prozent" id="schwierigProzent">0%</span>
-      </span>
-      <span class="kachel-text" id="schwierigStatus">Noch keine Übungsdaten vorhanden</span>
-      <span class="mini-balken"><span id="schwierigBalken"></span></span>
-    </button>
 
     <button id="gehGemischtMC" class="kachel kachel-klein">
       <span class="kachel-kopf">
@@ -160,11 +150,76 @@
   <div class="leiste-wert"><b id="gelernt">0</b> von <span id="gesamt">0</span> geschafft</div>
 </footer>
 
-<!-- ========== ABKUERZUNGEN (eigenes Modul) ========== -->
+<!-- ========== MODUL: KENNZEICHEN ========== -->
+<main id="kennzeichen" class="screen" hidden>
+  <h2 class="modul-titel">Kennzeichen-Abfrage</h2>
+
+  <div class="kz-simulator">
+    <label for="kzLand" class="kz-label">Land</label>
+    <select id="kzLand" class="kz-land-auswahl"></select>
+
+    <div class="kz-schild" id="kzSchild">
+      <span class="kz-schild-eu" id="kzSchildEu">
+        <span class="kz-sterne" id="kzSterne"></span>
+        <span class="kz-schild-a" id="kzSchildA">A</span>
+      </span>
+      <input id="kzEingabe" class="kz-schild-code" type="text" maxlength="3" autocomplete="off" autocapitalize="characters">
+      <span class="kz-schild-punkt" id="kzSchildPunkt"></span>
+      <span class="kz-schild-wappen" id="kzWappen">
+        <span class="kz-wappen-bild" id="kzWappenBild"></span>
+        <span class="kz-wappen-text" id="kzWappenText"></span>
+      </span>
+      <input class="kz-schild-nr" id="kzSchildNr" type="text" value="123 AB" readonly autocomplete="off">
+      <span class="kz-schild-nr-suffix" id="kzSchildNrSuffix"></span>
+      <span class="kz-schild-eu2" id="kzSchildEu2"></span>
+    </div>
+
+    <p class="kz-ergebnis" id="kzErgebnis">Tipp ein Bezirkskürzel ein, z.B. „AM"</p>
+  </div>
+
+  <div class="kz-karte-box" id="kzKarteBox" hidden>
+    <p class="kz-karte-titel">Lage in Österreich</p>
+    <div class="kz-karte" id="kzKarte"></div>
+  </div>
+
+  <button id="gehKennzeichenListe" class="kachel kachel-klein">
+    <span class="kachel-titel">Alle Kennzeichen durchsuchen</span>
+    <span class="kachel-text">Komplette Liste mit Suche und Land-/Bundesland-Filter</span>
+  </button>
+</main>
+
+<!-- ========== MODUL: KENNZEICHEN - LISTE ========== -->
+<main id="kennzeichenListe" class="screen" hidden>
+  <h2 class="modul-titel">Alle Kennzeichen durchsuchen</h2>
+
+  <div class="kz-filterzeile">
+    <select id="kzListeLand" class="kz-bundesland-filter"></select>
+    <select id="kzListeBundesland" class="kz-bundesland-filter">
+      <option value="">Alle Regionen</option>
+    </select>
+  </div>
+
+  <div class="kz-suchleiste">
+    <input id="kzSucheKuerzel" class="kz-suche-kuerzel" type="text" maxlength="4" placeholder="Kürzel" autocomplete="off" autocapitalize="characters">
+    <span class="kz-suchleiste-trenner"></span>
+    <svg class="kz-lupe" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="kzSucheName" class="kz-suche-eingabe" type="text" placeholder="Bezirk, Bundesland oder Land suchen ..." autocomplete="off">
+  </div>
+
+  <div id="kzListe" class="kz-liste"></div>
+</main>
+
+<!-- ========== DIENSTGRADE - UEBERSICHT (Kurzbezeichnungen) ========== -->
 <main id="abk" class="screen" hidden>
-  <h2 class="modul-titel">Abkürzungen</h2>
+  <h2 class="modul-titel">Dienstgrade</h2>
+
+  <button id="gehLernprogramm" class="kachel kachel-modul">
+    <span class="kachel-titel">Lernprogramm</span>
+    <span class="kachel-text">Dienstgrade lernen und im Quiz abfragen</span>
+  </button>
+
   <div id="abkListe" class="abk-liste"></div>
-  <p class="abk-quelle">Quelle: Wikipedia, BMI Untersch.-Tafel</p>
+  <p class="abk-quelle">Quelle: <a href="tafel.pdf" target="_blank" rel="noopener">Amtliches Referenzdokument (PDF, BMI-Vorschrift)</a></p>
 </main>
 
 <script src="ranks.js"></script>
