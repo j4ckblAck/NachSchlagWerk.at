@@ -1,3 +1,8 @@
+/* Muss ganz oben stehen und gewinnt garantiert gegen jede andere
+   display-Regel - sonst werden versteckte Bildschirme trotz
+   hidden-Attribut angezeigt (sie stapeln sich dann untereinander). */
+[hidden] { display: none !important; }
+
 :root {
   --nacht: #101826;
   --nacht-hell: #1a2536;
