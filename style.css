@@ -1,0 +1,861 @@
+:root {
+  --nacht: #101826;
+  --nacht-hell: #1a2536;
+  --karte: #203046;
+  --linie: #2f4159;
+  --bordeaux: #6b2130;
+  --gold: #c9a227;
+  --silber: #c3c9d4;
+  --rot: #c8102e;
+  --gruen: #3f9e5c;
+  --text: #eef1f6;
+  --text-leise: #9aa7ba;
+}
+
+:root[data-theme="hell"] {
+  --nacht: #f4f5f7;
+  --nacht-hell: #ffffff;
+  --karte: #ffffff;
+  --linie: #d8dce3;
+  --bordeaux: #8a2c3d;
+  --gold: #a17a14;
+  --silber: #6b7482;
+  --rot: #c8102e;
+  --gruen: #2f8a4f;
+  --text: #1b2330;
+  --text-leise: #5b6474;
+}
+:root[data-theme="hell"] .lernkarte img,
+:root[data-theme="hell"] .ueberblick-item img,
+:root[data-theme="hell"] .frage-bild {
+  background: #eef0f3;
+}
+:root[data-theme="hell"] .knopf-rot { background: #ffe1e5; color: #a8283a; border-color: #f0aab4; }
+:root[data-theme="hell"] .knopf-gruen { background: #dff5e6; color: #1f7a41; border-color: #a9dfba; }
+
+:root[data-theme="hell"] .antwort.richtig,
+:root[data-theme="hell"] .antwort.richtig-blitz {
+  background: #dff5e6 !important;
+  color: #1f7a41;
+  border-color: #4fae6f !important;
+}
+:root[data-theme="hell"] .antwort.falsch {
+  background: #ffe1e5;
+  color: #a8283a;
+  border-color: #e0788a;
+}
+:root[data-theme="hell"] .status-offen { background: #e7e9ee; color: #5b6474; }
+:root[data-theme="hell"] .status-gelernt { background: #fbf1cf; color: #8a6c14; }
+:root[data-theme="hell"] .status-gemeistert { background: #dff5e6; color: #1f7a41; }
+:root[data-theme="hell"] .gruppe-fertig {
+  background: linear-gradient(150deg, #dff5e6, #eef8ee);
+  border-color: #a9dfba;
+}
+:root[data-theme="hell"] .knopf-gold { color: #fff; }
+:root[data-theme="hell"] .gruppen-aktionen button.primaer { color: #fff; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--nacht);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.45;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------- Kopf ---------- */
+.kopf {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .9rem 1rem;
+  background: var(--nacht-hell);
+  border-bottom: 1px solid var(--linie);
+}
+.kopf-titel { display: flex; align-items: center; gap: .6rem; }
+.kopf-aktionen { margin-left: auto; display: flex; gap: .5rem; }
+
+.nav-icon {
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: .3rem;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  border-radius: 8px;
+}
+.nav-icon:active { background: var(--karte); }
+.nav-icon.nav-text {
+  font-family: inherit;
+  font-size: .85rem;
+  padding: .35rem .8rem;
+  border: 1px solid var(--linie);
+  border-radius: 999px;
+  color: var(--text-leise);
+  order: 1;
+}
+.kopf h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.rot-weiss-rot {
+  width: 6px; height: 26px; border-radius: 3px;
+  background: linear-gradient(var(--rot) 33%, #fff 33% 66%, var(--rot) 66%);
+}
+.ikon {
+  background: none;
+  border: 1px solid var(--linie);
+  color: var(--text-leise);
+  border-radius: 999px;
+  padding: .35rem .8rem;
+  font-size: .85rem;
+  font-family: inherit;
+}
+
+/* ---------- Hinweis ---------- */
+.hinweis {
+  margin: .8rem 1rem 0;
+  padding: .8rem .9rem;
+  border-left: 3px solid var(--gold);
+  background: #2a2313;
+  border-radius: 0 10px 10px 0;
+  font-size: .9rem;
+  color: #f0e4c0;
+}
+.hinweis code { color: var(--gold); }
+
+/* ---------- Quiz ---------- */
+main {
+  flex: 1;
+  padding: 1rem 1rem 1.5rem;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+.frage-typ {
+  margin: 0 0 .5rem;
+  font-size: .85rem;
+  color: var(--text-leise);
+}
+.frage-bereich { margin-bottom: 1.1rem; }
+
+.frage-text {
+  background: linear-gradient(140deg, var(--bordeaux), #4a1622);
+  border: 1px solid #83313f;
+  border-radius: 14px;
+  padding: 1.6rem 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.frage-bild {
+  display: block;
+  margin: 0 auto 1rem;
+  max-height: clamp(160px, 30vh, 340px);
+  max-width: 100%;
+  border-radius: 12px;
+  background: var(--karte);
+  padding: .6rem;
+}
+.frage-bild-foto {
+  background: none;
+  padding: 0;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+}
+
+/* ---------- Antworten ---------- */
+.antworten { display: grid; gap: .6rem; }
+.antworten.bilder { grid-template-columns: 1fr 1fr; }
+
+.antwort {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: .95rem .9rem;
+  text-align: left;
+  transition: transform .08s ease;
+}
+.antworten.bilder .antwort {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
+  padding: .5rem;
+}
+.antwort img { max-width: 100%; max-height: 118px; }
+.antwort:active { transform: scale(.97); }
+.antwort:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.antwort.richtig {
+  border-color: var(--gruen);
+  background: #17351f;
+}
+.antwort.falsch {
+  border-color: var(--rot);
+  background: #3a161c;
+}
+.antwort:disabled { opacity: 1; }
+.antwort.blass { opacity: .38; }
+
+/* ---------- Rueckmeldung ---------- */
+.rueckmeldung {
+  margin-top: 1rem;
+  padding: .85rem 1rem;
+  border-radius: 12px;
+  background: var(--nacht-hell);
+  border: 1px solid var(--linie);
+  font-size: .95rem;
+}
+.rueckmeldung b { color: var(--gold); }
+
+.weiter {
+  width: 100%;
+  margin-top: .8rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--gold);
+  color: #221c06;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.weiter:active { transform: scale(.98); }
+
+/* ---------- Fussleiste ---------- */
+.leiste {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  justify-content: space-around;
+  gap: .5rem;
+  padding: .6rem .5rem calc(.6rem + env(safe-area-inset-bottom));
+  background: var(--nacht-hell);
+  border-top: 1px solid var(--linie);
+  font-size: .78rem;
+  color: var(--text-leise);
+  text-align: center;
+}
+.leiste b { display: block; font-size: 1.15rem; color: var(--text); }
+
+/* ---------- Lernstand ---------- */
+.panel {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: var(--nacht);
+  overflow-y: auto;
+  padding: 0 1rem 2rem;
+}
+.panel-kopf {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  background: var(--nacht);
+  border-bottom: 1px solid var(--linie);
+}
+.panel-kopf h2 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+
+.stats-liste { margin-top: 1rem; }
+.stat-zeile { padding: .65rem 0; border-bottom: 1px solid var(--linie); }
+.stat-oben {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: .95rem;
+}
+.stat-oben span { color: var(--text-leise); font-size: .85rem; white-space: nowrap; }
+.balken {
+  height: 6px;
+  margin-top: .45rem;
+  border-radius: 3px;
+  background: var(--linie);
+  overflow: hidden;
+}
+.balken div { height: 100%; background: var(--gold); }
+.stat-gruppe {
+  margin: 1.4rem 0 .2rem;
+  font-size: .8rem;
+  color: var(--text-leise);
+}
+
+.reset {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: .9rem;
+  border: 1px solid var(--rot);
+  border-radius: 12px;
+  background: none;
+  color: #ff8b9c;
+  font-family: inherit;
+  font-size: .95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* ============ Start / Lernen / Quiz ============ */
+
+.screen {
+  flex: 1;
+  padding: 1.1rem 1rem 1.5rem;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.intro {
+  color: var(--text-leise);
+  font-size: .92rem;
+  margin: 0 0 1.2rem;
+}
+
+.kachel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .3rem;
+  text-align: left;
+  width: 100%;
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+  padding: 1.2rem 1.3rem;
+  margin-bottom: .9rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--karte);
+}
+.kachel-lernen { background: linear-gradient(135deg, #203046, #16324a); border-color: #2c4c68; }
+.kachel-quiz   { background: linear-gradient(135deg, var(--bordeaux), #4a1622); border-color: #83313f; }
+.kachel-titel { font-size: 1.15rem; font-weight: 700; }
+.kachel-text  { font-size: .85rem; color: var(--text-leise); }
+.kachel:active:not(:disabled) { transform: scale(.98); }
+.kachel:disabled {
+  opacity: .55;
+  filter: grayscale(.4);
+}
+
+.einstellungen {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.reset-klein {
+  background: none;
+  border: 1px solid var(--linie);
+  color: var(--text-leise);
+  border-radius: 10px;
+  padding: .7rem;
+  font-family: inherit;
+  font-size: .82rem;
+}
+
+/* ---------- Lernmodus ---------- */
+
+.fortschritt-leiste {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--linie);
+  overflow: hidden;
+  margin-bottom: .4rem;
+}
+.fortschritt-leiste div { height: 100%; background: var(--gold); transition: width .25s ease; }
+.fortschritt-text {
+  margin: 0 0 1rem;
+  font-size: .8rem;
+  color: var(--text-leise);
+  text-align: right;
+}
+
+.lernkarte {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 18px;
+  padding: 1.6rem 1.3rem;
+  min-height: 320px;
+}
+.lernkarte img {
+  max-height: 280px;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+.lernkarte h2 { margin: 0 0 .3rem; font-size: 1.4rem; }
+.lernkarte .gruppe-tag {
+  display: inline-block;
+  font-size: .75rem;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: .15rem .7rem;
+  margin-bottom: .2rem;
+}
+
+.lernkarte.intro-karte {
+  background: linear-gradient(150deg, var(--nacht-hell), var(--karte));
+}
+.lernkarte.intro-karte h2 { font-size: 1.3rem; }
+.lernkarte.intro-karte p { color: var(--text-leise); font-size: .95rem; margin: .6rem 0 0; }
+
+.lern-buttons {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: .7rem;
+  margin-top: 1rem;
+}
+
+.knopf {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+.knopf-gold { background: var(--gold); color: #221c06; }
+.knopf-blass { background: var(--karte); color: var(--text); border: 1px solid var(--linie); }
+.knopf:active { transform: scale(.98); }
+.knopf:disabled { opacity: .4; }
+
+.link-klein {
+  background: none;
+  border: none;
+  color: var(--text-leise);
+  font-family: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+  margin-top: .9rem;
+  align-self: center;
+  padding: .4rem;
+}
+
+/* ---------- Quiz: sechs Antworten ---------- */
+
+.antworten.text6 { grid-template-columns: 1fr 1fr; gap: .5rem; }
+.antworten.text6 .antwort { padding: .7rem .5rem; font-size: .92rem; text-align: center; }
+
+.antwort.richtig-blitz {
+  border-color: var(--gruen) !important;
+  background: #17351f !important;
+}
+
+/* ============ Gruppen-Kacheln (Start) ============ */
+
+.gruppen-liste { display: flex; flex-direction: column; gap: .8rem; margin-bottom: .9rem; }
+
+.gruppen-karte {
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  background: var(--karte);
+}
+.gruppen-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-bottom: .8rem;
+}
+.gruppen-name { font-size: 1.02rem; font-weight: 700; }
+.gruppen-anzahl { font-size: .78rem; color: var(--text-leise); display: block; margin-top: .1rem; }
+
+.gruppen-status {
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.status-offen     { background: #2a3345; color: var(--text-leise); }
+.status-gelernt   { background: #2a3313; color: #e3d98a; }
+.status-gemeistert{ background: #123822; color: #7fe3a4; }
+
+.gruppen-aktionen { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.gruppen-aktionen button {
+  padding: .75rem;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: .88rem;
+  font-weight: 700;
+  border: 1px solid var(--linie);
+  background: var(--nacht-hell);
+  color: var(--text);
+}
+.gruppen-aktionen button.primaer { background: var(--gold); color: #221c06; border: none; }
+.gruppen-aktionen button:disabled { opacity: .4; }
+
+.kachel-gemischt {
+  background: linear-gradient(135deg, #2a2050, #4a1f5c);
+  border-color: #6b3f8a;
+}
+.kachel-schwierig {
+  background: linear-gradient(135deg, #4a2e10, #5c3a12);
+  border-color: #8a5f2f;
+}
+.kachel-duell {
+  background: linear-gradient(135deg, #3a1010, #5c1818);
+  border-color: #8a2f2f;
+}
+
+/* ============ Uebersichtskarte im Lernmodus ============ */
+
+.lernkarte.ueberblick-karte { align-items: stretch; text-align: left; }
+.lernkarte.ueberblick-karte h2 { align-self: center; margin-bottom: 1rem; }
+.ueberblick-liste { width: 100%; display: flex; flex-direction: column; gap: .5rem; }
+.ueberblick-item {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  background: var(--nacht-hell);
+  border-radius: 10px;
+  padding: .6rem .8rem;
+}
+.ueberblick-item img {
+  width: 68px; height: 68px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: rgba(255,255,255,.04);
+  padding: 3px;
+  flex-shrink: 0;
+}
+.ueberblick-item .nr {
+  font-size: .8rem;
+  color: var(--text-leise);
+  width: 1.3rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+.ueberblick-item .name { font-size: 1rem; }
+
+.rang-hinweis {
+  margin: .6rem 0 0;
+  font-size: .82rem;
+  color: var(--text-leise);
+  line-height: 1.4;
+}
+
+/* ============ Quiz-Kontext + Gruppenabschluss ============ */
+
+.quiz-kontext {
+  text-align: center;
+  font-size: .8rem;
+  color: var(--gold);
+  margin: 0 0 .2rem;
+  letter-spacing: .03em;
+}
+
+.gruppe-fertig {
+  text-align: center;
+  background: linear-gradient(150deg, #123822, #0e2a1a);
+  border: 1px solid #1f5c3a;
+  border-radius: 16px;
+  padding: 1.6rem 1.2rem;
+  margin-top: .5rem;
+}
+.gruppe-fertig p { font-size: 1.15rem; margin: 0 0 1rem; }
+.gruppe-fertig .knopf { max-width: 260px; margin: 0 auto; }
+
+/* ============ Abkuerzungen-Modul ============ */
+
+.kachel-abk {
+  background: linear-gradient(135deg, #10333a, #124a4a);
+  border-color: #2f7a7a;
+}
+
+.abk-quelle {
+  font-size: .75rem;
+  color: var(--text-leise);
+  margin: 1.2rem 0 0;
+  text-align: center;
+}
+
+.abk-liste { padding-bottom: 1rem; }
+
+/* Jede Zeile ist jetzt eine feste Karte mit Bild, Titel, Kuerzel und
+   Hinweistext - keine Tipp-Interaktion mehr noetig. */
+.abk-karte {
+  display: flex;
+  align-items: flex-start;
+  gap: .9rem;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--linie);
+}
+.abk-karte-bild {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: rgba(255,255,255,.06);
+  padding: 3px;
+}
+.abk-karte-inhalt { flex: 1; min-width: 0; }
+.abk-kurz {
+  flex-shrink: 0;
+  font-size: .85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: .15rem .6rem;
+  white-space: nowrap;
+}
+.abk-hinweis {
+  font-size: .84rem;
+  color: var(--text-leise);
+  line-height: 1.4;
+}
+.abk-tooltip-titel {
+  font-size: .98rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+/* Abkuerzungs-Badge je Verwendungsgruppe im selben Goldton-Grundschema,
+   aber jeweils leicht verschoben eingefaerbt. */
+.abk-kurz-e2b     { background: #4a2226; color: #e7a3a9; }  /* rötlich */
+.abk-kurz-e2a     { background: #33383f; color: #c9d1da; }  /* silbern */
+.abk-kurz-e1      { background: #4a3d12; color: #e8d27a; }  /* gelb */
+.abk-kurz-sonstige{ background: #4a2f10; color: #e8a95c; }  /* orange-gold */
+
+:root[data-theme="hell"] .abk-kurz-e2b      { background: #f7dde0; color: #93343e; }
+:root[data-theme="hell"] .abk-kurz-e2a      { background: #e4e7ec; color: #454e5b; }
+:root[data-theme="hell"] .abk-kurz-e1       { background: #faf0cf; color: #8a6c14; }
+:root[data-theme="hell"] .abk-kurz-sonstige { background: #fbe4cc; color: #96591c; }
+
+/* ============ Neue App-Startseite ============ */
+
+.kachel-modul {
+  background: var(--karte);
+  border-color: var(--linie);
+}
+.kachel-pdf {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  background: var(--karte);
+  border: 1px dashed var(--linie);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.kachel-pdf .kachel-titel { font-size: .98rem; font-weight: 700; }
+.kachel-pdf .kachel-text { font-size: .8rem; color: var(--text-leise); }
+.kachel-pdf:active { background: var(--nacht-hell); }
+.kachel-bald {
+  opacity: .55;
+}
+
+.link-oben {
+  display: block;
+  margin: 0 0 1rem;
+  align-self: flex-start;
+}
+
+.modul-titel {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 .8rem;
+}
+
+/* ============ Weiteres Training (zurueckhaltender als Hauptkacheln) ============ */
+
+.weiteres-training {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--linie);
+}
+.weiteres-titel {
+  font-size: .8rem;
+  color: var(--text-leise);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 0 0 .7rem;
+}
+
+.kachel-klein {
+  background: var(--nacht-hell);
+  border: 1px solid var(--linie);
+  padding: .85rem 1rem;
+  margin-bottom: .6rem;
+}
+.kachel-klein .kachel-titel { font-size: .95rem; font-weight: 600; }
+.kachel-klein .kachel-text { font-size: .78rem; }
+
+.kachel-kopf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .6rem;
+  width: 100%;
+}
+.kachel-prozent {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.mini-balken {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--linie);
+  overflow: hidden;
+  margin-top: .5rem;
+}
+.mini-balken span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transition: width .3s ease;
+}
+
+/* Zusatz-Modi (Gemischt/Schwierig/Duell) nutzen bewusst denselben
+   ruhigen Look wie die Gruppenkacheln, keine bunten Farbverlaeufe mehr. */
+
+/* ============ Karteikarten-Modus (Gemischtes Quiz ohne Auswahl) ============ */
+
+/* Name-Anzeige liegt im normalen Fluss direkt unter dem Bild und blendet
+   sanft ein, statt abrupt aufzuploppen. */
+.karten-name {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 14px;
+  padding: 1.3rem 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  margin: .5rem 0 1rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.karten-name.sichtbar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Die Buttons ("Antwort zeigen" / Bewertung) sitzen fix am unteren
+   Bildschirmrand - aber ueber der Fussleiste mit Serie/Quote/Gelernt,
+   damit sie diese Infos nicht verdecken. */
+.karte-antwort-leiste {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: calc(3.8rem + env(safe-area-inset-bottom));
+  z-index: 30;
+  background: var(--nacht-hell);
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+  padding: .9rem 1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+/* Platz am Bildschirmende reservieren, damit weder die fixe Leiste
+   noch die Fussleiste den letzten Inhalt verdecken. */
+#quiz { padding-bottom: 10.5rem; }
+
+/* "Weiter"-Knopf im MC-Quiz genauso angehoben und fixiert wie die
+   Karteikarten-Leiste, ebenfalls ueber der Fussleiste. */
+#weiterBtn {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: calc(3.8rem + env(safe-area-inset-bottom));
+  z-index: 30;
+  width: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+.karten-bewertung {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+}
+
+.knopf-rot {
+  background: #3a161c;
+  color: #ff9aa6;
+  border: 1px solid #7a2a35;
+}
+.knopf-gruen {
+  background: #123822;
+  color: #7fe3a4;
+  border: 1px solid #1f5c3a;
+}
+
+/* ============ Quiz-Bildschirm: fest, kein Scrollen ============ */
+
+body.fest {
+  height: 100dvh;
+  overflow: hidden;
+}
+body.fest #quiz {
+  overflow: hidden;
+  padding-top: .6rem;
+}
+body.fest #quiz .quiz-kontext { margin-bottom: 0; }
+body.fest #quiz .frage-typ { margin: 0 0 .4rem; }
+body.fest .antworten.text6 .antwort { padding: .6rem .4rem; font-size: .88rem; }
+body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 1.2rem; }
+
+/* ============ Lernstand: nur Hauptgruppen-Zusammenfassung ============ */
+
+.stat-gruppen-karte {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  margin-bottom: .9rem;
+}
+.stat-gruppen-karte .stat-oben {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-bottom: .6rem;
+}
+.stat-gruppen-karte .gruppen-name { font-size: 1rem; font-weight: 700; }
+.stat-gruppen-karte .balken { height: 8px; }
+.stat-detail {
+  margin: .6rem 0 0;
+  font-size: .82rem;
+  color: var(--text-leise);
+}
