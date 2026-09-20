@@ -1,7 +1,7 @@
 {
   "name": "Polizei Lernapp",
-  "short_name": "Dienstgrade",
-  "description": "Dienstgrade der österreichischen Polizei lernen und abfragen",
+  "short_name": "LernSide",
+  "description": "Nachschlagwerk für Diverse Polizeisachen wie Dienstgrade, Aufbau, ...",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
