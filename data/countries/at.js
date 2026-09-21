@@ -142,16 +142,16 @@ const BUNDESLAND_LISTE = [
 // Niederösterreich traegt auf dem echten Kennzeichen zusaetzlich die
 // goldene Mauerkrone ueber dem Schild - als einziges Bundesland.
 const WAPPEN_DATEI = {
-  "Burgenland": "wappen/burgenland.png",
-  "Kärnten": "wappen/kaernten.png",
-  "Niederösterreich": "wappen/niederoesterreich.png",
-  "Oberösterreich": "wappen/oberoesterreich.png",
-  "Salzburg": "wappen/salzburg.png",
-  "Steiermark": "wappen/steiermark.png",
-  "Tirol": "wappen/tirol.png",
-  "Vorarlberg": "wappen/vorarlberg.png",
-  "Wien": "wappen/wien.png",
-  "Sonderkennzeichen": "wappen/bund.png",
+  "Burgenland": "./wappen/burgenland.png",
+  "Kärnten": "./wappen/kaernten.png",
+  "Niederösterreich": "./wappen/niederoesterreich.png",
+  "Oberösterreich": "./appen/oberoesterreich.png",
+  "Salzburg": "./wappen/salzburg.png",
+  "Steiermark": "./wappen/steiermark.png",
+  "Tirol": "./wappen/tirol.png",
+  "Vorarlberg": "./wappen/vorarlberg.png",
+  "Wien": "./wappen/wien.png",
+  "Sonderkennzeichen": "./wappen/bund.png",
 };
 
 // ============================================================
