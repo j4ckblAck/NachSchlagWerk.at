@@ -1012,8 +1012,31 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-a-mittel,
 .kz-schild-a-lang { font-size: 1.0rem; letter-spacing: .02em; }
 
+/* Umschliesst Kuerzel, Punkt (CH), Wappen und Nummer als EINE Gruppe -
+   fuellt exakt den Platz zwischen EU-Band (links) und kz-schild-eu2
+   (rechts, nur Italien) und zentriert diese Gruppe darin. Vorher hatte
+   nur die Nummer "flex: 1" und war linksbuendig - bei kurzen Mustern
+   (z.B. Sonderkennzeichen "12345" statt "123 AB") blieb dadurch rechts
+   sichtbar Leerraum, was den ganzen Block optisch nach links zog. */
+.kz-schild-mitte {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
 .kz-schild-code {
-  width: 100px;
+  /* Breite ist NICHT mehr fix (frueher 100px fuer alle Laender) -
+     sonst haben kurze Kuerzel (z.B. oesterreichisches "G") viel
+     Leerraum VOR sich stehen, wodurch Wappen+Nummer optisch zu weit
+     rechts wirken statt als ein zentrierter Block. Stattdessen setzt
+     kzEingabeGroesseSetzen() die Breite in JS passend zum laengsten
+     Kuerzel des jeweils gewaehlten Landes (in "ch", skaliert also mit
+     der aktuellen Schriftgroessen-Stufe mit). Dieser Wert hier ist nur
+     ein Platzhalter, bis das JS beim Laden greift.
+  */
+  width: 2.3ch;
   flex-shrink: 0;
   /* Eingabefelder zentrieren ihren Text nicht zuverlaessig, wenn sie
      ueber "stretch" auf volle Zeilenhoehe gezogen werden - "align-self:
@@ -1086,7 +1109,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   right: 2px;
   max-width: none;
   font-family: "Barlow Condensed", Arial, sans-serif;
-  font-size: .34rem;
+  font-size: .30rem;
   font-weight: 700;
   letter-spacing: -.02em;
   text-transform: uppercase;
@@ -1111,8 +1134,13 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   font-weight: 600;
   line-height: 1;
   letter-spacing: .05em;
-  flex: 1;
-  min-width: 0;
+  /* War frueher "flex: 1" (fuellte den ganzen Restplatz, linksbuendig) -
+     jetzt wie .kz-schild-code eine per JS (kzTafelAktualisieren) genau
+     zum Inhalt passende Breite in "ch", damit kein Leerraum dahinter
+     die Gruppe aus dem Zentrum draengt. Wert hier nur ein Platzhalter
+     bis das JS greift. */
+  width: 6ch;
+  flex-shrink: 0;
   padding: 0 2px 0 10px;
   white-space: nowrap;
   text-align: left;

@@ -163,18 +163,27 @@
         <span class="kz-sterne" id="kzSterne"></span>
         <span class="kz-schild-a" id="kzSchildA">A</span>
       </span>
-      <input id="kzEingabe" class="kz-schild-code" type="text" maxlength="3" autocomplete="off" autocapitalize="characters">
-      <span class="kz-schild-punkt" id="kzSchildPunkt"></span>
-      <span class="kz-schild-wappen" id="kzWappen">
-        <span class="kz-wappen-bild" id="kzWappenBild"></span>
-        <span class="kz-wappen-text" id="kzWappenText"></span>
-      </span>
-      <input class="kz-schild-nr" id="kzSchildNr" type="text" value="123 AB" readonly autocomplete="off">
-      <span class="kz-schild-nr-suffix" id="kzSchildNrSuffix"></span>
+      <!-- Kuerzel+Wappen+Nummer als eigene Gruppe: die Gruppe fuellt
+           den Platz zwischen den beiden Randbaendern (EU-Band links,
+           kz-schild-eu2 rechts bei Italien) und zentriert ihren Inhalt
+           darin - so bleibt das EU-Band immer fix links, waehrend sich
+           kurze wie lange Kuerzel/Nummern (z.B. "G" vs. "AM", oder
+           Sonderkennzeichen wie "BP 12345") als Block sauber mittig
+           einordnen, statt durch ungenutzten Leerraum schief zu wirken. -->
+      <div class="kz-schild-mitte" id="kzSchildMitte">
+        <input id="kzEingabe" class="kz-schild-code" type="text" maxlength="4" autocomplete="off" autocapitalize="characters">
+        <span class="kz-schild-punkt" id="kzSchildPunkt"></span>
+        <span class="kz-schild-wappen" id="kzWappen">
+          <span class="kz-wappen-bild" id="kzWappenBild"></span>
+          <span class="kz-wappen-text" id="kzWappenText"></span>
+        </span>
+        <input class="kz-schild-nr" id="kzSchildNr" type="text" value="123 AB" readonly autocomplete="off">
+        <span class="kz-schild-nr-suffix" id="kzSchildNrSuffix"></span>
+      </div>
       <span class="kz-schild-eu2" id="kzSchildEu2"></span>
     </div>
 
-    <p class="kz-ergebnis" id="kzErgebnis">Tipp ein Bezirkskürzel ein, z.B. „AM"</p>
+    <p class="kz-ergebnis" id="kzErgebnis">Tippen Sie ein Kürzel ein.</p>
   </div>
 
   <div class="kz-karte-box" id="kzKarteBox" hidden>
@@ -183,8 +192,8 @@
   </div>
 
   <button id="gehKennzeichenListe" class="kachel kachel-klein">
-    <span class="kachel-titel">Alle Kennzeichen durchsuchen</span>
-    <span class="kachel-text">Komplette Liste mit Suche und Land-/Bundesland-Filter</span>
+    <span class="kachel-titel">Kennzeichen Lexikon</span>
+    <span class="kachel-text">Komplette Liste mit Suche und Land-/Region-Filter</span>
   </button>
 </main>
 
@@ -219,10 +228,62 @@
   </button>
 
   <div id="abkListe" class="abk-liste"></div>
-  <p class="abk-quelle">Quelle: <a href="tafel.pdf" target="_blank" rel="noopener">Amtliches Referenzdokument (PDF, BMI-Vorschrift)</a></p>
+  <p class="abk-quelle">Quelle: <a href="img/tafel.pdf" target="_blank" rel="noopener">Amtliches Referenzdokument (PDF, BMI-Vorschrift)</a></p>
 </main>
 
-<script src="ranks.js"></script>
-<script src="app.js"></script>
+<!-- Daten: registry.js zuerst (Register-Mechanismus), dann Dienstgrade,
+     dann je ein <script> pro Land - die Reihenfolge hier bestimmt die
+     Reihenfolge im Land-Dropdown. Neues Land hinzufügen? Siehe
+     data/countries/ANLEITUNG.md - i. d. R. reicht eine neue Datei plus
+     eine neue Zeile hier, ohne sonst etwas anzufassen. -->
+<script src="data/registry.js"></script>
+<script src="data/dienstgrade.js"></script>
+<script src="data/countries/_at-karte.js"></script>
+<script src="data/countries/at.js"></script>
+<script src="data/countries/de.js"></script>
+<script src="data/countries/ch.js"></script>
+<script src="data/countries/fl.js"></script>
+<script src="data/countries/it.js"></script>
+<script src="data/countries/si.js"></script>
+<script src="data/countries/hr.js"></script>
+<script src="data/countries/hu.js"></script>
+<script src="data/countries/sk.js"></script>
+<script src="data/countries/cz.js"></script>
+<script src="data/countries/pl.js"></script>
+<script src="data/countries/ro.js"></script>
+<script src="data/countries/bg.js"></script>
+<script src="data/countries/srb.js"></script>
+<script src="data/countries/me.js"></script>
+<script src="data/countries/bih.js"></script>
+<script src="data/countries/nmk.js"></script>
+<script src="data/countries/al.js"></script>
+<script src="data/countries/rks.js"></script>
+<script src="data/countries/ua.js"></script>
+<script src="data/countries/md.js"></script>
+<script src="data/countries/by.js"></script>
+<script src="data/countries/fr.js"></script>
+<script src="data/countries/be.js"></script>
+<script src="data/countries/nl.js"></script>
+<script src="data/countries/lu.js"></script>
+<script src="data/countries/es.js"></script>
+<script src="data/countries/pt.js"></script>
+<script src="data/countries/uk.js"></script>
+<script src="data/countries/irl.js"></script>
+<script src="data/countries/dk.js"></script>
+<script src="data/countries/se.js"></script>
+<script src="data/countries/no.js"></script>
+<script src="data/countries/fi.js"></script>
+<script src="data/countries/ee.js"></script>
+<script src="data/countries/lv.js"></script>
+<script src="data/countries/lt.js"></script>
+<script src="data/countries/gr.js"></script>
+<script src="data/countries/cy.js"></script>
+<script src="data/countries/mt.js"></script>
+<script src="data/countries/tr.js"></script>
+<script src="data/countries/is.js"></script>
+<!-- Logik: core (Navigation/Theme) zuerst, danach die beiden Module -->
+<script src="js/core.js"></script>
+<script src="js/dienstgrade.js"></script>
+<script src="js/kennzeichen.js"></script>
 </body>
 </html>
