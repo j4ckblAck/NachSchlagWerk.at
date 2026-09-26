@@ -3,11 +3,13 @@
 (function () {
   const KENNZEICHEN = [
     { code: "SK", bezirk: "Skopje",  bundesland: "Nordmazedonien" },
+    { code: "CD", bezirk: "Diplomaten (schwarze Tafel)", dunkel: true, bundesland: "Sonderkennzeichen" },
+    { code: "CC", bezirk: "Konsuln (schwarze Tafel)", dunkel: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Nordmazedonien", {
     kennzeichen: KENNZEICHEN,
-    gruppen: ["Nordmazedonien"],
-    regionen: ["Nordmazedonien"],
+    gruppen: ["Nordmazedonien", "Sonderkennzeichen"],
+    regionen: ["Nordmazedonien", "Sonderkennzeichen"],
     regionLabel: "Stadt",
     euText: "NMK",
     emoji: "🇲🇰",

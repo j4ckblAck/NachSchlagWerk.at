@@ -3,19 +3,19 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "N", bezirk: "Norwegen (kein Regionsbezug; E-Autos u. a. mit Präfix EL, EK, EV)", bundesland: "Norwegen" },
+    { code: "N", bezirk: "Norwegen (kein Regionsbezug; E-Autos u. a. mit Präfix EL, EK, EV)", bundesland: "Norwegen", codeVersteckt: true, nichtEingebbar: true },
+    { code: "CD", bezirk: "Corps Diplomatique (blaue statt weiße Tafel)", blauHg: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Norwegen", {
     kennzeichen: KENNZEICHEN,
-    gruppen: ["Norwegen"],
-    regionen: ["Norwegen"],
+    gruppen: ["Norwegen", "Sonderkennzeichen"],
+    regionen: ["Norwegen", "Sonderkennzeichen"],
     regionLabel: "Land",
     euText: "N",
     emoji: "🇳🇴",
     euFarbe: "#ba0c2f",
     euStern: false,
     nrMuster: "AB 12345",
-    flagge: { typ: "v", farben: ["#ba0c2f", "#fff", "#00205b"] },
     hatWappen: false,
   });
 })();

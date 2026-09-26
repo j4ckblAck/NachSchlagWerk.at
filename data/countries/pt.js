@@ -14,7 +14,6 @@
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "AA-00-AA",
-    flagge: { typ: "v", farben: ["#046a38", "#da291c"] },
     hatWappen: false,
   });
 })();

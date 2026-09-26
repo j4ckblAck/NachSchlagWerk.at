@@ -14,7 +14,6 @@
     euFarbe: "#00247d",
     euStern: false,
     nrMuster: "AB12 CDE",
-    flagge: { typ: "h", farben: ["#00247d", "#fff", "#cf142b"] },
     hatWappen: false,
   });
 })();

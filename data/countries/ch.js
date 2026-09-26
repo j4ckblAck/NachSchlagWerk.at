@@ -55,7 +55,6 @@ const CH_SONDERKENNZEICHEN = [
     euStern: false,
     chKreuz: true,
     nrMuster: "123456",
-    flagge: { typ: "ch" },
     hatWappen: false,
   });
 })();

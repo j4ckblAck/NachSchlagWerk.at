@@ -156,7 +156,7 @@ function lernKarteZeichnen() {
     const zeilen = karte.raenge.map((r, i) => {
       const hatBild = verfuegbareBilder.has(r.id);
       return '<div class="ueberblick-item"><span class="nr">' + (i + 1) + '.</span>' +
-        (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="">' : "") +
+        (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="" onerror="this.style.display=\'none\'">' : "") +
         '<span class="name">' + r.name + "</span></div>";
     }).join("");
     box.innerHTML = "<h2>Überblick – aufsteigende Reihenfolge</h2>" +
@@ -168,7 +168,7 @@ function lernKarteZeichnen() {
     box.className = "lernkarte";
     box.innerHTML =
       '<span class="gruppe-tag">' + r.gruppe + "</span>" +
-      (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="' + r.name + '">' : "") +
+      (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="' + r.name + '" onerror="this.style.display=\'none\'">' : "") +
       "<h2>" + r.name + "</h2>" +
       (r.hinweis ? '<p class="rang-hinweis">' + r.hinweis + "</p>" : "");
   }
@@ -409,6 +409,7 @@ function frageZeichnen(ziel, nachAntwort, weiterFn, explizitOptionen) {
 
   const bild = document.getElementById("frageBild");
   bild.style.visibility = "visible";
+  bild.onerror = function () { this.style.visibility = "hidden"; };
   bild.src = bildQuelleFuer(ziel);
   bild.classList.toggle("frage-bild-foto", quizModus === "uniform-mc" || quizModus === "uniform-karte");
   document.getElementById("rueckmeldung").hidden = true;
@@ -438,6 +439,7 @@ function frageZeichnenKarte(ziel, nachAntwort, weiterFn) {
 
   const bild = document.getElementById("frageBild");
   bild.style.visibility = "visible";
+  bild.onerror = function () { this.style.visibility = "hidden"; };
   bild.src = bildQuelleFuer(ziel);
   bild.classList.toggle("frage-bild-foto", quizModus === "uniform-mc" || quizModus === "uniform-karte");
   document.getElementById("rueckmeldung").hidden = true;
@@ -574,7 +576,7 @@ function abkZeichnen() {
       const karte = document.createElement("div");
       karte.className = "abk-karte";
       karte.innerHTML =
-        (hatBild ? '<img class="abk-karte-bild" src="' + BILD_PFAD + r.id + '.png" alt="">' : "") +
+        (hatBild ? '<img class="abk-karte-bild" src="' + BILD_PFAD + r.id + '.png" alt="" onerror="this.style.display=\'none\'">' : "") +
         '<div class="abk-karte-inhalt">' +
         '<div class="abk-tooltip-titel">' + r.name +
         ' <span class="abk-kurz ' + farbe + '">' + (r.abk || "-") + "</span></div>" +

@@ -59,7 +59,7 @@ const SI_SONDERKENNZEICHEN = [
     bezirk: "Militär (Slovenska Vojska)",
     beschreibung: "Herkunftsnummer davor: " +
       Object.keys(SI_SV_HERKUNFT).map(nr => nr + " " + SI_SV_HERKUNFT[nr]).join(", "),
-    dunkel: true, keinEuBand: true, nrEingebbar: true, nrSuffix: "-400", nrHerkunft: SI_SV_HERKUNFT,
+    dunkel: true, keinEuBand: true, eigenesWappen: "si-wappen", nrEingebbar: true, nrSuffix: "-400", nrHerkunft: SI_SV_HERKUNFT,
     bundesland: "Sonderkennzeichen",
   },
 ];
@@ -74,7 +74,6 @@ const SI_SONDERKENNZEICHEN = [
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "HG-123",
-    flagge: { typ: "si" },
     hatWappen: false,
   });
 })();

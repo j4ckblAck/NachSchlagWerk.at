@@ -33,6 +33,10 @@ const TSCHECHIEN_KENNZEICHEN = [
   { code: "HC", bezirk: "Honorarkonsul",                            bundesland: "Sonderkennzeichen" },
   { code: "XX", bezirk: "Administratives Botschaftspersonal",       bundesland: "Sonderkennzeichen" },
   { code: "XC", bezirk: "Internationale Missionen",                 bundesland: "Sonderkennzeichen" },
+  // Gewerbliche Fahrzeuge: gelbe statt weisser Tafel. Oldtimer: gruene
+  // statt schwarzer Schrift, immer mit "V" davor (Quelle: Wikipedia
+  // "Vehicle registration plates of the Czech Republic").
+  { code: "V",  bezirk: "Oldtimer (historisches Fahrzeug, grüne statt schwarze Schrift)", gruen: true, bundesland: "Sonderkennzeichen" },
 ];
 
   registerLand("Tschechien", {

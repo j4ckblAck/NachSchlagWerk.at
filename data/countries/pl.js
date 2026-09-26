@@ -24,12 +24,13 @@
     { code: "T", bezirk: "Heiligkreuz (świętokrzyskie)",         bundesland: "Polen" },
     { code: "W", bezirk: "Masowien (mazowieckie, u. a. Warschau)", bundesland: "Polen" },
     { code: "Z", bezirk: "Westpommern (zachodniopomorskie)",     bundesland: "Polen" },
+    { code: "CD", bezirk: "Corps Diplomatique (blaue statt weiße Tafel)", blauHg: true, bundesland: "Sonderkennzeichen" },
   ];
 
   registerLand("Polen", {
     kennzeichen: POLEN_KENNZEICHEN,
-    gruppen: POLEN_ORDER,
-    regionen: POLEN_ORDER,
+    gruppen: [...POLEN_ORDER, "Sonderkennzeichen"],
+    regionen: [...POLEN_ORDER, "Sonderkennzeichen"],
     regionLabel: "Woiwodschaft",
     euText: "PL",
     emoji: "🇵🇱",

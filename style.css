@@ -907,17 +907,82 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 }
 .kz-eingabe:focus { outline: 2px solid var(--gold); }
 
-.kz-land-auswahl {
-  width: 100%;
+/* Die drei getrennten Eingabefelder unterhalb der Tafel (Land /
+   Bezirks-Kuerzel / Zusatznummer) - ersetzen die Direkteingabe im
+   Schild und das Land-Dropdown von frueher. */
+.kz-eingabe-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  /* Etwas mehr Abstand zur Tafel darueber, statt direkt darunter zu
+     kleben. */
+  margin: 1.3rem 0 .9rem;
+}
+.kz-eingabe-feld-wrap { position: relative; }
+.kz-eingabe-feld {
+  width: 3.4rem;
   font-family: inherit;
-  font-size: .98rem;
-  padding: .65rem .8rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: .55rem .3rem;
   border-radius: 10px;
   border: 1px solid var(--linie);
   background: var(--nacht-hell);
   color: var(--text);
-  margin-bottom: .9rem;
 }
+/* Feld 1 (Land) blau umrandet - macht auf den ersten Blick klar, dass
+   das fuer das Laender-Kuerzel ist (passend zum blauen EU-Feld auf der
+   Tafel selbst). */
+.kz-eingabe-feld-land { border-color: #1450a4; border-width: 2px; }
+.kz-eingabe-feld:focus { outline: 2px solid var(--gold); }
+.kz-eingabe-feld:disabled { opacity: .4; background: transparent; }
+.kz-eingabe-feld-fehler { border-color: #c0392b; color: #c0392b; }
+.kz-eingabe-trenner { color: var(--text-leise); font-weight: 700; }
+
+/* Vorschlagsliste unter Feld 1 (Land) - erscheint waehrend des
+   Tippens, verschwindet sobald ein eindeutiges Kuerzel feststeht oder
+   man woanders hinklickt/-tippt. */
+.kz-feld1-vorschlaege {
+  position: absolute;
+  top: calc(100% + 4px);
+  /* Zentriert unter dem jeweiligen Feld statt strikt linksbuendig -
+     sonst lief die Liste bei Feld 2/3 (die weiter rechts in der Reihe
+     sitzen) auf schmalen Handybildschirmen rechts aus dem sichtbaren
+     Bereich hinaus. max-width haelt sie zusaetzlich innerhalb des
+     Bildschirms, egal wie breit/schmal das Geraet ist. */
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(85vw, 22rem);
+  max-height: 13rem;
+  overflow-y: auto;
+  background: var(--nacht-hell);
+  border: 1px solid var(--linie);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  z-index: 20;
+  text-align: left;
+}
+.kz-feld1-vorschlag {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem .5rem;
+  align-items: baseline;
+  padding: .5rem .7rem;
+  font-size: .92rem;
+  cursor: pointer;
+  /* KEIN "white-space: nowrap" mehr - eine lange Beschreibung darf
+     umbrechen, statt die Box (und damit die max-width oben) unnoetig
+     in die Breite zu treiben und auf schmalen Bildschirmen wieder zu
+     ueberlaufen. */
+}
+.kz-feld1-vorschlag:hover,
+.kz-feld1-vorschlag:active { background: var(--karte); }
+.kz-feld1-vorschlag b { color: var(--gold); min-width: 2.2em; flex-shrink: 0; }
 
 /* Nachgebaute Kennzeichentafel: weiss, schwarze Schrift, blaues
    EU-Feld links, Landes-/Bundeslandwappen mittig - rein optisch,
@@ -969,8 +1034,24 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-gelb .kz-schild-nr { background: transparent; }
 /* Rahmenfarbe passend zur Schriftfarbe bei Polizei (blau) bzw.
    Diplomaten-Sonderkennzeichen (gruen). */
-.kz-schild-rahmen-blau { border-color: #0047ab; }
+.kz-schild-rahmen-blau { border-color: #0047ab; }/* Ungarn Diplomaten (CD): weisse Schrift auf blauem Grund. */
+.kz-schild-blau-hg { background: #1450a4; border-color: #0d3a7a; }
+.kz-schild-blau-hg .kz-schild-code,
+.kz-schild-blau-hg .kz-schild-nr,
+.kz-schild-blau-hg .kz-wappen-text { color: #fff; }
+.kz-schild-blau-hg .kz-schild-code,
+.kz-schild-blau-hg .kz-schild-nr { background: transparent; }
+/* Ungarn Elektro-/Hybridfahrzeuge (EV): schwarze Schrift auf gruenem
+   Grund (seit Oktober 2015, auf Wunsch). */
+.kz-schild-gruen-hg { background: #3fae49; border-color: #2c7d34; }
+.kz-schild-gruen-hg .kz-schild-code,
+.kz-schild-gruen-hg .kz-schild-nr { background: transparent; }
+/* Spanien Diplomaten (CD): weisse Schrift auf roter Tafel. */
+.kz-schild-rot-hg { background: #c0392b; border-color: #8e2a20; }
+.kz-schild-rot-hg .kz-schild-code,
+.kz-schild-rot-hg .kz-schild-nr { background: transparent; }
 .kz-schild-rahmen-gruen { border-color: #0a7a3d; }
+.kz-schild-rahmen-rot { border-color: #c0392b; }
 /* Schweiz: Kantonswappen steht am echten Schild ganz rechts hinter
    der Nummer, nicht zwischen Kuerzel und Nummer wie bei Oesterreich. */
 .kz-schild-wappen-hinten .kz-schild-nr {
@@ -985,6 +1066,17 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-dunkel .kz-schild-code { background: #111; }
 .kz-schild-dunkel .kz-schild-code:focus { background: #1d1d1d; }
 .kz-schild-dunkel .kz-schild-code::placeholder { color: #555; }
+.kz-schild-code::placeholder { color: #aaa; opacity: 1; }
+/* Kuerzel-Feld komplett unsichtbar (Breite 0) - fuer Laender, wo auf
+   der eigentlichen Tafel gar kein Buchstabe vor der Seriennummer
+   steht (z.B. Luxemburgs allgemeines "L", siehe "codeVersteckt" in
+   den Laenderdaten und kzTafelAktualisieren). */
+.kz-schild-code-versteckt { width: 0 !important; padding: 0; border: none; }
+/* Orange-Markierung auf der Tafel folgt jetzt dem FOKUS der drei
+   externen Eingabefelder (nicht mehr nur "ist gerade leer") - siehe
+   kzFokusAktualisieren. Fuer das blaue EU-Feld ein Ring statt volle
+   Flaeche, damit die Landesfarbe/das "A" weiter lesbar bleiben. */
+.kz-schild-eu-fokus { box-shadow: inset 0 0 0 3px #ff9800; }
 
 .kz-schild-eu {
   background: #1450a4;
@@ -1023,7 +1115,22 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   min-width: 0;
   display: flex;
   align-items: stretch;
+  /* Kuerzel+Wappen+Nummer sollen als EIN zusammenhaengender Block
+     wirken, nicht mit der Nummer weit rechts alleine - darum wieder
+     als Gruppe zentriert (nicht mehr "flex-start" mit "margin-left:
+     auto" auf der Nummer, das riss optisch eine grosse Luecke auf). */
   justify-content: center;
+  /* Fester Mindestabstand zwischen Kuerzel/Wappen/Nummer, UNABHAENGIG
+     von der ch-basierten Breitenberechnung oben - die geht von der
+     Zeichenbreite der Ziffer "0" aus, aber Grossbuchstaben wie "W"
+     oder "M" sind in der tatsaechlich verwendeten Schrift auf manchen
+     Geraeten spuerbar breiter, wodurch das Kuerzel ohne diesen festen
+     Puffer direkt am Wappen kleben kann (kein Buchstabe fehlt dabei,
+     es sieht nur "abgeschnitten" nah aus). Ein fixer Pixel-Abstand ist
+     robuster als ein noch groesserer ch-Puffer, weil er nicht von der
+     Schriftbreite abhaengt.
+  */
+  gap: 5px;
 }
 
 .kz-schild-code {
@@ -1072,6 +1179,10 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 /* Diplomaten-Sonderkennzeichen (z.B. slowenisch CMD/CD/CC/M): gruene
    Schrift statt schwarz/weiss, wie am echten Kennzeichen. */
 .kz-schild-code-gruen { color: #0a7a3d !important; }
+.kz-schild-code-rot { color: #c0392b !important; }
+.kz-schild-code-braun { color: #6b4226 !important; }
+.kz-schild-code-gelbtext { color: #c9a300 !important; }
+.kz-schild-code-weiss { color: #fff !important; }
 /* Slowenische Polizei "P": blaue Schrift statt schwarz. */
 .kz-schild-code-blau { color: #0047ab !important; }
 
@@ -1109,7 +1220,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   right: 2px;
   max-width: none;
   font-family: "Barlow Condensed", Arial, sans-serif;
-  font-size: .30rem;
+  font-size: .27rem;
   font-weight: 700;
   letter-spacing: -.02em;
   text-transform: uppercase;
@@ -1187,13 +1298,13 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
    sichtbar, da die Nummer dort rechtsbuendig/"flex-end" waechst). */
 .kz-schild-txt-kurz.kz-schild-code,
 .kz-schild-txt-kurz.kz-schild-nr,
-.kz-schild-txt-kurz.kz-schild-nr-suffix { font-size: 4.7rem; }
+.kz-schild-txt-kurz.kz-schild-nr-suffix { font-size: 4.15rem; }
 .kz-schild-txt-mittel.kz-schild-code,
 .kz-schild-txt-mittel.kz-schild-nr,
-.kz-schild-txt-mittel.kz-schild-nr-suffix { font-size: 4.05rem; letter-spacing: .02em; }
+.kz-schild-txt-mittel.kz-schild-nr-suffix { font-size: 3.5rem; letter-spacing: .02em; }
 .kz-schild-txt-lang.kz-schild-code,
 .kz-schild-txt-lang.kz-schild-nr,
-.kz-schild-txt-lang.kz-schild-nr-suffix { font-size: 3.98rem; letter-spacing: 0; }
+.kz-schild-txt-lang.kz-schild-nr-suffix { font-size: 3.1rem; letter-spacing: 0; }
 
 /* Mittiger Punkt zwischen Kuerzel und Nummer - nur bei der Schweiz
    ("AA·000 000" am echten Schild), sonst leer und unsichtbar. */
@@ -1230,6 +1341,48 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 }
 .kz-ergebnis b { color: var(--gold); }
 
+/* Strukturierte Ergebnis-Tabelle (ersetzt die einzeilige Antwort,
+   sobald ein Treffer feststeht) - je eine Zeile "Label: Wert", per
+   Grid ausgerichtet statt als Fliesstext, siehe kzErgebnisAnzeigen. */
+.kz-ergebnis-tabelle {
+  margin: .9rem 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .25rem;
+  font-size: .88rem;
+  text-align: left;
+}
+.kz-ergebnis-label {
+  color: var(--text-leise);
+  white-space: nowrap;
+}
+.kz-ergebnis-wert { color: var(--text); }
+.kz-ergebnis-wert b { color: var(--gold); }
+/* Feste Farben, ueberall gleich: die Landeszeile immer blau, das
+   Kuerzel selbst immer orange - unabhaengig davon, ob es ein Bezirk,
+   ein Kanton, ein Sonderzeichen o.ae. ist. */
+.kz-ergebnis-blau { color: #1450a4; font-weight: 700; }
+.kz-ergebnis-orange { color: #b8860b; font-weight: 700; }
+/* Etwas Abstand vor der zweiten Zeilengruppe (z.B. Garnisonsnummer bei
+   slowenisch "SV"), damit klar erkennbar bleibt, dass hier ein neuer,
+   zusammengehoeriger Abschnitt beginnt. */
+.kz-ergebnis-label-zweit { margin-top: .5rem; }
+/* Kleine Marke, die Sonderkennzeichen (Institution, kein echter Ort)
+   optisch von einem echten Bezirks-/Regionskuerzel unterscheidet. */
+.kz-ergebnis-marke {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .05rem .4rem;
+  border-radius: 6px;
+  margin-left: .4rem;
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  color: var(--text-leise);
+  vertical-align: middle;
+}
+
 /* Landkarte: zeigt das gefundene Bundesland eingefaerbt - nur bei
    Oesterreich, sonst bleibt die Box ausgeblendet. */
 .kz-karte-box {
@@ -1248,20 +1401,43 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   text-transform: uppercase;
   color: var(--text-leise);
 }
-.kz-karte { max-width: 510px; margin: 0 auto; }
+.kz-karte {
+  max-width: 590px;
+  margin: 0 auto;
+  /* Zieht die Karte etwas ueber das seitliche Padding der Box hinaus -
+     auf dem Handy ist die Box-Breite der eigentliche Flaschenhals
+     (max-width oben greift dort nie), das bringt spuerbar mehr Platz
+     fuer die vielen Bezirksgrenzen, ohne den Titel-Text mit anzufassen. */
+  margin-left: -14px;
+  margin-right: -14px;
+  width: calc(100% + 28px);
+}
 .kz-karte svg { width: 100%; height: auto; display: block; }
-.kz-karte-aussen { fill: none; stroke: #334; stroke-width: 5; }
+/* Name der angeklickten/angetippten Flaeche - ersetzt fuer Touch das
+   Hover-Tooltip (<title>), das am Handy beim Tippen nicht erscheint. */
+.kz-karte-auswahl {
+  margin: .6rem 0 0;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.kz-karte-aussen { fill: none; stroke: #334; stroke-width: 5; fill-rule: evenodd; }
 /* Bewusst feste, theme-unabhaengige Farben statt der App-Variablen -
    so bleiben die duennen Grenzen in Hell wie Dunkel gut sichtbar.
    Die Bundesland-Ebene liegt UNTER der Bezirksebene und wird von ihr
    normalerweise komplett verdeckt (gleiche Grundfarbe, nahtlos) - nur
    wo kein Bezirk-Umriss vorhanden ist (Wien, ein paar Einzelfaelle),
-   scheint sie sichtbar durch. */
+   scheint sie sichtbar durch. fill-rule: evenodd ist noetig, weil
+   manche Bundeslaender (z.B. Brandenburg um Berlin) ihre Flaeche als
+   Aussenring PLUS Loch-Ring kodieren (echte Geodaten) - ohne evenodd
+   wuerde das Loch je nach Wicklungsrichtung faelschlich mitgefaerbt. */
 .kz-karte-bundesland {
   fill: #cbd0d6;
   stroke: #98a2b3;
   stroke-width: 1;
   transition: fill .2s ease;
+  cursor: pointer;
+  fill-rule: evenodd;
 }
 .kz-karte-bundesland.kz-karte-aktiv {
   fill: var(--gold);
@@ -1273,18 +1449,31 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   stroke: #98a2b3;
   stroke-width: .6;
   transition: fill .2s ease;
+  cursor: pointer;
+  fill-rule: evenodd;
 }
 .kz-karte-bezirk.kz-karte-aktiv {
   fill: var(--gold);
   stroke: #7a5c00;
   stroke-width: 1.2;
 }
+/* Angetippte/angeklickte Flaeche (Maus ODER Finger) - bewusst eine
+   andere Farbe als "kz-karte-aktiv" (das gefundene Kuerzel), damit man
+   beides auseinanderhalten kann, falls man ausgerechnet die passende
+   Flaeche antippt. Steht bewusst NACH den "aktiv"-Regeln, damit sie bei
+   gleichzeitig aktiv+gewaehlt gewinnt (gleiche CSS-Spezifitaet). */
+.kz-karte-bundesland.kz-karte-gewaehlt,
+.kz-karte-bezirk.kz-karte-gewaehlt {
+  fill: #3b7dd8;
+  stroke: #1c3f75;
+  stroke-width: 1.5;
+}
 /* Kraeftige Bundeslandgrenzen obendrauf, ohne Fuellung - damit sie
    trotz der feineren, eingefaerbten Bezirke klar erkennbar bleiben. */
 .kz-karte-grenze {
   fill: none;
   stroke: #334;
-  stroke-width: 2.2;
+  stroke-width: 3.5;
   pointer-events: none;
 }
 /* Kurze, nach aussen ausblendende Andeutung der weiterlaufenden Grenze

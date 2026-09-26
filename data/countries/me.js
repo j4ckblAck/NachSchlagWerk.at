@@ -29,8 +29,9 @@
     { code: "ZT", bezirk: "Zeta",          bundesland: "Montenegro" },
     { code: "ŽB", bezirk: "Žabljak",       bundesland: "Montenegro" },
     // Sonderkennzeichen (Quelle: Referenzrecherche, Sep 2026)
-    { code: "P", bezirk: "Polizei",        bundesland: "Sonderkennzeichen" },
-    { code: "V", bezirk: "Militär",        bundesland: "Sonderkennzeichen" },
+    { code: "P", bezirk: "Polizei",        blau: true, bundesland: "Sonderkennzeichen" },
+    { code: "V", bezirk: "Militär",        gruen: true, bundesland: "Sonderkennzeichen" },
+    { code: "CD", bezirk: "Diplomaten (gelbe Schrift, kein Gemeinde-/Wappenfeld)", gelbText: true, bundesland: "Sonderkennzeichen" },
   ];
 
   registerLand("Montenegro", {

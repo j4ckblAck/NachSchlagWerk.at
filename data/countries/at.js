@@ -1,5 +1,5 @@
 // data/countries/at.js — Oesterreich: Bezirkskuerzel, Sonderkennzeichen,
-// Bundeslaender, Wappen-Dateipfade. Benoetigt _at-karte.js (siehe dort)
+// Bundeslaender, Wappen-Dateipfade. Benoetigt at-karte.js (siehe dort)
 // fuer AT_STAAT_PFAD/AT_LAND_PFADE/AT_BEZIRK_PFADE.
 (function () {
 // ============================================================
@@ -142,16 +142,16 @@ const BUNDESLAND_LISTE = [
 // Niederösterreich traegt auf dem echten Kennzeichen zusaetzlich die
 // goldene Mauerkrone ueber dem Schild - als einziges Bundesland.
 const WAPPEN_DATEI = {
-  "Burgenland": "./wappen/burgenland.png",
-  "Kärnten": "./wappen/kaernten.png",
-  "Niederösterreich": "./wappen/niederoesterreich.png",
-  "Oberösterreich": "./appen/oberoesterreich.png",
-  "Salzburg": "./wappen/salzburg.png",
-  "Steiermark": "./wappen/steiermark.png",
-  "Tirol": "./wappen/tirol.png",
-  "Vorarlberg": "./wappen/vorarlberg.png",
-  "Wien": "./wappen/wien.png",
-  "Sonderkennzeichen": "./wappen/bund.png",
+  "Burgenland": "wappen/burgenland.png",
+  "Kärnten": "wappen/kaernten.png",
+  "Niederösterreich": "wappen/niederoesterreich.png",
+  "Oberösterreich": "wappen/oberoesterreich.png",
+  "Salzburg": "wappen/salzburg.png",
+  "Steiermark": "wappen/steiermark.png",
+  "Tirol": "wappen/tirol.png",
+  "Vorarlberg": "wappen/vorarlberg.png",
+  "Wien": "wappen/wien.png",
+  "Sonderkennzeichen": "wappen/bund.png",
 };
 
 // ============================================================
@@ -186,12 +186,14 @@ const SONDERKENNZEICHEN = [
     gruppen: KENNZEICHEN_ORDER,
     regionen: BUNDESLAND_LISTE,
     regionLabel: "Bundesland",
+    kuerzelTyp: "Bezirk",
     euText: "A",
     emoji: "🇦🇹",
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "123 AB",
     hatWappen: true,
+    hatKarte: true,
   });
   // WAPPEN_DATEI bleibt global (nicht in der IIFE gefangen), weil
   // js/kennzeichen.js direkt darauf zugreift (siehe kzWappenZeigen).

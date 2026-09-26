@@ -19,3 +19,26 @@ function registerLand(name, config) {
   LAENDER[name] = config;
   LAENDER_ORDER.push(name);
 }
+
+// ============================================================
+// LANDKARTEN: generisches Register fuer die optionale Umrisskarte
+// eines Landes (siehe js/kennzeichen.js -> kzKarteAufbauen). Eine
+// "<land>-karte.js"-Datei ruft registerKarte(name, daten) auf, mit:
+//   viewBox:     SVG-viewBox-String, z.B. "0 0 600 800"
+//   staatPfad:   ein Pfad (d-Attribut) fuer die Landesaussenlinie
+//   regionPfade: { Regionsname: Pfad } - eine Flaeche pro Bundesland/
+//                Region (Pflicht fuer eine funktionierende Karte)
+//   bezirkPfade: optional, { Bezirksname: Pfad } fuer feinere Ebene
+//   bezirkKuerzel, grenzpunkte, nachbarLabel: optionale Deko-Extras
+// Fehlt regionPfade oder staatPfad, blendet js/kennzeichen.js die
+// Karte fuer dieses Land einfach aus (siehe kzKarteAktualisieren).
+// ============================================================
+const LANDKARTEN = {};
+
+function registerKarte(name, daten) {
+  if (LANDKARTEN[name]) {
+    console.warn('Karte fuer "' + name + '" wurde mehrfach registriert - zweite Registrierung wird ignoriert.');
+    return;
+  }
+  LANDKARTEN[name] = daten;
+}

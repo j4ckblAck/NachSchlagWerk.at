@@ -155,9 +155,6 @@
   <h2 class="modul-titel">Kennzeichen-Abfrage</h2>
 
   <div class="kz-simulator">
-    <label for="kzLand" class="kz-label">Land</label>
-    <select id="kzLand" class="kz-land-auswahl"></select>
-
     <div class="kz-schild" id="kzSchild">
       <span class="kz-schild-eu" id="kzSchildEu">
         <span class="kz-sterne" id="kzSterne"></span>
@@ -169,26 +166,55 @@
            darin - so bleibt das EU-Band immer fix links, waehrend sich
            kurze wie lange Kuerzel/Nummern (z.B. "G" vs. "AM", oder
            Sonderkennzeichen wie "BP 12345") als Block sauber mittig
-           einordnen, statt durch ungenutzten Leerraum schief zu wirken. -->
+           einordnen, statt durch ungenutzten Leerraum schief zu wirken.
+           Die drei Felder hier sind reine ANZEIGE (readonly) - die
+           echte Eingabe passiert unten in kz-eingabe-zeile ueber drei
+           getrennte Felder (Land/Kuerzel/Nummer), siehe kzFeld1Input
+           & co. in js/kennzeichen.js. -->
       <div class="kz-schild-mitte" id="kzSchildMitte">
-        <input id="kzEingabe" class="kz-schild-code" type="text" maxlength="4" autocomplete="off" autocapitalize="characters">
+        <input id="kzEingabe" class="kz-schild-code" type="text" readonly tabindex="-1" aria-hidden="true">
         <span class="kz-schild-punkt" id="kzSchildPunkt"></span>
         <span class="kz-schild-wappen" id="kzWappen">
           <span class="kz-wappen-bild" id="kzWappenBild"></span>
           <span class="kz-wappen-text" id="kzWappenText"></span>
         </span>
-        <input class="kz-schild-nr" id="kzSchildNr" type="text" value="123 AB" readonly autocomplete="off">
+        <input class="kz-schild-nr" id="kzSchildNr" type="text" value="123 AB" readonly tabindex="-1" aria-hidden="true">
         <span class="kz-schild-nr-suffix" id="kzSchildNrSuffix"></span>
       </div>
       <span class="kz-schild-eu2" id="kzSchildEu2"></span>
     </div>
 
+    <!-- Drei getrennte Eingabefelder statt Dropdown+Direkteingabe im
+         Schild: Feld 1 (Land, per Kuerzel mit Vorschlagsliste) schaltet
+         Feld 2 (Bezirks-/Unterscheidungskuerzel) frei, Feld 2 wiederum
+         schaltet - nur wenn der Treffer das braucht (nrEingebbar) -
+         Feld 3 (Zusatznummer, z.B. Garnisonsstandort) frei. -->
+    <div class="kz-eingabe-zeile" id="kzEingabeZeile">
+      <div class="kz-eingabe-feld-wrap" id="kzFeld1Wrap">
+        <input id="kzFeld1" class="kz-eingabe-feld kz-eingabe-feld-land" type="text" maxlength="4"
+               autocomplete="off" autocapitalize="characters" aria-label="Länder-Kürzel">
+        <div class="kz-feld1-vorschlaege" id="kzFeld1Vorschlaege" hidden></div>
+      </div>
+      <span class="kz-eingabe-trenner">–</span>
+      <div class="kz-eingabe-feld-wrap" id="kzFeld2Wrap">
+        <input id="kzFeld2" class="kz-eingabe-feld" type="text" maxlength="4"
+               autocomplete="off" autocapitalize="characters" aria-label="Bezirks-Kürzel">
+        <div class="kz-feld1-vorschlaege" id="kzFeld2Vorschlaege" hidden></div>
+      </div>
+      <span class="kz-eingabe-trenner">–</span>
+      <input id="kzFeld3" class="kz-eingabe-feld" type="text" maxlength="2"
+             autocomplete="off" inputmode="numeric" aria-label="Zusatznummer" disabled>
+    </div>
+
     <p class="kz-ergebnis" id="kzErgebnis">Tippen Sie ein Kürzel ein.</p>
+    <div class="kz-ergebnis-tabelle" id="kzErgebnisTabelle" hidden></div>
+    <p class="kz-ergebnis" id="kzGarnisonInfo" hidden></p>
   </div>
 
   <div class="kz-karte-box" id="kzKarteBox" hidden>
-    <p class="kz-karte-titel">Lage in Österreich</p>
+    <p class="kz-karte-titel" id="kzKarteTitel">Lage</p>
     <div class="kz-karte" id="kzKarte"></div>
+    <p class="kz-karte-auswahl" id="kzKarteAuswahl" hidden></p>
   </div>
 
   <button id="gehKennzeichenListe" class="kachel kachel-klein">
@@ -240,6 +266,7 @@
 <script src="data/dienstgrade.js"></script>
 <script src="data/countries/at-karte.js"></script>
 <script src="data/countries/at.js"></script>
+<script src="data/countries/de-karte.js"></script>
 <script src="data/countries/de.js"></script>
 <script src="data/countries/ch.js"></script>
 <script src="data/countries/fl.js"></script>

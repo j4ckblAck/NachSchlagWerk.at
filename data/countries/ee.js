@@ -2,19 +2,19 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "EST", bezirk: "Estland (kein Regionsbezug seit 2004)", bundesland: "Estland" },
+    { code: "EST", bezirk: "Estland (kein Regionsbezug seit 2004)", bundesland: "Estland", codeVersteckt: true, nichtEingebbar: true },
+    { code: "CD", bezirk: "Diplomaten (blaue statt weiße Tafel)", blauHg: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Estland", {
     kennzeichen: KENNZEICHEN,
-    gruppen: ["Estland"],
-    regionen: ["Estland"],
+    gruppen: ["Estland", "Sonderkennzeichen"],
+    regionen: ["Estland", "Sonderkennzeichen"],
     regionLabel: "Land",
     euText: "EST",
     emoji: "🇪🇪",
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "123 ABC",
-    flagge: { typ: "h", farben: ["#0072ce", "#000", "#fff"] },
     hatWappen: false,
   });
 })();

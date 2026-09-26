@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "DK", bezirk: "Dänemark (kein Regionsbezug)", bundesland: "Dänemark" },
+    { code: "DK", bezirk: "Dänemark (kein Regionsbezug; gewerbliche Fahrzeuge haben statt weißer eine gelbe Tafel)", bundesland: "Dänemark" },
   ];
   registerLand("Dänemark", {
     kennzeichen: KENNZEICHEN,
@@ -14,7 +14,6 @@
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "AB 12 345",
-    flagge: { typ: "h", farben: ["#c60c30", "#c60c30"] },
     hatWappen: false,
   });
 })();

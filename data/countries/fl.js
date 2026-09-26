@@ -18,7 +18,6 @@ const LIECHTENSTEIN_KENNZEICHEN = [
     euStern: false,
     dunkel: true,
     nrMuster: "1234",
-    flagge: { typ: "li" },
     hatWappen: false,
   });
 })();

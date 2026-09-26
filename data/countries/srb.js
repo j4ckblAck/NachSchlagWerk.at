@@ -3,7 +3,7 @@
 (function () {
   const SERBIEN_ORDER = [
     "Vojvodina",
-    "Zentralserbien",,
+    "Zentralserbien",
     "Sonderkennzeichen",
   ];
 
@@ -86,6 +86,10 @@
  // Sonderkennzeichen
  { code: "TX", bezirk: "Taxi",                   bundesland: "Sonderkennzeichen" },
  { code: "OT", bezirk: "Oldtimer",               bundesland: "Sonderkennzeichen" },
+ { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", bundesland: "Sonderkennzeichen" },
+ { code: "CMD", bezirk: "Chef einer diplomatischen Mission", bundesland: "Sonderkennzeichen" },
+ { code: "M", bezirk: "Nichtdiplomatisches Botschaftspersonal", bundesland: "Sonderkennzeichen" },
+ { code: "P", bezirk: "Ausländische Presse", bundesland: "Sonderkennzeichen" },
   ];
 
 
