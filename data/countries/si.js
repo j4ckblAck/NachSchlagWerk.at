@@ -45,9 +45,9 @@ const SI_SONDERKENNZEICHEN = [
   // belegt, darum bleibt es beim normalen Beispielmuster (wie bei allen
   // anderen Laendern), ohne editierbares Nummernfeld.
   { code: "CMD", bezirk: "Botschafter",                             gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "CD",  bezirk: "Diplomaten",                              gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "CC",  bezirk: "Konsuln",                                 gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "M",   bezirk: "Botschaftsangestellte (ohne Diplomatenstatus)", gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
+  { code: "CD",  bezirk: "Diplomaten (Corps Diplomatique)",                              gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
+  { code: "CC",  bezirk: "Konsuln (Corps Consulaire)",                                 gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
+  { code: "M",   bezirk: "Botschaftsangestellte", gruen: true, keinWappen: true, bundesland: "Sonderkennzeichen" },
   { code: "P",   bezirk: "Polizei", nrMuster: "12-123",              blau: true, eigenesWappen: "si-polizei", bundesland: "Sonderkennzeichen" },
   // Die sieben Garnisonsnummern stehen als eigener Beschreibungstext
   // ("beschreibung") direkt beim Kuerzel "SV" (statt als eigene, separat

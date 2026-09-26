@@ -734,9 +734,9 @@ const DEUTSCHLAND_KENNZEICHEN = [
   { code: "AP", bezirk: "Weimarer Land", bundesland: "Thüringen" },
   { code: "APD", bezirk: "Weimarer Land", bundesland: "Thüringen" },
   // ---- Sonderkennzeichen ----
-  { code: "BD", bezirk: "Bundesbehörden (Bundestag, Bundesregierung u.a.)", bundesland: "Sonderkennzeichen" },
+  { code: "BD", bezirk: "Bundesbehörden", bundesland: "Sonderkennzeichen" },
   { code: "Y", bezirk: "Bundeswehr", bundesland: "Sonderkennzeichen" },
-  { code: "X", bezirk: "NATO-Hauptquartiere in Deutschland", bundesland: "Sonderkennzeichen" },
+  { code: "X", bezirk: "NATO", bundesland: "Sonderkennzeichen" },
 ];
 
 registerLand("Deutschland", {

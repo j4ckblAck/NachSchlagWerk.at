@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "GR", bezirk: "Griechenland (1. Buchstabe zeigt die Region; nur griechische Buchstaben, die lateinisch aussehen)", bundesland: "Griechenland" },
+    { code: "---", bezirk: "noch nicht implementiert", bundesland: "Griechenland" },
   ];
   registerLand("Griechenland", {
     kennzeichen: KENNZEICHEN,

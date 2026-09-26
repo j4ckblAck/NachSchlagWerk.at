@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "TR", bezirk: "Türkei (2 Ziffern am Anfang = Provinznummer (01–81, z. B. 34 İstanbul, 06 Ankara), blaues Band ohne Symbol)", bundesland: "Türkei" },
+    { code: "TR", bezirk: "Türkei (2 Ziffern am Anfang = Provinznummer (01–81, z. B. 34 İstanbul, 06 Ankara)", bundesland: "Türkei" },
   ];
   registerLand("Türkei", {
     kennzeichen: KENNZEICHEN,

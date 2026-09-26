@@ -2,8 +2,8 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "IS", bezirk: "Island (kein Regionsbezug, Flagge statt blauem EU-Band)", bundesland: "Island", codeVersteckt: true, nichtEingebbar: true },
-    { code: "CD", bezirk: "Diplomaten (weiße Schrift auf grüner Tafel)", nrMuster: "A12", gruenHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Island" }, bundesland: "Island", codeVersteckt: true, nichtEingebbar: true },
+    { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", nrMuster: "A12", gruenHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Island", {
     kennzeichen: KENNZEICHEN,

@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "DK", bezirk: "Dänemark (kein Regionsbezug; gewerbliche Fahrzeuge haben statt weißer eine gelbe Tafel)", bundesland: "Dänemark" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Dänemark" },
   ];
   registerLand("Dänemark", {
     kennzeichen: KENNZEICHEN,

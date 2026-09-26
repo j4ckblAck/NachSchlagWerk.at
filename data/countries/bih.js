@@ -2,8 +2,8 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "A", bezirk: "Bosnien und Herzegowina (kein Regionsbezug im Kürzel; erlaubte Anfangsbuchstaben: A E J K M O T)", bundesland: "Bosnien und Herzegowina", codeVersteckt: true, nichtEingebbar: true },
-    { code: "OT", bezirk: "Oldtimer (seit 2025)", bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Bosnien und Herzegowina" },
+    { code: "OT", bezirk: "Oldtimer", bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Bosnien und Herzegowina", {
     kennzeichen: KENNZEICHEN,

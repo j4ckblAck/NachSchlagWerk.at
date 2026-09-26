@@ -2,10 +2,10 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "E", bezirk: "Spanien (kein Regionsbezug seit 2000, keine Vokale/kein Ñ/Q in der Serie)", bundesland: "Spanien", codeVersteckt: true, nichtEingebbar: true },
-    { code: "CD", bezirk: "Diplomaten (weiße Schrift auf roter Tafel)", rotHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
-    { code: "OI", bezirk: "Internationale Organisationen (weiße Schrift auf blauer Tafel)", blauHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
-    { code: "TX", bezirk: "Taxi/Mietwagen mit Fahrer (weiße Schrift auf blauer Tafel, Rückseite)", blauHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Spanien" },
+    { code: "CD", bezirk: "Diplomaten", rotHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
+    { code: "OI", bezirk: "Internationale Organisationen", blauHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
+    { code: "TX", bezirk: "Taxi / Mietwagen", blauHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Spanien", {
     kennzeichen: KENNZEICHEN,

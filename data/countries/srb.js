@@ -86,9 +86,9 @@
  // Sonderkennzeichen
  { code: "TX", bezirk: "Taxi",                   bundesland: "Sonderkennzeichen" },
  { code: "OT", bezirk: "Oldtimer",               bundesland: "Sonderkennzeichen" },
- { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", bundesland: "Sonderkennzeichen" },
- { code: "CMD", bezirk: "Chef einer diplomatischen Mission", bundesland: "Sonderkennzeichen" },
- { code: "M", bezirk: "Nichtdiplomatisches Botschaftspersonal", bundesland: "Sonderkennzeichen" },
+ { code: "CD", bezirk: "Diplomat (Corps Diplomatique)", bundesland: "Sonderkennzeichen" },
+ { code: "CMD", bezirk: "Leiter einer Mission (Chef de Mission)", bundesland: "Sonderkennzeichen" },
+ { code: "M", bezirk: "Botschaftspersonal", bundesland: "Sonderkennzeichen" },
  { code: "P", bezirk: "Ausländische Presse", bundesland: "Sonderkennzeichen" },
   ];
 

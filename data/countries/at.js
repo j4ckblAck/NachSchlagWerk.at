@@ -167,18 +167,18 @@ const WAPPEN_DATEI = {
 // ein Bezirks-Vormerkbuchstabe. Die Diplomaten-Kennzeichen (CD/CC/WD/WK)
 // haben einen Bindestrich vor der (bis zu 5-stelligen) Nummer.
 const SONDERKENNZEICHEN = [
-  { code: "A",  bezirk: "Höchste Repräsentanten (Bundespräsident, Regierung, Höchstgerichte)", nrMuster: "12345", bundesland: "Sonderkennzeichen" },
+  { code: "A",  bezirk: "Höchste Repräsentanten", nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "BH", bezirk: "Bundesheer",                                      nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "BP", bezirk: "Bundespolizei",                                   nrMuster: "12345", bundesland: "Sonderkennzeichen" },
-  { code: "FW", bezirk: "Feuerwehr (freiwillig und berufs, seit 2019/2020 einheitlich)", nrMuster: "231 VO", eigenesWappen: "at-fw", wappenText: "Feuerwehr", bundesland: "Sonderkennzeichen" },
+  { code: "FW", bezirk: "Feuerwehr", nrMuster: "231 VO", eigenesWappen: "at-fw", wappenText: "Feuerwehr", bundesland: "Sonderkennzeichen" },
   { code: "JW", bezirk: "Justizwache",                                    nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "FV", bezirk: "Finanzverwaltung",                               nrMuster: "12345", bundesland: "Sonderkennzeichen" },
-  { code: "BD", bezirk: "Post-/Bahnbus (ÖBB, Post)",                      nrMuster: "12345", bundesland: "Sonderkennzeichen" },
+  { code: "BD", bezirk: "Öffentlicher Busverkehr",                      nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "PT", bezirk: "Post",                                          nrMuster: "12345", bundesland: "Sonderkennzeichen" },
-  { code: "CD", bezirk: "Corps Diplomatique (internationale Organisationen)", nrMuster: "-12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "CC", bezirk: "Corps Consulaire (Berufskonsuln)",                nrMuster: "-12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "WD", bezirk: "Diplomaten Wien (Muster: Bundesland-Buchstabe + D)",  nrMuster: "-12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
-  { code: "WK", bezirk: "Konsulat Wien (Muster: Bundesland-Buchstabe + K)",    nrMuster: "-12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
+  { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", nrMuster: "- 12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
+  { code: "CC", bezirk: "Konsuln (Corps Consulaire)",                nrMuster: "- 12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
+ { code: "WD", bezirk: "Diplomaten Wien", nrMuster: "- 12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
+ { code: "WK", bezirk: "Konsulat Wien", nrMuster: "- 12345", keinWappen: true, bundesland: "Sonderkennzeichen" },
 ];
 
   registerLand("Österreich", {

@@ -2,8 +2,8 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "CY", bezirk: "Zypern (kein Regionsbezug)", bundesland: "Zypern", codeVersteckt: true, nichtEingebbar: true },
-    { code: "TX", bezirk: "Taxi (gelbe statt weiße Tafel)", gelb: true, bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Zypern" },
+    { code: "TX", bezirk: "Taxi", gelb: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Zypern", {
     kennzeichen: KENNZEICHEN,

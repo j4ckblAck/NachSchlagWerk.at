@@ -23,9 +23,9 @@
     { code: "NG", bezirk: "Nova Gradiška",     bundesland: "Kroatien" },
     { code: "OG", bezirk: "Ogulin",            bundesland: "Kroatien" },
     { code: "OS", bezirk: "Osijek",            bundesland: "Kroatien" },
-    { code: "PU", bezirk: "Pula (ganz Istrien)", bundesland: "Kroatien" },
+    { code: "PU", bezirk: "Pula", bundesland: "Kroatien" },
     { code: "PŽ", bezirk: "Požega",            bundesland: "Kroatien" },
-    { code: "RI", bezirk: "Rijeka (inkl. Krk, Cres, Opatija)", bundesland: "Kroatien" },
+    { code: "RI", bezirk: "Rijeka", bundesland: "Kroatien" },
     { code: "SB", bezirk: "Slavonski Brod",    bundesland: "Kroatien" },
     { code: "SK", bezirk: "Sisak",             bundesland: "Kroatien" },
     { code: "SL", bezirk: "Slatina",           bundesland: "Kroatien" },
@@ -40,7 +40,7 @@
     { code: "ŽU", bezirk: "Županja",           bundesland: "Kroatien" },
     // Sonderkennzeichen (Quelle: Referenzrecherche, Sep 2026)
     { code: "HV", bezirk: "Hrvatska vojska (Militär)", bundesland: "Sonderkennzeichen" },
-    { code: "RH", bezirk: "Export (gelb auf grün)",    bundesland: "Sonderkennzeichen" },
+    { code: "RH", bezirk: "Export",    bundesland: "Sonderkennzeichen" },
   ];
 
   registerLand("Kroatien", {

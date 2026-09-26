@@ -3,8 +3,8 @@
 (function () {
   const KENNZEICHEN = [
     { code: "SK", bezirk: "Skopje",  bundesland: "Nordmazedonien" },
-    { code: "CD", bezirk: "Diplomaten (schwarze Tafel)", dunkel: true, bundesland: "Sonderkennzeichen" },
-    { code: "CC", bezirk: "Konsuln (schwarze Tafel)", dunkel: true, bundesland: "Sonderkennzeichen" },
+    { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", dunkel: true, bundesland: "Sonderkennzeichen" },
+    { code: "CC", bezirk: "Konsuln (Corps Consulaire)", dunkel: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Nordmazedonien", {
     kennzeichen: KENNZEICHEN,

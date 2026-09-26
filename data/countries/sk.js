@@ -27,7 +27,7 @@ const SLOWAKEI_KENNZEICHEN = [
 // Sonderkennzeichen (Quelle: Kfz-Kennzeichen (Slowakei), Sep 2026)
 const SK_SONDERKENNZEICHEN = [
   { code: "EE", bezirk: "Diplomaten",                    bundesland: "Sonderkennzeichen" },
-  { code: "ZZ", bezirk: "Honorarkonsuln (gelbe Schrift auf dunkelblauer Tafel)", blauHg: true, gelbText: true, bundesland: "Sonderkennzeichen" },
+  { code: "ZZ", bezirk: "Honorarkonsuln", blauHg: true, gelbText: true, bundesland: "Sonderkennzeichen" },
   { code: "P",  bezirk: "Polizei/Parlament",             bundesland: "Sonderkennzeichen" },
 ];
 

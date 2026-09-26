@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "P", bezirk: "Portugal (kein Regionsbezug, Format seit 03/2020)", bundesland: "Portugal" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Portugal" },
   ];
   registerLand("Portugal", {
     kennzeichen: KENNZEICHEN,

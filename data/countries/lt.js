@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "LT", bezirk: "Litauen (kein Regionsbezug; seit 11/2023 mit Staatswappen auf der Tafel)", bundesland: "Litauen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Litauen" },
   ];
   registerLand("Litauen", {
     kennzeichen: KENNZEICHEN,

@@ -1,8 +1,8 @@
 // data/countries/md.js — Moldau: breites Band mit Landesflagge.
 (function () {
   const KENNZEICHEN = [
-    { code: "MD", bezirk: "Moldau (kein Regionsbezug)", bundesland: "Moldau", codeVersteckt: true, nichtEingebbar: true },
-    { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Moldau" },
+    { code: "CD", bezirk: "Diplomat (Corps Diplomatique)", bundesland: "Sonderkennzeichen" },
     { code: "G", bezirk: "Regierungsfahrzeuge", bundesland: "Sonderkennzeichen" },
     { code: "SP", bezirk: "Sicherheitsdienst (Servicii Pază)", bundesland: "Sonderkennzeichen" },
   ];

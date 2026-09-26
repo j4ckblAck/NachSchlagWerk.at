@@ -58,7 +58,7 @@
     },
     {
       code: "A",
-      bezirk: "Armee",
+      bezirk: "Militär",
       bundesland: "Sonderkennzeichen",
     },
   ];

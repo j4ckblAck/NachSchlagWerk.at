@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "M", bezirk: "Malta (kein Regionsbezug)", bundesland: "Malta" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Malta" },
   ];
   registerLand("Malta", {
     kennzeichen: KENNZEICHEN,

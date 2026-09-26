@@ -36,7 +36,7 @@ const TSCHECHIEN_KENNZEICHEN = [
   // Gewerbliche Fahrzeuge: gelbe statt weisser Tafel. Oldtimer: gruene
   // statt schwarzer Schrift, immer mit "V" davor (Quelle: Wikipedia
   // "Vehicle registration plates of the Czech Republic").
-  { code: "V",  bezirk: "Oldtimer (historisches Fahrzeug, grüne statt schwarze Schrift)", gruen: true, bundesland: "Sonderkennzeichen" },
+  { code: "V",  bezirk: "Oldtimer", gruen: true, bundesland: "Sonderkennzeichen" },
 ];
 
   registerLand("Tschechien", {

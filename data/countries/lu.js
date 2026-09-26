@@ -8,9 +8,9 @@
 // (amtliche Fahrzeuge), CD (Diplomaten), ZZ (eingeschraenkte Nutzung).
 (function () {
   const KENNZEICHEN = [
-    { code: "L",  bezirk: "Luxemburg (kein Regionsbezug, laufende Serie AB 1234)", bundesland: "Luxemburg", codeVersteckt: true, nichtEingebbar: true },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Luxemburg" },
     { code: "AA", bezirk: "Amtliche Fahrzeuge",         nrMuster: "1234", bundesland: "Luxemburg" },
-    { code: "CD", bezirk: "Corps Diplomatique",         nrMuster: "1234", bundesland: "Luxemburg" },
+    { code: "CD", bezirk: "Diplomat (Corps Diplomatique)",         nrMuster: "1234", bundesland: "Luxemburg" },
     { code: "ZZ", bezirk: "Fahrzeuge mit eingeschränkter Nutzung", nrMuster: "1234", bundesland: "Luxemburg" },
   ];
   registerLand("Luxemburg", {

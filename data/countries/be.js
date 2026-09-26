@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "B", bezirk: "Belgien (rote Schrift, kein Regionsbezug; Anhänger beginnen mit Q)", rot: true, bundesland: "Belgien" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Belgien" },
   ];
   registerLand("Belgien", {
     kennzeichen: KENNZEICHEN,

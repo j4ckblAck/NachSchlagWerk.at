@@ -39,8 +39,8 @@
     { code: "X",  bezirk: "Haskovo",           bundesland: "Bulgarien" },
 
     // Sonderkennzeichen
-    { code: "BA", bezirk: "Militär (6-stellig)", bundesland: "Sonderkennzeichen" },
- { code: "CP", bezirk: "Zivilschutz",          bundesland: "Sonderkennzeichen" },
+    { code: "BA", bezirk: "Militär", bundesland: "Sonderkennzeichen" },
+ { code: "CP", bezirk: "Zivilschutz",       bundesland: "Sonderkennzeichen" },
   ];
 
   registerLand("Bulgarien", {

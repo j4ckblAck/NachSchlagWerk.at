@@ -2,8 +2,8 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "LV", bezirk: "Lettland (kein Regionsbezug; E-Autos mit blauer Schrift)", bundesland: "Lettland", codeVersteckt: true, nichtEingebbar: true },
-    { code: "TX", bezirk: "Taxi (gelbe statt weiße Tafel)", gelb: true, bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Lettland" },
+    { code: "TX", bezirk: "Taxi", gelb: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Lettland", {
     kennzeichen: KENNZEICHEN,

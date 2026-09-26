@@ -4,7 +4,7 @@
 // Liechtenstein: nur ein einziges, landesweites Kuerzel (FL)
 // ============================================================
 const LIECHTENSTEIN_KENNZEICHEN = [
-  { code: "FL", bezirk: "Liechtenstein (ganzes Land)", bundesland: "Liechtenstein" },
+  { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Liechtenstein" },
 ];
 
   registerLand("Liechtenstein", {

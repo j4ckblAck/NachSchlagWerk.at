@@ -8,10 +8,10 @@
 // EU-Feld (hier vereinfacht ohne diesen Zusatzbereich dargestellt).
 (function () {
   const KENNZEICHEN = [
-    { code: "NL", bezirk: "Niederlande (kein Regionsbezug, laufende Serie z.B. ABC-12-D)", bundesland: "Niederlande", codeVersteckt: true, nichtEingebbar: true },
-    { code: "AA", bezirk: "Königshaus (niederländische Königsfamilie)", bundesland: "Sonderkennzeichen" },
-    { code: "CD", bezirk: "Corps Diplomatique", nrMuster: "1234", bundesland: "Sonderkennzeichen" },
-    { code: "TX", bezirk: "Taxi (blaue Tafel statt gelb, seit Dez. 2000 Pflicht)", blauHg: true, bundesland: "Sonderkennzeichen" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Niederlande" },
+    { code: "AA", bezirk: "Königshaus (Königsfamilie)", bundesland: "Sonderkennzeichen" },
+    { code: "CD", bezirk: "Diplomat (Corps Diplomatique)", nrMuster: "1234", bundesland: "Sonderkennzeichen" },
+    { code: "TX", bezirk: "Taxi", blauHg: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Niederlande", {
     kennzeichen: KENNZEICHEN,

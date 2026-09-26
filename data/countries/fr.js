@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "F", bezirk: "Frankreich (kein Regionsbezug)", bundesland: "Frankreich" },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Frankreich" },
   ];
   registerLand("Frankreich", {
     kennzeichen: KENNZEICHEN,

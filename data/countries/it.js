@@ -42,19 +42,19 @@ const ITALIEN_KENNZEICHEN = [
   // "CC" steht bei italienischen Kennzeichen fuer die Carabinieri, NICHT
   // fuer Konsulate (anders als in anderen Laendern dieser App) - war
   // vorher falsch als "Corpo Consolare" eingetragen, jetzt korrigiert.
-  { code: "CD",   bezirk: "Corpo Diplomatico (Diplomaten)",              bundesland: "Sonderkennzeichen" },
-  { code: "UNP",  bezirk: "Vereinte Nationen (UN-Missionen)",            bundesland: "Sonderkennzeichen" },
-  { code: "CC",   bezirk: "Carabinieri (Militärpolizei)",                bundesland: "Sonderkennzeichen" },
-  { code: "EI",   bezirk: "Esercito Italiano (Heer)",                    bundesland: "Sonderkennzeichen" },
-  { code: "MM",   bezirk: "Marina Militare (Marine)",                    bundesland: "Sonderkennzeichen" },
-  { code: "AM",   bezirk: "Aeronautica Militare (Luftwaffe)",            bundesland: "Sonderkennzeichen" },
-  { code: "GdiF", bezirk: "Guardia di Finanza (Finanzpolizei)",          bundesland: "Sonderkennzeichen" },
-  { code: "CP",   bezirk: "Capitaneria di Porto (Küstenwache)",          bundesland: "Sonderkennzeichen" },
-  { code: "VF",   bezirk: "Vigili del Fuoco (Feuerwehr)",                bundesland: "Sonderkennzeichen" },
-  { code: "PC",   bezirk: "Protezione Civile (Zivilschutz)",             bundesland: "Sonderkennzeichen" },
-  { code: "CRI",  bezirk: "Croce Rossa Italiana (Rotes Kreuz)",          bundesland: "Sonderkennzeichen" },
-  { code: "SMOM", bezirk: "Sovrano Militare Ordine di Malta (Malteserorden)", bundesland: "Sonderkennzeichen" },
-  { code: "EE",   bezirk: "Escursionisti Esteri (Besucher ohne Wohnsitz in Italien)", bundesland: "Sonderkennzeichen" },
+  { code: "CD",   bezirk: "Diplomaten (Corpo Diplomatico)",              bundesland: "Sonderkennzeichen" },
+  { code: "UNP",  bezirk: "UN-Missionen (Vereinte Nationen)",            bundesland: "Sonderkennzeichen" },
+  { code: "CC",   bezirk: "Militärpolizei (Carabinieri)",                bundesland: "Sonderkennzeichen" },
+  { code: "EI",   bezirk: "Heer (Esercito Italiano)",                    bundesland: "Sonderkennzeichen" },
+  { code: "MM",   bezirk: "Marine (Marina Militare)",                    bundesland: "Sonderkennzeichen" },
+  { code: "AM",   bezirk: "Luftwaffe (Aeronautica Militare)",            bundesland: "Sonderkennzeichen" },
+  { code: "GdiF", bezirk: "Finanzpolizei (Guardia di Finanza)",          bundesland: "Sonderkennzeichen" },
+  { code: "CP",   bezirk: "Küstenwache (Capitaneria di Porto)",          bundesland: "Sonderkennzeichen" },
+  { code: "VF",   bezirk: "Feuerwehr (Vigili del Fuoco)",                bundesland: "Sonderkennzeichen" },
+  { code: "PC",   bezirk: "Zivilschutz (Protezione Civile)",             bundesland: "Sonderkennzeichen" },
+  { code: "CRI",  bezirk: "Rotes Kreuz (Croce Rossa Italiana)",          bundesland: "Sonderkennzeichen" },
+  { code: "SMOM", bezirk: "Malteserorden (Sovrano Militare Ordine di Malta)", bundesland: "Sonderkennzeichen" },
+  { code: "EE",   bezirk: "Vorübergehender Aufenthalt (Escursionisti Esteri)", bundesland: "Sonderkennzeichen" },
 ];
 
   registerLand("Italien", {

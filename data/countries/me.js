@@ -31,7 +31,7 @@
     // Sonderkennzeichen (Quelle: Referenzrecherche, Sep 2026)
     { code: "P", bezirk: "Polizei",        blau: true, bundesland: "Sonderkennzeichen" },
     { code: "V", bezirk: "Militär",        gruen: true, bundesland: "Sonderkennzeichen" },
-    { code: "CD", bezirk: "Diplomaten (gelbe Schrift, kein Gemeinde-/Wappenfeld)", gelbText: true, bundesland: "Sonderkennzeichen" },
+    { code: "CD", bezirk: "Diplomat (Corps Diplomatique)", gelbText: true, bundesland: "Sonderkennzeichen" },
   ];
 
   registerLand("Montenegro", {

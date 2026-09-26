@@ -8,33 +8,33 @@
 // WEISSE Schrift auf BLAUEM Grund, Format "CD 123-345" (erster
 // Zifferblock = Laendercode). Konsuln: ROTE Schrift auf weissem Grund.
 (function () {
-// ============================================================
-// Ungarn: seit 1. Juli 2022 ein einheitliches System ohne
-// Bezirkscode - aus dem Kuerzel ist keine Region mehr ablesbar.
-// ============================================================
-const UNGARN_KENNZEICHEN = [
-  { code: "H",  bezirk: "Ungarn (seit 2022, kein Bezirkscode)", bundesland: "Ungarn", codeVersteckt: true, nichtEingebbar: true },
-  { code: "TX", bezirk: "Taxi",              gelb: true, bundesland: "Ungarn" },
-  { code: "EV", bezirk: "Elektro-/Plug-in-Hybridfahrzeug", gruenHg: true, bundesland: "Ungarn" },
-  // Sonderkennzeichen (Quelle: Wikipedia "Kfz-Kennzeichen (Ungarn)").
-  { code: "RA", bezirk: "Polizei (Rendőrség)", bundesland: "Ungarn" },
-  { code: "NA", bezirk: "Steuer- und Zollbehörde (Nemzeti Adó- és Vámhivatal)", bundesland: "Ungarn" },
-  { code: "HA", bezirk: "Militär (Magyar Honvédség)", bundesland: "Ungarn" },
-  { code: "MA", bezirk: "Rettungsdienst (Országos Mentőszolgálat)", bundesland: "Ungarn" },
-  { code: "BA", bezirk: "Strafvollzug (Büntetés-végrehajtás)",     bundesland: "Ungarn" },
-  { code: "OT", bezirk: "Oldtimer",   bundesland: "Ungarn" },
-  { code: "SP", bezirk: "Motorsport-Fahrzeug",                     bundesland: "Ungarn" },
-  {
-    code: "CD", bezirk: "Corps Diplomatique (Diplomat)",
-    nrMuster: "123-345", blauHg: true,
-    bundesland: "Ungarn",
-  },
-  {
-    code: "CK", bezirk: "Corps Consulaire (Konsuln)",
-    nrMuster: "12-34", rot: true,
-    bundesland: "Ungarn",
-  },
-];
+  // ============================================================
+  // Ungarn: seit 1. Juli 2022 ein einheitliches System ohne
+  // Bezirkscode - aus dem Kuerzel ist keine Region mehr ablesbar.
+  // ============================================================
+  const UNGARN_KENNZEICHEN = [
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Ungarn" },
+ { code: "TX", bezirk: "Taxi",              gelb: true, bundesland: "Ungarn" },
+ { code: "EV", bezirk: "Elektro-/Plug-in-Hybridfahrzeug", gruenHg: true, bundesland: "Ungarn" },
+ // Sonderkennzeichen (Quelle: Wikipedia "Kfz-Kennzeichen (Ungarn)").
+ { code: "RA", bezirk: "Polizei (Rendőrség)", bundesland: "Ungarn" },
+ { code: "NA", bezirk: "Steuer-/ Zollbehörde (Nemzeti Adó- és Vámhivatal)", bundesland: "Ungarn" },
+ { code: "HA", bezirk: "Militär (Magyar Honvédség)", bundesland: "Ungarn" },
+ { code: "MA", bezirk: "Rettung (Országos Mentőszolgálat)", bundesland: "Ungarn" },
+ { code: "BA", bezirk: "Strafvollzug (Büntetés-végrehajtás)",     bundesland: "Ungarn" },
+ { code: "OT", bezirk: "Oldtimer",   bundesland: "Ungarn" },
+ { code: "SP", bezirk: "Motorsport-Fahrzeug",                     bundesland: "Ungarn" },
+ {
+   code: "CD", bezirk: "Diplomat (Corps Diplomatique)",
+ nrMuster: "123-345", blauHg: true,
+ bundesland: "Ungarn",
+ },
+ {
+   code: "CK", bezirk: "Konsuln (Corps Consulaire)",
+ nrMuster: "12-34", rot: true,
+ bundesland: "Ungarn",
+ },
+  ];
 
   registerLand("Ungarn", {
     kennzeichen: UNGARN_KENNZEICHEN,
