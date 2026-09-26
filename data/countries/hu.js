@@ -13,19 +13,19 @@
 // Bezirkscode - aus dem Kuerzel ist keine Region mehr ablesbar.
 // ============================================================
 const UNGARN_KENNZEICHEN = [
-  { code: "H",  bezirk: "Ungarn (kein Bezirkscode – einheitliches System seit 2022)", bundesland: "Ungarn", codeVersteckt: true, nichtEingebbar: true },
-  { code: "TX", bezirk: "Taxi bzw. umweltschonendes Auto",              gelb: true, bundesland: "Ungarn" },
-  { code: "EV", bezirk: "Elektro-/Plug-in-Hybridfahrzeug (auf Wunsch, seit Okt. 2015)", gruenHg: true, bundesland: "Ungarn" },
+  { code: "H",  bezirk: "Ungarn (seit 2022, kein Bezirkscode)", bundesland: "Ungarn", codeVersteckt: true, nichtEingebbar: true },
+  { code: "TX", bezirk: "Taxi",              gelb: true, bundesland: "Ungarn" },
+  { code: "EV", bezirk: "Elektro-/Plug-in-Hybridfahrzeug", gruenHg: true, bundesland: "Ungarn" },
   // Sonderkennzeichen (Quelle: Wikipedia "Kfz-Kennzeichen (Ungarn)").
-  { code: "RA", bezirk: "Ungarische Polizei (Rendőrség)", bundesland: "Ungarn" },
-  { code: "NA", bezirk: "Nationale Steuer- und Zollbehörde (Nemzeti Adó- és Vámhivatal)", bundesland: "Ungarn" },
-  { code: "HA", bezirk: "Ungarische Streitkräfte (Magyar Honvédség)", bundesland: "Ungarn" },
-  { code: "MA", bezirk: "Nationaler Rettungsdienst (Országos Mentőszolgálat)", bundesland: "Ungarn" },
+  { code: "RA", bezirk: "Polizei (Rendőrség)", bundesland: "Ungarn" },
+  { code: "NA", bezirk: "Steuer- und Zollbehörde (Nemzeti Adó- és Vámhivatal)", bundesland: "Ungarn" },
+  { code: "HA", bezirk: "Militär (Magyar Honvédség)", bundesland: "Ungarn" },
+  { code: "MA", bezirk: "Rettungsdienst (Országos Mentőszolgálat)", bundesland: "Ungarn" },
   { code: "BA", bezirk: "Strafvollzug (Büntetés-végrehajtás)",     bundesland: "Ungarn" },
-  { code: "OT", bezirk: "Oldtimer (historisches Kraftfahrzeug)",   bundesland: "Ungarn" },
+  { code: "OT", bezirk: "Oldtimer",   bundesland: "Ungarn" },
   { code: "SP", bezirk: "Motorsport-Fahrzeug",                     bundesland: "Ungarn" },
   {
-    code: "CD", bezirk: "Corps Diplomatique",
+    code: "CD", bezirk: "Corps Diplomatique (Diplomat)",
     nrMuster: "123-345", blauHg: true,
     bundesland: "Ungarn",
   },
