@@ -27,5 +27,6 @@
     // Keine Flagge mehr als Wappen-Ersatz in der Mitte - am echten
     // Kennzeichen steht dort gar nichts (nur EU-Band, Kuerzel, Nummer).
     hatWappen: false,
+    flagge: { typ: "h", farben: ["#ED2939", "#fff", "#00A1DE"] },
   });
 })();

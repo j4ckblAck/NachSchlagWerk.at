@@ -25,5 +25,6 @@
     nrMuster: "ABC-12-D",
     gelb: true,
     hatWappen: false,
+    flagge: { typ: "h", farben: ["#AE1C28", "#fff", "#21468B"] },
   });
 })();

@@ -1,3 +1,23 @@
+/* Oswald (SIL Open Font License 1.1, siehe fonts/OFL.txt) - lokal
+   eingebunden statt ueber fonts.googleapis.com geladen, damit die App
+   als PWA auch offline funktioniert. Fuer die Kennzeichen-Tafel
+   (.kz-schild) statt "Barlow Condensed": kraeftiger, technischer,
+   naeher am echten Look der europaeischen Kennzeichenschrift. */
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/Oswald-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/Oswald-Bold.ttf") format("truetype");
+}
+
 /* Muss ganz oben stehen und gewinnt garantiert gegen jede andere
    display-Regel - sonst werden versteckte Bildschirme trotz
    hidden-Attribut angezeigt (sie stapeln sich dann untereinander). */
@@ -938,6 +958,10 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
    das fuer das Laender-Kuerzel ist (passend zum blauen EU-Feld auf der
    Tafel selbst). */
 .kz-eingabe-feld-land { border-color: #1450a4; border-width: 2px; }
+/* Feld 2 (Bezirks-/Unterscheidungskuerzel) etwas breiter als die
+   anderen beiden - laesst genug Platz fuer 3-4-stellige Kuerzel wie
+   "WOL" oder "HRO", ohne dass der Text am Rand knapp wird. */
+#kzFeld2 { width: 4.6rem; }
 .kz-eingabe-feld:focus { outline: 2px solid var(--gold); }
 .kz-eingabe-feld:disabled { opacity: .4; background: transparent; }
 .kz-eingabe-feld-fehler { border-color: #c0392b; color: #c0392b; }
@@ -986,12 +1010,14 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 
 /* Nachgebaute Kennzeichentafel: weiss, schwarze Schrift, blaues
    EU-Feld links, Landes-/Bundeslandwappen mittig - rein optisch,
-   keine echten Kennzeichen. Schriftart lehnt sich an die echte
-   europaeische Kennzeichenschrift (FE-Schrift) an: Barlow Condensed
-   ist frei lizenziert (SIL OFL) und wurde bewusst mit schmalen,
-   schilderaehnlichen Proportionen gezeichnet - naeher am echten Look
-   als eine gewoehnliche Groteskschrift, ohne eine Nachbau-Schriftart
-   mit unklarer Lizenz einzubinden. Das Kuerzel wird DIREKT auf der
+   keine echten Kennzeichen. Schriftart: Oswald (SIL Open Font License,
+   lokal eingebunden, siehe fonts/OFL.txt und @font-face oben) -
+   kraeftig und technisch-geometrisch, naeher am echten Look der
+   europaeischen Kennzeichenschrift (FE-Schrift) als eine gewoehnliche
+   Groteskschrift, ohne einen Nachbau mit unklarer Lizenz einzubinden
+   (siehe Recherche-Ergebnis: die verfuegbaren FE-Schrift-Nachbauten
+   sind durchweg nur "Freeware fuer privaten Gebrauch", unvereinbar mit
+   Weitergabe als freie Software). Das Kuerzel wird DIREKT auf der
    Tafel eingetippt. */
 .kz-schild {
   position: relative;
@@ -1008,7 +1034,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   max-width: 378px;
   margin: 0 auto;
   box-shadow: 0 3px 10px rgba(0, 0, 0, .3);
-  font-family: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
   transition: background .2s ease;
 }
 /* Rot-weiss-rote Randstreifen oben und unten - nur beim
@@ -1043,7 +1069,10 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-blau-hg .kz-schild-nr { background: transparent; }
 /* Ungarn Elektro-/Hybridfahrzeuge (EV): schwarze Schrift auf gruenem
    Grund (seit Oktober 2015, auf Wunsch). */
-.kz-schild-gruen-hg { background: #3fae49; border-color: #2c7d34; }
+/* Dasselbe Dunkelgruen wie sonst als Textfarbe (kz-schild-code-gruen,
+   z.B. bei Albaniens "MM") - konsistent statt eines zweiten, helleren
+   Gruentons nur fuer den Hintergrund-Fall. */
+.kz-schild-gruen-hg { background: #0a7a3d; border-color: #075c2d; }
 .kz-schild-gruen-hg .kz-schild-code,
 .kz-schild-gruen-hg .kz-schild-nr { background: transparent; }
 /* Spanien Diplomaten (CD): weisse Schrift auf roter Tafel. */
@@ -1052,6 +1081,10 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-rot-hg .kz-schild-nr { background: transparent; }
 .kz-schild-rahmen-gruen { border-color: #0a7a3d; }
 .kz-schild-rahmen-rot { border-color: #c0392b; }
+/* Albaniens landwirtschaftliche/technische Sonderkennzeichen (RB/MT/R):
+   weisser Rahmen auf gruenem Grund statt des sonst ueblichen schwarzen -
+   passend zur weissen Schrift dort. */
+.kz-schild-rahmen-weiss { border-color: #fff; }
 /* Schweiz: Kantonswappen steht am echten Schild ganz rechts hinter
    der Nummer, nicht zwischen Kuerzel und Nummer wie bei Oesterreich. */
 .kz-schild-wappen-hinten .kz-schild-nr {
@@ -1067,6 +1100,12 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-dunkel .kz-schild-code:focus { background: #1d1d1d; }
 .kz-schild-dunkel .kz-schild-code::placeholder { color: #555; }
 .kz-schild-code::placeholder { color: #aaa; opacity: 1; }
+/* Fuer readonly-Felder (kzEingabe ist IMMER readonly) zeigen Browser
+   keinen "placeholder" an - darum hier ein ECHTER Wert, nur grau
+   eingefaerbt (z.B. Albaniens "AB" ohne getipptes Kuerzel), siehe
+   kzSimulatorAktualisieren. */
+.kz-schild-code-platzhalter { color: #aaa !important; }
+.kz-schild-dunkel .kz-schild-code-platzhalter { color: #555 !important; }
 /* Kuerzel-Feld komplett unsichtbar (Breite 0) - fuer Laender, wo auf
    der eigentlichen Tafel gar kein Buchstabe vor der Seriennummer
    steht (z.B. Luxemburgs allgemeines "L", siehe "codeVersteckt" in
@@ -1096,7 +1135,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-sterne:empty { display: none; }
 .kz-sterne svg { width: 100%; height: 100%; display: block; }
 .kz-schild-a:empty { display: none; }
-.kz-schild-a { font-weight: 600; line-height: 1; letter-spacing: .03em; }
+.kz-schild-a { font-weight: 500; line-height: 1; letter-spacing: .03em; }
 /* Alle Laender-Kuerzel unterm Euro-Sternenkranz (A, D, CH, FL, I, SLO,
    H, SK, CZ, ...) IMMER in derselben Groesse - egal ob 1 oder 3
    Buchstaben, wie bei Slowenien ("SLO", der laengste Fall). */
@@ -1151,7 +1190,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
      zentriert dieses dann als Ganzes, wie bei Wappen und Nummer. */
   align-self: center;
   color: #111;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: .01em;
   font-family: inherit;
@@ -1207,6 +1246,16 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
    "M") wird die Box eingeklappt - der Platz kommt sonst der Nummer
    daneben zugute, statt ungenutzt zu bleiben. */
 .kz-schild-wappen-leer { width: 0; padding: 0; }
+/* Bei "flagge"-Grafiken OHNE Bildunterschrift darunter (aktuell nur
+   Deutschlands TUEV-/Kreiswappen-Kreise, siehe kzWappenZeigen) darf das
+   Symbol die GANZE Kennzeichen-Hoehe nutzen, statt wie bei Oesterreich
+   Platz fuer eine Beschriftung freizulassen - am echten Kennzeichen
+   nehmen diese beiden Kreise fast die volle Tafelhoehe ein. Schmaler
+   als die normale Wappen-Box (34px statt 44px), damit gleichzeitig mehr
+   Breite fuer Kuerzel/Nummer daneben frei bleibt (kzSchildEinpassen
+   verkleinert deren Schrift sonst automatisch, wenn es eng wird). */
+.kz-schild-wappen-vollhoehe { width: 34px; padding: 2px 1px 2px 2px; }
+.kz-schild-wappen-vollhoehe .kz-wappen-bild { width: 32px; height: 66px; }
 .kz-wappen-bild { width: 38px; height: 38px; line-height: 0; }
 .kz-wappen-bild img,
 .kz-wappen-bild .kz-flagge-svg,
@@ -1219,7 +1268,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   left: 2px;
   right: 2px;
   max-width: none;
-  font-family: "Barlow Condensed", Arial, sans-serif;
+  font-family: "Oswald", Arial, sans-serif;
   font-size: .27rem;
   font-weight: 700;
   letter-spacing: -.02em;
@@ -1242,7 +1291,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-nr {
   align-self: center;
   color: #111;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: .05em;
   /* War frueher "flex: 1" (fuellte den ganzen Restplatz, linksbuendig) -
@@ -1276,7 +1325,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-schild-nr-suffix {
   align-self: center;
   color: #111;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   letter-spacing: .05em;
   white-space: nowrap;
@@ -1285,6 +1334,15 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 }
 .kz-schild-nr-suffix:empty { display: none; }
 .kz-schild-dunkel .kz-schild-nr-suffix { color: #f4f3ef; }
+/* Albaniens "MM": feste Ziffern stehen VOR dem eintippbaren
+   Buchstabenpaar ("123PU" statt "PU123", siehe nrSuffixVorn in al.js) -
+   nur die ANZEIGE-Reihenfolge wird per Flex "order" getauscht, das
+   Eingabefeld selbst bleibt technisch unveraendert. Der uebliche
+   5px-Abstand zwischen den Feldern (".kz-schild-mitte" gap) wird hier
+   per negativem margin wieder aufgehoben, damit "123" und "PU" wie am
+   echten Kennzeichen ohne Luecke zusammenstehen. */
+.kz-schild-nr-suffix-vorn .kz-schild-nr-suffix { order: 1; padding-left: 10px; padding-right: 0; margin-right: -5px; }
+.kz-schild-nr-suffix-vorn .kz-schild-nr-kurz { order: 2; padding: 0 2px 0 0; }
 /* Kuerzel-Feld und Nummer bekommen IMMER dieselbe Schriftgroesse -
    eine gemeinsame Stufe pro Land (nach der Laenge des Nummernmusters),
    statt dass jedes Feld fuer sich eine eigene Groesse waehlt. */
@@ -1296,18 +1354,23 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
    bleiben, sonst passt der Text nicht mehr in den verfuegbaren Platz
    und ueberlappt mit dem Kuerzel davor (bei der Schweiz besonders
    sichtbar, da die Nummer dort rechtsbuendig/"flex-end" waechst). */
+/* Groesser als vorher (4.15/3.5/3.1rem) - kzSchildEinpassen() verkleinert
+   automatisch weiter, falls es bei einem Land eng wird, darum ist ein
+   hoeherer Deckel hier risikofrei: er nutzt nur zusaetzlich vorhandenen
+   Platz aus, statt woanders etwas zu ueberlaufen. */
 .kz-schild-txt-kurz.kz-schild-code,
 .kz-schild-txt-kurz.kz-schild-nr,
-.kz-schild-txt-kurz.kz-schild-nr-suffix { font-size: 4.15rem; }
+.kz-schild-txt-kurz.kz-schild-nr-suffix { font-size: 4.6rem; }
 .kz-schild-txt-mittel.kz-schild-code,
 .kz-schild-txt-mittel.kz-schild-nr,
-.kz-schild-txt-mittel.kz-schild-nr-suffix { font-size: 3.5rem; letter-spacing: .02em; }
+.kz-schild-txt-mittel.kz-schild-nr-suffix { font-size: 3.9rem; letter-spacing: .02em; }
 .kz-schild-txt-lang.kz-schild-code,
 .kz-schild-txt-lang.kz-schild-nr,
-.kz-schild-txt-lang.kz-schild-nr-suffix { font-size: 3.1rem; letter-spacing: 0; }
+.kz-schild-txt-lang.kz-schild-nr-suffix { font-size: 3.4rem; letter-spacing: 0; }
 
-/* Mittiger Punkt zwischen Kuerzel und Nummer - nur bei der Schweiz
-   ("AA·000 000" am echten Schild), sonst leer und unsichtbar. */
+/* Mittiger Punkt zwischen Kuerzel und Nummer - bei der Schweiz
+   ("AA·000 000" am echten Schild) ein einfaches Textzeichen, sonst
+   leer und unsichtbar. */
 .kz-schild-punkt:empty { display: none; }
 .kz-schild-punkt {
   flex-shrink: 0;
@@ -1322,10 +1385,13 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 }
 .kz-schild-dunkel .kz-schild-punkt { color: #f4f3ef; }
 
-/* Zweites blaues Euro-Feld ganz rechts - nur bei Italien (dort steht
-   traditionell links UND rechts ein blauer Streifen). Standardmaessig
-   0 Breite (unsichtbar), erst die "-sichtbar"-Klasse blendet es ein. */
+/* Zweites blaues Euro-Feld ganz rechts - bei Italien (dort steht
+   traditionell links UND rechts ein blauer Streifen) UND bei Albanien
+   (dort zusaetzlich mit einem weissen Kreis darin, siehe unten).
+   Standardmaessig 0 Breite (unsichtbar), erst die "-sichtbar"-Klasse
+   blendet es ein. */
 .kz-schild-eu2 {
+  position: relative;
   background: #003399;
   width: 0;
   flex-shrink: 0;
@@ -1333,6 +1399,53 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   overflow: hidden;
 }
 .kz-schild-eu2-sichtbar { width: 10px; }
+/* Albanien: das rechte blaue Feld ist etwas breiter als Italiens
+   schlichter Streifen und zeigt weiter unten (nicht mittig) einen
+   weissen KREISRING (kein gefuellter Punkt - am echten Kennzeichen ist
+   das ein hohler Ring), genau wie auf dem Vorbild. */
+.kz-schild-eu2-kreis.kz-schild-eu2-sichtbar { width: 20px; }
+.kz-schild-eu2-kreis::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.6px solid #fff;
+  background: transparent;
+}
+/* Italien: oranger Kreisring OBEN im rechten blauen Feld (hohl, kein
+   gefuellter Kreis - wie Albaniens weisser Ring, nur oben statt unten
+   und orange statt weiss). */
+.kz-schild-eu2-orange.kz-schild-eu2-sichtbar { width: 18px; }
+.kz-schild-eu2-orange::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.6px solid #f0a020;
+  background: transparent;
+}
+/* Provinzkuerzel-Text unter dem orangen Kreis (z.B. "RM" fuer Rom) -
+   siehe kzTafelAktualisieren. */
+.kz-schild-eu2-text {
+  position: absolute;
+  left: 50%;
+  top: 22px;
+  transform: translateX(-50%);
+  font-family: inherit;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: #fff;
+  white-space: nowrap;
+}
 
 .kz-ergebnis {
   margin: .9rem 0 0;
@@ -1540,7 +1653,7 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   flex-shrink: 0;
   border: none;
   background: none;
-  font-family: "Barlow Condensed", inherit;
+  font-family: "Oswald", inherit;
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: .06em;

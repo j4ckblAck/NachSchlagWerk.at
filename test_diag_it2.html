@@ -317,5 +317,34 @@
 <script src="js/core.js"></script>
 <script src="js/dienstgrade.js"></script>
 <script src="js/kennzeichen.js"></script>
+
+<script>
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    try {
+      document.getElementById('gehModulKennzeichen').click();
+      kzAktuellesLandName = "Italien";
+      kzLandWechseln();
+      var txt = document.getElementById('kzSchildEu2Text');
+      console.log("IT_EMPTY_TEXT=[" + txt.textContent + "]");
+      document.getElementById('kzFeld2').value = "RM";
+      kzFeld2Input();
+      console.log("IT_RM_TEXT=[" + txt.textContent + "]");
+      document.getElementById('kzFeld2').value = "FI";
+      kzFeld2Input();
+      console.log("IT_FI_TEXT=[" + txt.textContent + "]");
+      var s = document.getElementById('kzSchild');
+      s.style.transform = 'scale(3)';
+      s.style.transformOrigin = 'top left';
+      s.style.marginTop = '40px';
+      s.style.marginLeft = '40px';
+      document.querySelector('main, body').scrollIntoView();
+    } catch (e) {
+      console.log("DIAG_ERROR=" + e.message + " " + e.stack);
+    }
+  }, 800);
+});
+</script>
 </body>
+
 </html>

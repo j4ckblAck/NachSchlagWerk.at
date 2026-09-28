@@ -93,16 +93,30 @@ function kzAktuellesLand() {
   return LAENDER[kzAktuellesLandName] || LAENDER["Österreich"];
 }
 
+// Ein Eintrag mit Kuerzel "---" markiert Laender/Kategorien GANZ OHNE
+// Regionsbezug (siehe data/countries/*.js, z.B. Luxemburg, Frankreich,
+// Island) - das ist kein wirklich eintippbares Unterscheidungskuerzel
+// (man wuerde nie ein Auto mit "---" als Kuerzel sehen), sondern nur
+// der Normalzustand, wenn NICHTS eingegeben ist. Reicht als alleiniges
+// Signal in der Laenderdatei - hier zentral erkannt, statt bei jedem
+// betroffenen Land zusaetzlich "nichtEingebbar"/"codeVersteckt" von
+// Hand setzen zu muessen (das wurde bisher nur bei Island gemacht und
+// war dort fehleranfaellig). Ein explizit gesetztes "nichtEingebbar"
+// (z.B. bei einem anderen Platzhalter-Kuerzel) wird weiterhin respektiert.
+function kzOhneKuerzel(k) {
+  return !!k && (k.code === "---" || !!k.nichtEingebbar);
+}
+
 function kzFinden(land, code) {
   const gesucht = code.trim().toUpperCase();
-  // "nichtEingebbar" (siehe z.B. Niederlande "NL") markiert das reine
-  // Landes-Basiskuerzel bei Laendern ohne echte Einteilung - das ist
-  // kein wirklich eintippbares Unterscheidungskuerzel (man wuerde nie
-  // ein Auto mit "NL" als Kuerzel sehen), sondern nur der Normalzustand,
-  // wenn NICHTS eingegeben ist (siehe kzSimulatorAktualisieren). Darum
-  // hier von der Fund-Suche ausgenommen, auch wenn der Eintrag fuer die
-  // Standardanzeige (Platzhalter, Grundmuster) weiter existiert.
-  return land.kennzeichen.find(k => k.code === gesucht && !k.nichtEingebbar);
+  // "---" (bzw. "nichtEingebbar", siehe kzOhneKuerzel) markiert das
+  // reine Landes-Basiskuerzel bei Laendern ohne echte Einteilung - das
+  // ist kein wirklich eintippbares Unterscheidungskuerzel, sondern nur
+  // der Normalzustand, wenn NICHTS eingegeben ist (siehe
+  // kzSimulatorAktualisieren). Darum hier von der Fund-Suche
+  // ausgenommen, auch wenn der Eintrag fuer die Standardanzeige
+  // (Platzhalter, Grundmuster) weiter existiert.
+  return land.kennzeichen.find(k => k.code === gesucht && !kzOhneKuerzel(k));
 }
 
 // Wie am echten Kennzeichen: Symbol (Landeswappen bei Oesterreich,
@@ -160,14 +174,32 @@ function kzWappenZeigen(land, treffer) {
     bild.innerHTML = EIGENES_WAPPEN[treffer.eigenesWappen]();
     text.textContent = treffer.wappenText || "";
     box.classList.remove("kz-schild-wappen-leer");
+    // Auch hier (wie im "sonst nichts trifft zu"-Zweig unten) den Zustand
+    // von einem VORHERIGEN Land explizit zuruecksetzen - sonst bliebe
+    // z.B. beim Wechsel von Deutschland zu Sloweniens "P" (Polizei) die
+    // volle Kreis-Groesse faelschlich stehen.
+    box.classList.remove("kz-schild-wappen-vollhoehe");
     return;
   }
 
+  // "vollhoehe" (siehe .kz-schild-wappen-vollhoehe) gilt NUR fuer das
+  // deutsche Doppelkreis-Design (TUEV-/Kreiswappen-Plakette, spec.typ
+  // "de") - das ist deutlich hoeher als breit und soll die volle
+  // Kennzeichen-Hoehe ausnutzen. Normale Flaggen-Rechtecke ("h"/"v"/
+  // "keil") oder Wappenschilde (ch/hu/si/li) bleiben bei der normalen,
+  // kleineren Wappen-Box. Schon HIER auf Basis des Landes vorbelegen
+  // (nicht erst beim konkreten Treffer), sonst wuerde die Box beim
+  // allerersten gueltigen Kuerzel ploetzlich groesser/kleiner springen.
+  let vollhoehe = !!(land.flagge && land.flagge.typ === "de");
   // Manche Kennzeichen haben trotz Land-Wappen keines (z.B. das
   // Schweizer Militaerkennzeichen "M" - kein Kanton, kein Kantonswappen).
   if (!treffer || treffer.keinWappen) {
     bild.innerHTML = "";
     text.textContent = "";
+    // Nur bei einem KONKRET erkannten "kein Wappen"-Treffer zuruecknehmen -
+    // waehrend des Tippens (treffer noch null) bleibt die Land-Vorgabe
+    // von oben bestehen (siehe Kommentar dort).
+    if (treffer && treffer.keinWappen) vollhoehe = false;
   } else if (land.hatWappen && WAPPEN_DATEI[treffer.bundesland]) {
     bild.innerHTML = '<img src="' + WAPPEN_DATEI[treffer.bundesland] + '" alt="" onerror="this.style.display=\'none\'">';
     // Das Wappen zeigt das BUNDESLAND, nicht den Bezirk - darum steht
@@ -179,13 +211,15 @@ function kzWappenZeigen(land, treffer) {
   } else if (land.flagge) {
     // Die winzige Beschriftung unter dem Symbol gibt es nur bei
     // Oesterreich (dort steht wirklich ein Bundesland-Wappen) - bei
-    // allen anderen Laendern bleibt es beim Symbol ohne Textzeile.
+    // allen anderen Laendern bleibt es beim Symbol ohne Textzeile
+    // ("vollhoehe" ist hier schon von oben gesetzt).
     bild.innerHTML = landFlaggeSvg(land.flagge, treffer);
     text.textContent = "";
   } else {
     bild.innerHTML = "";
     text.textContent = "";
   }
+  box.classList.toggle("kz-schild-wappen-vollhoehe", vollhoehe);
 
   // Die Box klappt nur ein, wenn dieses LAND grundsaetzlich nie etwas
   // an dieser Stelle zeigt (z.B. Italien - traditionell keine Grafik
@@ -525,6 +559,42 @@ function chKreuzSvg() {
     "</svg>";
 }
 
+// Vereinfachter WEISSER albanischer Doppeladler (steht am echten
+// Kennzeichen auf dem normalen blauen Band, genau wie sonst der
+// Sternenkranz oder das "H" bei anderen Laendern). Ausserhalb dieser
+// App per Screenshot-Test verifiziert (gross UND in der tatsaechlichen
+// Icon-Groesse) - liest sich klar als gespreizter Doppeladler: pro
+// Fluegel fuenf gefaecherte, gedrehte Federn (statt weniger Dreiecke),
+// ein durchgehender schildartiger Koerper OHNE separate Hals-Naht (die
+// vorher wie ein Gesicht zwischen den Koepfen aussah), und deutlichere
+// hakenfoermige Schnaebel. Weiterhin keine heraldische Feinzeichnung
+// (bei Icon-Groesse ohnehin nicht sichtbar).
+function alAdlerSvg() {
+  return '<svg viewBox="0 0 40 28" class="kz-sterne-svg">' +
+    '<g fill="#fff">' +
+    // Rechter Fluegel: fuenf gefaecherte Federn (gedrehte Ellipsen)
+    '<ellipse cx="29.8" cy="8.5" rx="11" ry="2.1" transform="rotate(-38 29.8 8.5)"/>' +
+    '<ellipse cx="31.2" cy="11.6" rx="11.5" ry="2.1" transform="rotate(-16 31.2 11.6)"/>' +
+    '<ellipse cx="31.5" cy="14.8" rx="11.5" ry="2.0" transform="rotate(4 31.5 14.8)"/>' +
+    '<ellipse cx="30.5" cy="17.9" rx="11" ry="2.0" transform="rotate(24 30.5 17.9)"/>' +
+    '<ellipse cx="28.4" cy="20.6" rx="9.5" ry="1.9" transform="rotate(46 28.4 20.6)"/>' +
+    // Linker Fluegel (gespiegelt)
+    '<ellipse cx="10.2" cy="8.5" rx="11" ry="2.1" transform="rotate(38 10.2 8.5)"/>' +
+    '<ellipse cx="8.8" cy="11.6" rx="11.5" ry="2.1" transform="rotate(16 8.8 11.6)"/>' +
+    '<ellipse cx="8.5" cy="14.8" rx="11.5" ry="2.0" transform="rotate(-4 8.5 14.8)"/>' +
+    '<ellipse cx="9.5" cy="17.9" rx="11" ry="2.0" transform="rotate(-24 9.5 17.9)"/>' +
+    '<ellipse cx="11.6" cy="20.6" rx="9.5" ry="1.9" transform="rotate(-46 11.6 20.6)"/>' +
+    // Koerper/Hals/Schwanz als EIN Schild (kein separater Hals mehr)
+    '<path d="M13,10 C13,7.5 15,6.7 17,8 L20,10.3 L23,8 C25,6.7 27,7.5 27,10 C27.6,13 26,17 25,20 C24,23 22,25.3 20,27 C18,25.3 16,23 15,20 C14,17 12.4,13 13,10 Z"/>' +
+    // Koepfe
+    '<circle cx="15.3" cy="5" r="2.8"/>' +
+    '<circle cx="24.7" cy="5" r="2.8"/>' +
+    // Hakenfoermige Schnaebel
+    '<path d="M13.0,3.6 L8.2,2.6 L9.6,5.2 L13.4,5.6 Z"/>' +
+    '<path d="M27.0,3.6 L31.8,2.6 L30.4,5.2 L26.6,5.6 Z"/>' +
+    "</g></svg>";
+}
+
 // Das Schild passt sich pro Land an: EU-Laender bekommen den
 // Sternenkreis, die Schweiz ihr Kreuz, Liechtenstein die traditionelle
 // schwarze Tafel mit weisser Schrift - alles andere bleibt die helle
@@ -559,6 +629,14 @@ function kzSchildFarbeSetzen(land, einzelkennzeichen) {
     document.getElementById("kzSchildEu").style.background = "#fff";
     buchstabe.textContent = "";
     bandInhalt = chKreuzSvg();
+  } else if (land.adlerBand) {
+    // Albanien: normales blaues Band wie bei jedem anderen Land (kein
+    // eigenes Wappenschild wie bei der Schweiz), aber statt des EU-
+    // Sternenkranzes (nicht EU-Mitglied) der weisse Doppeladler - "AL"
+    // bleibt wie gewohnt darunter stehen.
+    document.getElementById("kzSchildEu").style.background = land.euFarbe;
+    buchstabe.textContent = buchstabeVerstecken ? "" : land.euText;
+    bandInhalt = alAdlerSvg();
   } else {
     document.getElementById("kzSchildEu").style.background = land.euFarbe;
     buchstabe.textContent = buchstabeVerstecken ? "" : land.euText;
@@ -576,10 +654,15 @@ function kzSchildFarbeSetzen(land, einzelkennzeichen) {
   // rechts, hinter der Nummer - nicht wie bei Oesterreich zwischen
   // Kuerzel und Nummer.
   document.getElementById("kzSchild").classList.toggle("kz-schild-wappen-hinten", !!land.chKreuz);
-  // Mittiger Punkt zwischen Kuerzel und Nummer nur bei der Schweiz;
-  // zweites blaues Feld ganz rechts nur bei Italien.
-  document.getElementById("kzSchildPunkt").textContent = land.chKreuz ? "·" : "";
+  // Mittiger Punkt zwischen Kuerzel und Nummer - bei der Schweiz
+  // ("chKreuz") UND bei Albanien/Italien ("mittelpunkt") dasselbe
+  // einfache Textzeichen "·"; zweites blaues Feld ganz rechts bei
+  // Italien (mit orangem Kreis oben, kz-schild-eu2-orange) bzw.
+  // Albanien (mit weissem Ring unten, kz-schild-eu2-kreis).
+  document.getElementById("kzSchildPunkt").textContent = (land.chKreuz || land.mittelpunkt) ? "·" : "";
   document.getElementById("kzSchildEu2").classList.toggle("kz-schild-eu2-sichtbar", !!land.euBandRechts);
+  document.getElementById("kzSchildEu2").classList.toggle("kz-schild-eu2-kreis", !!land.euBandRechtsKreis);
+  document.getElementById("kzSchildEu2").classList.toggle("kz-schild-eu2-orange", !!land.euBandRechtsOrange);
   const nr = land.nrMuster || "123 AB";
   const nrFeld = document.getElementById("kzSchildNr");
   nrFeld.value = nr;
@@ -632,11 +715,14 @@ function kzLandWechseln() {
   const eingabeFeld = document.getElementById("kzEingabe");
   kzEingabeGroesseSetzen(land, eingabeFeld);
   eingabeFeld.disabled = einzelkennzeichen;
-  eingabeFeld.value = einzelkennzeichen ? land.kennzeichen[0].code : "";
-  // Graues Platzhalter-Beispiel DIREKT auf der Tafel (ersetzt den
-  // frueheren Platzhaltertext in Feld 2 daneben) - verschwindet sobald
-  // ein Zeichen eingetippt ist, siehe kz-schild-code::placeholder.
-  eingabeFeld.placeholder = land.kennzeichen[0].code;
+  // "---" (siehe kzOhneKuerzel) heisst: dieses Land hat kein ECHTES,
+  // bedeutungstragendes Kuerzel - weder als Wert noch als Platzhalter-
+  // Beispiel soll dann buchstaeblich "---" erscheinen (z.B. Luxemburg/
+  // Frankreich: auf der Tafel steht dort wirklich gar nichts).
+  const erstesKennzeichen = land.kennzeichen[0];
+  const ersteOhneKuerzel = kzOhneKuerzel(erstesKennzeichen);
+  eingabeFeld.value = einzelkennzeichen && !ersteOhneKuerzel ? erstesKennzeichen.code : "";
+  eingabeFeld.placeholder = ersteOhneKuerzel ? "" : erstesKennzeichen.code;
 
   // Feld 2 (Bezirks-Kuerzel): bei Einzelkennzeichen-Laendern gibt es
   // nichts einzutippen, das eine Kuerzel steht schon in der Tafel -
@@ -648,13 +734,33 @@ function kzLandWechseln() {
   feld2.disabled = einzelkennzeichen;
   feld2.maxLength = land.kennzeichen.reduce((max, k) => Math.max(max, k.code.length), 1);
   feld2.dataset.nurZiffern = land.kennzeichen.every(k => /^[0-9]+$/.test(k.code)) ? "1" : "";
+  feld2.placeholder = "";
 
   // Feld 3 (Zusatznummer) schaltet erst frei, sobald Feld 2 einen
-  // Treffer mit nrEingebbar liefert (siehe kzFeld2Input) - beim
-  // Landwechsel also erstmal immer ausgeblendet.
+  // Treffer mit nrEingebbar/nrAuswahl liefert (siehe kzFeld2Input) -
+  // beim Landwechsel also erstmal immer ausgeblendet.
   const feld3 = document.getElementById("kzFeld3");
   feld3.value = "";
   feld3.disabled = true;
+
+  // "standardKuerzel": das erste Kuerzel (z.B. Albaniens "AB", Ungarns
+  // "AA") soll schon automatisch geladen sein, sobald das Land
+  // ausgewaehlt ist - auch wenn es noch mehrere ANDERE echte Kuerzel
+  // gibt (z.B. Albaniens "MB"/"MM"), also NICHT einzelkennzeichen ist.
+  // Feld 2 wird dafuer einfach vorausgefuellt und danach der GANZ
+  // NORMALE kzFeld2Input-Ablauf angestossen - Tafel, Ergebnistabelle
+  // und Farben laufen dann exakt wie bei jedem echt eingetippten
+  // Kuerzel, keine Sonderbehandlung noetig.
+  if (land.standardKuerzel && !einzelkennzeichen && !ersteOhneKuerzel) {
+    feld2.value = erstesKennzeichen.code;
+    kzFeld2Input();
+    // kzFeld2Input() zeigt normalerweise (wie bei echtem Tippen) auch
+    // die Vorschlagsliste an - hier aber nur eine automatische
+    // Vorbefuellung, keine echte Nutzereingabe, darum die Liste gleich
+    // wieder verstecken statt sie ungefragt aufpoppen zu lassen.
+    document.getElementById("kzFeld2Vorschlaege").hidden = true;
+    return;
+  }
 
   kzSimulatorAktualisieren();
   kzFokusAktualisieren();
@@ -666,13 +772,15 @@ function kzLandWechseln() {
 function kzLandSetzen(name) {
   if (!LAENDER[name]) return;
   kzAktuellesLandName = name;
-  // Das Getippte bleibt hier bewusst STEHEN (nicht loeschen!) - sonst
-  // liesse sich z.B. "SLO" nicht eintippen: "S" trifft schon exakt auf
-  // Schweden, und wuerde das Feld dabei geleert, waeren die naechsten
-  // Buchstaben "L"/"O" verloren statt sich zu "SLO" zusammenzusetzen.
-  // Nur der ALLERERSTE Zustand beim Oeffnen ist ein reiner Platzhalter
-  // (siehe gehModulKennzeichen-Handler) - ab der ersten eigenen Eingabe
-  // bleibt immer der zuletzt eingetippte Text sichtbar.
+  // Feld 1 IMMER auf das echte Kuerzel setzen - beim Tippen (exakter
+  // Treffer in kzFeld1Input) steht da ohnehin schon genau dieser Text,
+  // das Ueberschreiben ist also ein No-Op und stoert das Zusammensetzen
+  // von z.B. "SLO" nicht (die alte Sorge, die dieser Kommentar frueher
+  // hier hatte). Beim KLICK auf einen Vorschlag dagegen war das Feld
+  // vorher oft leer/unpassend (z.B. noch gar nichts getippt) - ohne
+  // dieses Setzen blieb es dann faelschlich leer statt das gewaehlte
+  // Kuerzel zu zeigen.
+  document.getElementById("kzFeld1").value = LAENDER[name].euText;
   document.getElementById("kzFeld1").classList.remove("kz-eingabe-feld-fehler");
   kzFeld1VorschlaegeVerstecken();
   kzLandWechseln();
@@ -684,32 +792,10 @@ function kzFeld1VorschlaegeVerstecken() {
   box.innerHTML = "";
 }
 
-// Zeigt beim Tippen in Feld 1 alle Laender, deren echtes Kuerzel
-// (land.euText) mit dem bisher Eingetippten beginnt - bei genau einem
-// vollstaendigen Treffer wird das Land direkt uebernommen (siehe
-// kzLandSetzen), sonst bleibt das zuletzt gueltige Land aktiv (Feld 2/3
-// zeigen aber per Fehlerrand an, dass gerade kein Land feststeht).
-function kzFeld1Input() {
-  const feld1 = document.getElementById("kzFeld1");
-  const roh = feld1.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
-  if (feld1.value !== roh) feld1.value = roh;
-  kzFokusAktualisieren();
-
-  if (!roh) {
-    feld1.classList.remove("kz-eingabe-feld-fehler");
-    kzFeld1VorschlaegeVerstecken();
-    return;
-  }
-
-  const exakt = LAENDER_ORDER.find(name => LAENDER[name].euText === roh);
-  if (exakt) {
-    kzLandSetzen(exakt);
-    return;
-  }
-
-  // Kein eindeutiger Treffer (noch) - Land bleibt wie es war, aber rot
-  // umrandet als Hinweis, dass das noch kein gueltiges Kuerzel ist.
-  feld1.classList.add("kz-eingabe-feld-fehler");
+// Zeigt (beim Tippen ODER beim blossen Fokussieren) alle Laender, deren
+// echtes Kuerzel (land.euText) mit "roh" beginnt - bei leerem "roh" also
+// ALLE Laender, wie beim Fokussieren von Feld 2/3.
+function kzFeld1VorschlaegeAnzeigen(roh) {
   const kandidaten = LAENDER_ORDER
     .filter(name => LAENDER[name].euText.startsWith(roh))
     .sort((a, b) => LAENDER[a].euText.length - LAENDER[b].euText.length);
@@ -724,21 +810,63 @@ function kzFeld1Input() {
   box.hidden = false;
 }
 
+// Bei genau einem vollstaendigen Treffer beim TIPPEN wird das Land
+// direkt uebernommen (siehe kzLandSetzen), sonst bleibt das zuletzt
+// gueltige Land aktiv (Feld 2/3 zeigen aber per Fehlerrand an, dass
+// gerade kein Land feststeht).
+function kzFeld1Input() {
+  const feld1 = document.getElementById("kzFeld1");
+  const roh = feld1.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
+  if (feld1.value !== roh) feld1.value = roh;
+  kzFokusAktualisieren();
+
+  if (!roh) {
+    // Leer heisst nicht mehr "keine Vorschlaege" - stattdessen wie beim
+    // Fokussieren ALLE Laender zeigen (siehe kzFeld1VorschlaegeAnzeigen).
+    feld1.classList.remove("kz-eingabe-feld-fehler");
+    kzFeld1VorschlaegeAnzeigen(roh);
+    return;
+  }
+
+  const exakt = LAENDER_ORDER.find(name => LAENDER[name].euText === roh);
+  if (exakt) {
+    kzLandSetzen(exakt);
+    return;
+  }
+
+  // Kein eindeutiger Treffer (noch) - Land bleibt wie es war, aber rot
+  // umrandet als Hinweis, dass das noch kein gueltiges Kuerzel ist.
+  feld1.classList.add("kz-eingabe-feld-fehler");
+  kzFeld1VorschlaegeAnzeigen(roh);
+}
+document.getElementById("kzFeld1").addEventListener("focus", function () {
+  const roh = document.getElementById("kzFeld1").value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "");
+  kzFeld1VorschlaegeAnzeigen(roh);
+});
+
 document.getElementById("kzFeld1Vorschlaege").addEventListener("click", function (e) {
   const zeile = e.target.closest(".kz-feld1-vorschlag");
   if (zeile) kzLandSetzen(zeile.dataset.land);
 });
-// Ausserhalb hingetippt/-geklickt -> beide Vorschlagslisten weg (aber
-// die Felder selbst bleiben stehen, wie sie sind - kein automatisches
-// Zuruecksetzen).
+// Ausserhalb hingetippt/-geklickt -> alle drei Vorschlagslisten weg
+// (aber die Felder selbst bleiben stehen, wie sie sind - kein
+// automatisches Zuruecksetzen).
 document.addEventListener("click", function (e) {
+  const feld2Box = document.getElementById("kzFeld2Vorschlaege");
+  const feld3Box = document.getElementById("kzFeld3Vorschlaege");
   if (e.target.closest("#kzFeld1Wrap")) {
-    document.getElementById("kzFeld2Vorschlaege").hidden = true;
+    feld2Box.hidden = true;
+    feld3Box.hidden = true;
   } else if (e.target.closest("#kzFeld2Wrap")) {
     kzFeld1VorschlaegeVerstecken();
+    feld3Box.hidden = true;
+  } else if (e.target.closest("#kzFeld3Wrap")) {
+    kzFeld1VorschlaegeVerstecken();
+    feld2Box.hidden = true;
   } else {
     kzFeld1VorschlaegeVerstecken();
-    document.getElementById("kzFeld2Vorschlaege").hidden = true;
+    feld2Box.hidden = true;
+    feld3Box.hidden = true;
   }
 });
 
@@ -759,28 +887,40 @@ function kzFeld2Input() {
   const land = kzAktuellesLand();
   const treffer = roh ? kzFinden(land, roh) : null;
   const feld3 = document.getElementById("kzFeld3");
-  const brauchtFeld3 = !!(treffer && treffer.nrEingebbar);
+  // "nrAuswahl" (z.B. Albaniens "AB" -> T/MT/R/RB) schaltet Feld 3
+  // genauso frei wie "nrEingebbar" (z.B. Sloweniens "SV") - der
+  // Unterschied liegt nur darin, WIE Feld 3 die Tafel beeinflusst
+  // (siehe kzTafelAktualisieren/kzHerkunftAktualisieren).
+  const brauchtFeld3 = !!(treffer && (treffer.nrEingebbar || treffer.nrAuswahl));
   feld3.disabled = !brauchtFeld3;
-  if (!brauchtFeld3) feld3.value = "";
-  else feld3.focus();
+  if (!brauchtFeld3) {
+    feld3.value = "";
+    document.getElementById("kzFeld3Vorschlaege").hidden = true;
+  } else {
+    // Bildschirmtastatur auf Handys passend umschalten - Ziffernblock
+    // fuer Zahlen (z.B. slowenische Garnisonsnummer), normale Tastatur
+    // fuer Buchstaben (z.B. albanische Teilstreitkraft bei "MM").
+    feld3.inputMode = kzNrBuchstaben(treffer) ? "text" : "numeric";
+    feld3.focus();
+  }
 }
 
-// Bei Laendern OHNE echten Regionsbezug (regionLabel "Land", z.B.
-// Luxemburg, Ungarn) sieht man am Kuerzel selbst nicht, was es sonst
-// noch gibt - anders als z.B. bei Oesterreich, wo die Bezirke auf der
-// Karte/im Lexikon leicht auffindbar sind. Darum hier (nur fuer solche
-// Laender, und nur wenn es ueberhaupt mehrere Kuerzel gibt) beim
-// Fokussieren/Tippen in Feld 2 eine Vorschlagsliste wie bei Feld 1.
+// Fuer JEDES Land (nicht mehr nur fuer solche ohne echten Regionsbezug
+// wie Luxemburg/Ungarn) beim Fokussieren/Tippen in Feld 2 eine
+// Vorschlagsliste wie bei Feld 1 - zeigt bei leerem Feld alle, sonst nur
+// die zum Getippten passenden Kuerzel. Nur wenn es ueberhaupt mehrere
+// Kuerzel gibt (sonst steht das eine schon fest, siehe einzelkennzeichen
+// in kzLandWechseln).
 function kzFeld2VorschlaegeAnzeigen() {
   const box = document.getElementById("kzFeld2Vorschlaege");
   const feld2 = document.getElementById("kzFeld2");
   const land = kzAktuellesLand();
-  if (land.regionLabel !== "Land" || land.kennzeichen.length < 2) {
+  if (land.kennzeichen.length < 2) {
     box.hidden = true;
     return;
   }
   const roh = feld2.value.toUpperCase();
-  const kandidaten = land.kennzeichen.filter(k => !k.nichtEingebbar && k.code.startsWith(roh));
+  const kandidaten = land.kennzeichen.filter(k => !kzOhneKuerzel(k) && k.code.startsWith(roh));
   if (!kandidaten.length) {
     box.hidden = true;
     return;
@@ -800,16 +940,73 @@ document.getElementById("kzFeld2Vorschlaege").addEventListener("click", function
   kzFeld2Input();
 });
 
-// Feld 3 (Zusatznummer, z.B. Garnisonsstandort bei "SV") spiegelt
-// seinen Wert in kzSchildNr - kzHerkunftAktualisieren (unveraendert)
-// uebernimmt von dort die Auswertung/Anzeige wie zuvor.
+// Ob bei einem Treffer die freie Zusatznummer aus BUCHSTABEN statt
+// Ziffern besteht (bisher nur albanisches Militaer "MM" - die
+// Teilstreitkraft FA/FD/FT/KM/PU/SP - alle anderen nrEingebbar-Faelle,
+// z.B. slowenisches "SV", bleiben rein numerisch).
+function kzNrBuchstaben(treffer) {
+  return !!(treffer && treffer.nrArt === "buchstaben");
+}
+
+// Feld 3 (Zusatznummer/-kuerzel, z.B. Garnisonsstandort bei "SV" oder
+// Teilstreitkraft bei "MM") spiegelt seinen Wert in kzSchildNr -
+// kzHerkunftAktualisieren (unveraendert) uebernimmt von dort die
+// Auswertung/Anzeige wie zuvor.
 function kzFeld3Input() {
   const feld3 = document.getElementById("kzFeld3");
-  const ziffern = feld3.value.replace(/\D/g, "").slice(0, 2);
-  if (feld3.value !== ziffern) feld3.value = ziffern;
-  document.getElementById("kzSchildNr").value = ziffern;
+  const land = kzAktuellesLand();
+  const feld2 = document.getElementById("kzFeld2");
+  const treffer = kzFinden(land, feld2.value);
+  const wert = (kzNrBuchstaben(treffer)
+    ? feld3.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "")
+    : feld3.value.replace(/\D/g, "")
+  ).slice(0, 2);
+  if (feld3.value !== wert) feld3.value = wert;
+  document.getElementById("kzSchildNr").value = wert;
   kzHerkunftAktualisieren();
+  kzFeld3VorschlaegeAnzeigen();
 }
+
+// Bei Kuerzeln mit einer bekannten Nummern-/Buchstaben-Herkunftstabelle
+// (bisher slowenisches Militaer "SV" und albanisches Militaer "MM",
+// siehe nrHerkunft in data/countries/si.js bzw. al.js) zeigt Feld 3
+// beim Fokussieren/Tippen dieselbe Art Vorschlagsliste wie Feld 1/2 -
+// bei leerem Feld alle Herkunftswerte, sonst nur die zum bisher
+// Eingetippten passenden.
+function kzFeld3VorschlaegeAnzeigen() {
+  const box = document.getElementById("kzFeld3Vorschlaege");
+  const feld3 = document.getElementById("kzFeld3");
+  const land = kzAktuellesLand();
+  const feld2 = document.getElementById("kzFeld2");
+  const treffer = kzFinden(land, feld2.value);
+  if (!treffer || !treffer.nrHerkunft) {
+    box.hidden = true;
+    return;
+  }
+  const roh = kzNrBuchstaben(treffer) ? feld3.value.toUpperCase() : feld3.value.replace(/\D/g, "");
+  const kandidaten = Object.keys(treffer.nrHerkunft).filter(nr => nr.startsWith(roh));
+  if (!kandidaten.length) {
+    box.hidden = true;
+    return;
+  }
+  box.innerHTML = kandidaten.map(nr => {
+    // "nrAuswahl"-Eintraege (z.B. Albaniens "AB") haben hier ein ganzes
+    // Objekt {bezeichnung, ...} statt nur Text (siehe kzHerkunftAktualisieren).
+    const wert = treffer.nrHerkunft[nr];
+    const text = (wert && typeof wert === "object") ? wert.bezeichnung : wert;
+    return '<div class="kz-feld1-vorschlag" data-nr="' + nr + '"><b>' + nr + "</b>" + text + "</div>";
+  }).join("");
+  box.hidden = false;
+}
+document.getElementById("kzFeld3").addEventListener("focus", kzFeld3VorschlaegeAnzeigen);
+document.getElementById("kzFeld3Vorschlaege").addEventListener("click", function (e) {
+  const zeile = e.target.closest(".kz-feld1-vorschlag");
+  if (!zeile) return;
+  const feld3 = document.getElementById("kzFeld3");
+  feld3.value = zeile.dataset.nr;
+  document.getElementById("kzFeld3Vorschlaege").hidden = true;
+  kzFeld3Input();
+});
 
 // Orange-Markierung auf der Tafel folgt dem FOKUS: das Segment, das
 // gerade zum fokussierten Feld gehoert, wird orange hervorgehoben -
@@ -848,22 +1045,68 @@ function kzSimulatorAktualisieren() {
 
   if (!eingabe) {
     eingabeFeld.classList.remove("kz-schild-code-unbekannt");
+    const erstesKennzeichen = land.kennzeichen[0];
+    // Graues Platzhalter-Beispiel (z.B. Albaniens "AB") DIREKT auf der
+    // Tafel zeigen - NICHT ueber das "placeholder"-Attribut (kzEingabe
+    // ist "readonly", und Browser zeigen bei readonly-Feldern KEINEN
+    // Placeholder an, siehe kz-schild-code-platzhalter in style.css),
+    // sondern als echter (grau eingefaerbter) Wert. Nur relevant, wenn
+    // das Land wirklich ein sichtbares, aber bedeutungsloses Basis-
+    // Kuerzel hat (platzhalterText) - sonst (Luxemburg, Frankreich, ...)
+    // bleibt das Feld wie gehabt komplett leer.
+    // WICHTIG: das muss VOR kzTafelAktualisieren() passieren - die
+    // pruefte bisher den ALTEN (noch leeren) Wert und blendete das Feld
+    // deswegen faelschlich komplett aus ("kz-schild-code-versteckt",
+    // width:0) - "AB" stand zwar technisch im DOM, war aber unsichtbar.
+    const platzhalterText = kzOhneKuerzel(erstesKennzeichen) ? (erstesKennzeichen.platzhalterText || "") : "";
+    eingabeFeld.value = platzhalterText;
+    eingabeFeld.classList.toggle("kz-schild-code-platzhalter", !!platzhalterText);
     kzTafelAktualisieren(land, null);
+    kzSchildEinpassen();
+    // Das Land steht schon fest (Feld 1) - das zeigen wir SOFORT in der
+    // Tabelle ("Land: [L] Luxemburg"), auch wenn das Bezirks-/
+    // Unterscheidungskuerzel (Feld 2) noch gar nicht eingetippt ist,
+    // statt komplett leer zu bleiben, bis das erste Kuerzel feststeht.
+    const tabelle = document.getElementById("kzErgebnisTabelle");
+    const zeilen = [kzLandZeile(land)];
+    // Hat das Land einen "---"-Basiseintrag (kein Regionsbezug), den
+    // wie einen echten Treffer behandeln und mit anzeigen ("Kürzel:
+    // [---] kein Regionsbezug ..."), statt nur die Land-Zeile allein zu
+    // zeigen - genau wie bei einem wirklich eingetippten Kuerzel.
+    if (kzOhneKuerzel(erstesKennzeichen)) {
+      zeilen.push(["Kürzel",
+        '<span class="kz-ergebnis-orange">[' + erstesKennzeichen.code + "] " + erstesKennzeichen.bezirk + "</span>"]);
+      const einstufig = erstesKennzeichen.bundesland === kzAktuellesLandName;
+      zeilen.push(["Einteilung", land.kuerzelTyp || (einstufig ? land.regionLabel : "Bezirke")]);
+    }
+    const html = kzZeilenZuHtml(zeilen);
+    tabelle.dataset.basis = html;
+    tabelle.innerHTML = html;
+    tabelle.hidden = false;
     ergebnis.hidden = false;
-    document.getElementById("kzErgebnisTabelle").hidden = true;
-    // Als Beispiel im Hinweistext nie ein "nichtEingebbar"-Basiskuerzel
-    // nennen (z.B. "NL") - das faende man ja gerade nicht, wenn man es
-    // eintippt. Stattdessen das erste WIRKLICH eintippbare Kuerzel
+    // Als Beispiel im Hinweistext nie ein Platzhalter-Basiskuerzel wie
+    // "---" oder "NL" nennen - das faende man ja gerade nicht, wenn man
+    // es eintippt. Stattdessen das erste WIRKLICH eintippbare Kuerzel
     // suchen, sonst (Sonderfall: gar keins vorhanden) den Landesnamen.
-    const beispielKuerzel = land.kennzeichen.find(k => !k.nichtEingebbar);
+    const beispielKuerzel = land.kennzeichen.find(k => !kzOhneKuerzel(k));
     ergebnis.innerHTML = beispielKuerzel
       ? 'Tipp ein Kürzel ein, z.B. „' + beispielKuerzel.code + '"'
       : "Für " + kzAktuellesLandName + " gibt es kein eintippbares Kürzel.";
-    kzKarteUndWappenSicherAktualisieren(land, null);
+    // "erstesKennzeichen" statt "null" uebergeben, wenn es der "---"-
+    // Basiseintrag ist - damit zeigt z.B. Ungarns Wappen (land.flagge)
+    // schon im Leerzustand, genau wie auf dem echten Kennzeichen (das
+    // Wappen gehoert dort zu JEDEM normalen Kennzeichen, nicht nur zu
+    // Sonderkuerzeln). Fuer Laender ohne eigenes Wappen (kein
+    // land.flagge/hatWappen) macht das keinen sichtbaren Unterschied.
+    kzKarteUndWappenSicherAktualisieren(land, kzOhneKuerzel(erstesKennzeichen) ? erstesKennzeichen : null);
     kzFokusAktualisieren();
     return;
   }
 
+  // Graue Platzhalter-Faerbung (siehe oben im "!eingabe"-Zweig) nur im
+  // WIRKLICH leeren Zustand - sobald etwas Echtes getippt ist, wieder
+  // normal (schwarz/farbig) darstellen.
+  eingabeFeld.classList.remove("kz-schild-code-platzhalter");
   const treffer = kzFinden(land, eingabe);
   kzTafelAktualisieren(land, treffer);
   // Das Ergebnis (Text + Grundfarben der Tafel) steht ab hier fest und
@@ -895,12 +1138,32 @@ function kzIstSonderkuerzel(treffer) {
   return treffer.bundesland === "Sonderkennzeichen";
 }
 
+// Baut aus [Label, Wert]-Paaren die HTML-Zeilen fuer die Ergebnis-
+// Tabelle - gemeinsam genutzt von kzErgebnisAnzeigen (erste Zeilengruppe)
+// und kzHerkunftAktualisieren (angehaengte zweite Zeilengruppe, "zweit"
+// setzt dafuer eine eigene Abstands-/Trennlinien-Klasse).
+function kzZeilenZuHtml(zeilen, zweit) {
+  return zeilen.map(([label, wert]) =>
+    '<span class="kz-ergebnis-label' + (zweit ? " kz-ergebnis-label-zweit" : "") + '">' + label + ':</span>' +
+    '<span class="kz-ergebnis-wert">' + wert + "</span>"
+  ).join("");
+}
+
+// Die "Land"-Zeile ([Kuerzel] Landesname, immer blau) - wird sowohl
+// gebraucht, sobald ein vollstaendiger Kuerzel-Treffer feststeht
+// (kzErgebnisAnzeigen), als auch VORHER schon, sobald nur das Land
+// (Feld 1) feststeht, aber noch kein Bezirks-Kuerzel eingetippt ist
+// (siehe kzSimulatorAktualisieren) - so steht "Land: [L] Luxemburg"
+// sofort da, statt erst nach der ersten Kuerzel-Eingabe.
+function kzLandZeile(land) {
+  return ["Land", '<span class="kz-ergebnis-blau">[' + land.euText + "] " + kzAktuellesLandName + "</span>"];
+}
+
 // Baut die "Label: Wert"-Tabelle unter der Tafel auf, sobald ein
 // Kuerzel erkannt wurde. Fester Aufbau (siehe Vorgabe):
-//   Land: [Kuerzel] Landesname          <- immer blau
-//   Kürzel: XY                          <- immer orange
-//   Einteilung: Bezirk/Kanton/... bzw. "Sonderzeichen"
-//   Bedeutung: <was das Kuerzel bedeutet>
+//   Land: [Kuerzel] Landesname            <- immer blau
+//   Kürzel: [Kuerzel] Bedeutung           <- immer orange, wie bei Land
+//   Einteilung: Bezirke/Kantone/... bzw. "Sonderzeichen"
 //   <Region-Label>: <Bundesland/Kanton/...>  ODER  Zugehörigkeit: Staat
 function kzErgebnisAnzeigen(land, treffer, eingabe) {
   const sonder = kzIstSonderkuerzel(treffer);
@@ -911,11 +1174,10 @@ function kzErgebnisAnzeigen(land, treffer, eingabe) {
   // regionLabel des Landes beschreibt stattdessen direkt die Einteilung.
   const einstufig = !sonder && treffer.bundesland === kzAktuellesLandName;
   const zeilen = [];
-  zeilen.push(["Land",
-    '<span class="kz-ergebnis-blau">[' + land.euText + "] " + kzAktuellesLandName + "</span>"]);
-  zeilen.push(["Kürzel", '<span class="kz-ergebnis-orange">' + eingabe + "</span>"]);
-  zeilen.push(["Einteilung", sonder ? "Sonderzeichen" : (land.kuerzelTyp || (einstufig ? land.regionLabel : "Bezirk"))]);
-  zeilen.push(["Bedeutung", treffer.bezirk]);
+  zeilen.push(kzLandZeile(land));
+  zeilen.push(["Kürzel",
+    '<span class="kz-ergebnis-orange">[' + eingabe + "] " + treffer.bezirk + "</span>"]);
+  zeilen.push(["Einteilung", sonder ? "Sonderzeichen" : (land.kuerzelTyp || (einstufig ? land.regionLabel : "Bezirke"))]);
   if (sonder) {
     zeilen.push(["Zugehörigkeit", "Staat"]);
   } else if (!einstufig) {
@@ -925,10 +1187,7 @@ function kzErgebnisAnzeigen(land, treffer, eingabe) {
   document.getElementById("kzErgebnis").hidden = true;
   const tabelle = document.getElementById("kzErgebnisTabelle");
   tabelle.hidden = false;
-  const html = zeilen.map(([label, wert]) =>
-    '<span class="kz-ergebnis-label">' + label + ':</span>' +
-    '<span class="kz-ergebnis-wert">' + wert + "</span>"
-  ).join("");
+  const html = kzZeilenZuHtml(zeilen);
   // Basis-Zeilen separat merken, damit kzHerkunftAktualisieren (z.B.
   // slowenische Garnisonsnummer bei "SV") eine zweite Zeilengruppe
   // ANHAENGEN kann, ohne diese hier neu bauen zu muessen.
@@ -1220,6 +1479,25 @@ function kzKarteAuswahlLoeschen() {
 }
 
 function kzTafelAktualisieren(land, treffer) {
+  // Manche Kuerzel stehen auf dem ECHTEN Kennzeichen nicht selbst vorne
+  // (z.B. Albaniens Taxi "T" - das steht dort als Suffix HINTER der
+  // Nummer, "AB 123 T"; das getippte "T" bleibt aber die Suche/Anzeige
+  // in Feld 2 und der Ergebnistabelle). "plattenPraefix" zeigt dann
+  // stattdessen ein unbedeutendes Platzhalter-Kuerzel (z.B. "AB") auf
+  // der Tafel selbst - das "T" kommt ueber treffer.nrMuster als
+  // Suffix hinter die Zahl. Passiert bewusst VOR der Breitenmessung
+  // gleich hier, damit die Feldbreite zur tatsaechlich gezeigten
+  // Zeichenzahl passt.
+  if (treffer && treffer.plattenPraefix) {
+    document.getElementById("kzEingabe").value = treffer.plattenPraefix;
+  }
+  // Italien: unter dem orangen Kreis im rechten blauen Feld steht am
+  // echten Kennzeichen (optional, siehe Kommentar in it.js) das
+  // Provinzkuerzel - hier das jeweils erkannte Kuerzel selbst (z.B.
+  // "RM" fuer Rom), leer wenn (noch) nichts Bekanntes eingetippt ist.
+  if (land.euBandRechtsOrange) {
+    document.getElementById("kzSchildEu2Text").textContent = treffer ? treffer.code : "";
+  }
   // Breite des Kuerzel-Feldes an die AKTUELL eingegebene Zeichenzahl
   // anpassen (nicht mehr fix aufs laengste Kuerzel des Landes) - siehe
   // Kommentar bei kzEingabeGroesseSetzen.
@@ -1237,11 +1515,19 @@ function kzTafelAktualisieren(land, treffer) {
   document.getElementById("kzSchild").classList.toggle("kz-schild-blau-hg", !!(treffer && treffer.blauHg));
   document.getElementById("kzSchild").classList.toggle("kz-schild-gruen-hg", !!(treffer && treffer.gruenHg));
   document.getElementById("kzSchild").classList.toggle("kz-schild-rot-hg", !!(treffer && treffer.rotHg));
-  // Diplomaten-Kennzeichen (z.B. slowenisch CMD/CD/CC/M): Kuerzel in
-  // gruener Schrift statt schwarz/weiss, dazu auch der Tafelrahmen gruen.
+  // Diplomaten-Kennzeichen (z.B. slowenisch CMD/CD/CC/M, albanisch MM/
+  // CD/TR): Kuerzel UND Nummer in gruener Schrift statt schwarz/weiss,
+  // dazu auch der Tafelrahmen gruen. (Frueher fehlte hier das Faerben
+  // von kzSchildNr - anders als bei blau/rot/braun/etc. unten - wodurch
+  // nur das Kuerzel gruen war, die Nummer daneben aber schwarz blieb.)
   const gruen = !!(treffer && treffer.gruen);
   document.getElementById("kzEingabe").classList.toggle("kz-schild-code-gruen", gruen);
+  document.getElementById("kzSchildNr").classList.toggle("kz-schild-code-gruen", gruen);
   document.getElementById("kzSchild").classList.toggle("kz-schild-rahmen-gruen", gruen);
+  // Albaniens landwirtschaftliche/technische Sonderkennzeichen (weisse
+  // Schrift auf gruenem Grund, z.B. "RB"/"MT"/"R"): weisser statt
+  // schwarzer Rahmen.
+  document.getElementById("kzSchild").classList.toggle("kz-schild-rahmen-weiss", !!(treffer && treffer.rahmenWeiss));
   // Slowenische Polizei "P": blaue Schrift statt schwarz, dazu auch
   // der Tafelrahmen blau.
   // Island: die Standardschrift ist LANDESWEIT blau (nicht nur bei
@@ -1288,6 +1574,13 @@ function kzTafelAktualisieren(land, treffer) {
   const editierbar = !!(treffer && treffer.nrEingebbar);
   nrFeld.readOnly = !editierbar;
   nrFeld.classList.toggle("kz-schild-nr-kurz", editierbar);
+  // Reihenfolge normalerweise "eintippbarer Teil" + fixer Rest (z.B.
+  // slowenisch "00-400") - bei Albaniens "MM" ist es umgekehrt, die
+  // festen Ziffern stehen VOR dem eintippbaren Buchstabenpaar ("123PU"
+  // statt "PU123") - siehe nrSuffixVorn in al.js und
+  // .kz-schild-nr-suffix-vorn in style.css.
+  document.getElementById("kzSchild").classList.toggle(
+    "kz-schild-nr-suffix-vorn", !!(treffer && treffer.nrSuffixVorn));
   if (editierbar) {
     // Alte, von einem anderen Land/Treffer uebernommene Breite (z.B.
     // "6.3ch" von einer normalen Nummer) muss weg - sonst gewinnt sie
@@ -1298,7 +1591,7 @@ function kzTafelAktualisieren(land, treffer) {
     if (!nrFeld.dataset.editStart) {
       nrFeld.value = "";
       nrFeld.maxLength = 2;
-      nrFeld.placeholder = "00";
+      nrFeld.placeholder = kzNrBuchstaben(treffer) ? "AA" : "00";
       nrFeld.dataset.editStart = "1";
     }
     nrSuffixFeld.textContent = treffer.nrSuffix || "";
@@ -1354,14 +1647,16 @@ function kzTafelAktualisieren(land, treffer) {
   // Manche Laender haben gar kein sichtbares Kuerzel auf der Tafel
   // selbst (z.B. Luxemburgs allgemeines "L" - das steht nur im blauen
   // EU-Band, auf der gelben Flaeche erscheint direkt die Seriennummer
-  // ohne zusaetzlichen Buchstaben davor) - siehe "codeVersteckt" beim
+  // ohne zusaetzlichen Buchstaben davor, markiert in der Laenderdatei
+  // mit "---", siehe kzOhneKuerzel) oder explizit "codeVersteckt" beim
   // jeweiligen Eintrag. Nur im WIRKLICH leeren Zustand (noch gar nichts
   // eingetippt) gilt dafuer der erste Eintrag des Landes als Vorschau -
   // bei einem unbekannten (falsch getippten) Kuerzel bleibt das
   // Eingegebene sichtbar, sonst wuerde es scheinbar spurlos verschwinden.
   const codeVersteckt = treffer
     ? !!treffer.codeVersteckt
-    : (!document.getElementById("kzEingabe").value && !!land.kennzeichen[0].codeVersteckt);
+    : (!document.getElementById("kzEingabe").value &&
+       (kzOhneKuerzel(land.kennzeichen[0]) || !!land.kennzeichen[0].codeVersteckt));
   const eingabeFeldEl = document.getElementById("kzEingabe");
   eingabeFeldEl.classList.toggle("kz-schild-code-versteckt", codeVersteckt);
   if (codeVersteckt) {
@@ -1370,57 +1665,101 @@ function kzTafelAktualisieren(land, treffer) {
   kzSchildEinpassen();
 }
 
-// Bei "SV" (slowenisches Militaer) zeigen die ersten zwei eingetippten
-// Ziffern der freien Nummer den Garnisonsstandort - wird bei jeder
-// Eingabe im Nummernfeld direkt unter dem Kennzeichen angezeigt.
+// Bei Kuerzeln mit einer freien Zusatznummer/-kuerzel (bisher "SV"
+// slowenisches Militaer, Ziffern -> Garnisonsstandort; "MM" albanisches
+// Militaer, Buchstaben -> Teilstreitkraft) zeigen die ersten zwei
+// eingetippten Zeichen die jeweilige Bedeutung - wird bei jeder Eingabe
+// im Nummernfeld direkt unter dem Kennzeichen angezeigt.
 function kzHerkunftAktualisieren() {
   const nrFeld = document.getElementById("kzSchildNr");
-  if (nrFeld.readOnly) return;
-  // Nur die zwei Ziffern selbst sind eintippbar (der Rest ist der fixe
+  // Treffer ZUERST bestimmen, bevor gefiltert wird - ob Ziffern oder
+  // Buchstaben eintippbar sind (kzNrBuchstaben), haengt vom jeweiligen
+  // Kuerzel ab (siehe nrArt in den Laenderdaten).
+  const land = kzAktuellesLand();
+  const eingabe = document.getElementById("kzEingabe").value.trim().toUpperCase();
+  const treffer = kzFinden(land, eingabe);
+  // Fruehausstieg NICHT mehr an "nrFeld.readOnly" (das ist bei
+  // "nrAuswahl"-Kuerzeln wie Albaniens "AB" absichtlich IMMER readonly,
+  // siehe kzTafelAktualisieren) - sondern direkt daran, ob dieser
+  // Treffer ueberhaupt eine Zusatzeingabe kennt.
+  if (!treffer || !(treffer.nrEingebbar || treffer.nrAuswahl)) return;
+  const feld3 = document.getElementById("kzFeld3");
+  // Bei "nrEingebbar" (z.B. Slowenien "SV") ist nrFeld selbst das
+  // editierbare Feld und der Wert kommt von dort; bei "nrAuswahl" (z.B.
+  // Albanien "AB") bleibt nrFeld readonly, der getippte/ausgewaehlte
+  // Wert kommt stattdessen direkt von Feld 3.
+  const quelle = treffer.nrEingebbar ? nrFeld : feld3;
+  // Nur die zwei Zeichen selbst sind eintippbar (der Rest ist der fixe
   // ".kz-schild-nr-suffix" daneben, siehe kzTafelAktualisieren).
-  const ziffern = nrFeld.value.replace(/\D/g, "").slice(0, 2);
-  if (nrFeld.value !== ziffern) nrFeld.value = ziffern;
+  const wert = (kzNrBuchstaben(treffer)
+    ? quelle.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "")
+    : quelle.value.replace(/\D/g, "")
+  ).slice(0, 2);
+  if (quelle.value !== wert) quelle.value = wert;
+  if (treffer.nrEingebbar && nrFeld.value !== wert) nrFeld.value = wert;
   // Orange bei leer kommt jetzt vom Fokus (siehe kzFokusAktualisieren),
   // nicht mehr pauschal von "ist leer" - hier nur noch aufrufen, damit
   // sie nach jeder Eingabe aktuell bleibt.
   kzFokusAktualisieren();
-  // Eine "= Ort"-Auskunft gibt es nur, wenn wir eine echte Zuordnung
-  // kennen (bisher nur SV/Garnisonsstandort) - bei den Diplomaten-
-  // Kennzeichen ist die Laendernummer-Zuordnung nicht sicher belegt,
-  // darum bleibt es dort nur beim Eintippen ohne Auskunft.
-  const land = kzAktuellesLand();
-  const eingabe = document.getElementById("kzEingabe").value.trim().toUpperCase();
-  const treffer = kzFinden(land, eingabe);
+  // Eine Auskunft gibt es nur, wenn wir eine echte Zuordnung kennen
+  // (bisher SV/Garnisonsstandort und MM/Teilstreitkraft) - bei den
+  // Diplomaten-Kennzeichen ist z.B. die Laendernummer-Zuordnung nicht
+  // sicher belegt, darum bleibt es dort nur beim Eintippen ohne Auskunft.
   if (!treffer || !treffer.nrHerkunft) return;
-  const ort = treffer.nrHerkunft[ziffern];
+  const bedeutung = treffer.nrHerkunft[wert];
+  // Bei "nrAuswahl" (z.B. Albaniens "AB") ist ein Treffer in nrHerkunft
+  // ein ganzes OBJEKT ({bezeichnung, Farbflaggen, nrMuster}) statt nur
+  // Text (wie bei Sloweniens "SV") - so eine Auswahl aendert nicht nur
+  // den Infotext, sondern die GANZE Tafel (Farbe, Zahlenmuster), wie
+  // ein eigener kleiner Treffer, der das Basis-Kuerzel ueberlagert.
+  const istAuswahl = !!treffer.nrAuswahl;
+  const bedeutungObjekt = bedeutung && typeof bedeutung === "object";
+  const bedeutungText = bedeutungObjekt ? bedeutung.bezeichnung : bedeutung;
   // Als ZWEITE Zeilengruppe an die bestehende Tabelle anhaengen (siehe
   // kzErgebnisAnzeigen), statt eine eigene, separat "hingeschmissene"
   // Zeile darunter zu zeigen - Kürzel/Bedeutung/Land bleiben so oben
-  // stehen, die Garnisons-Auskunft wirkt wie ein zusammengehoeriger
+  // stehen, die Zusatz-Auskunft wirkt wie ein zusammengehoeriger
   // zweiter Abschnitt derselben Tabelle.
   const tabelle = document.getElementById("kzErgebnisTabelle");
   const info = document.getElementById("kzGarnisonInfo");
   info.hidden = true;
-  if (!ziffern) {
+  if (!wert) {
     tabelle.innerHTML = tabelle.dataset.basis || "";
+    // Zusatzkuerzel geleert - Tafel zurueck auf das Basis-Kuerzel selbst
+    // (z.B. Albaniens "AB" ohne Sonderfarbe), statt an der zuletzt
+    // gewaehlten Zusatz-Optik (z.B. "MT", gruen) haengen zu bleiben.
+    if (istAuswahl) kzTafelAktualisieren(land, treffer);
     return;
   }
-  const zusatzZeilen = ziffern.length < 2
-    ? [["Zusatzkürzel", '<span class="kz-ergebnis-orange">' + ziffern + "</span>"]]
-    : ort
+  // "nrEingebbar"/"nrAuswahl" hier bewusst NICHT mituebernommen - sonst
+  // wuerde kzTafelAktualisieren beim erneuten Aufruf wieder in den
+  // editierbaren Zweig laufen (der am Ende SELBST kzHerkunftAktualisieren
+  // aufruft) und in einer Rekursion enden.
+  if (istAuswahl) {
+    kzTafelAktualisieren(land, bedeutungObjekt
+      ? Object.assign({}, bedeutung, { nrEingebbar: false, nrAuswahl: false })
+      : treffer);
+  }
+  // Wie bei "Land" und "Kürzel" oben: Nummer/Kuerzel und Bedeutung
+  // zusammen in einer Zeile ("Zusatzkürzel: [01] Ljubljana" bzw.
+  // "[MT] Technische Maschinen (...)") statt getrennter Zeilen. Die
+  // zweite Zeile heisst bewusst "Art" statt nochmal "Einteilung" - sonst
+  // stuenden zwei "Einteilung:"-Zeilen mit unterschiedlichem Wert
+  // untereinander (die erste von kzErgebnisAnzeigen, z.B.
+  // "Sonderzeichen"). Label ist pro Land ueber nrHerkunftLabel anpassbar
+  // (Standard: "Garnisonsstandort", bei Albanien "Sonderzeichen").
+  const artLabel = treffer.nrHerkunftLabel || "Garnisonsstandort";
+  const zusatzZeilen = wert.length < 2
+    ? [["Zusatzkürzel", '<span class="kz-ergebnis-orange">' + wert + "</span>"]]
+    : bedeutungText
       ? [
-          ["Zusatzkürzel", '<span class="kz-ergebnis-orange">' + ziffern + "</span>"],
-          ["Einteilung", "Garnisonsstandort"],
-          ["Bedeutung", ort],
+          ["Zusatzkürzel", '<span class="kz-ergebnis-orange">[' + wert + "] " + bedeutungText + "</span>"],
+          ["Art", artLabel],
         ]
       : [
-          ["Zusatzkürzel", '<span class="kz-ergebnis-orange">' + ziffern + "</span>"],
-          ["Bedeutung", "keine bekannte Garnisonsnummer"],
+          ["Zusatzkürzel", '<span class="kz-ergebnis-orange">[' + wert + "] keine bekannte Zuordnung</span>"],
         ];
-  tabelle.innerHTML = (tabelle.dataset.basis || "") + zusatzZeilen.map(([label, wert]) =>
-    '<span class="kz-ergebnis-label kz-ergebnis-label-zweit">' + label + ':</span>' +
-    '<span class="kz-ergebnis-wert">' + wert + "</span>"
-  ).join("");
+  tabelle.innerHTML = (tabelle.dataset.basis || "") + kzZeilenZuHtml(zusatzZeilen, true);
 }
 document.getElementById("kzSchildNr").addEventListener("input", kzHerkunftAktualisieren);
 
@@ -1484,7 +1823,7 @@ function kennzeichenListeZeichnen() {
     let landUeberschriftGesetzt = false;
     land.gruppen.forEach(gruppe => {
       const treffer = land.kennzeichen.filter(k =>
-        !k.nichtEingebbar &&
+        !kzOhneKuerzel(k) &&
         k.bundesland === gruppe &&
         // Regionsfilter kann sich je nach Land auf bundesland (z.B.
         // "Niederösterreich") ODER direkt auf bezirk (z.B. bei der

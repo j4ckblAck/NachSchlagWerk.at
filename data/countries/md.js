@@ -17,5 +17,8 @@
     euStern: false,
     nrMuster: "ABC 123",
     hatWappen: false,
+    // Wappenadler in der Mitte weggelassen - der blau-gelb-rote
+    // Streifenhintergrund bleibt.
+    flagge: { typ: "v", farben: ["#003DA5", "#FFD200", "#CC092F"] },
   });
 })();

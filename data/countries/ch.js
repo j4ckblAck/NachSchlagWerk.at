@@ -56,5 +56,9 @@ const CH_SONDERKENNZEICHEN = [
     chKreuz: true,
     nrMuster: "123456",
     hatWappen: false,
+    // Kantonswappen (siehe landFlaggeSvg/chKantonSvg, spec.typ "ch") -
+    // steht am echten Kennzeichen ganz rechts hinter der Nummer (siehe
+    // chKreuz/kz-schild-wappen-hinten).
+    flagge: { typ: "ch" },
   });
 })();

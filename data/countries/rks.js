@@ -17,13 +17,16 @@
     kennzeichen: KENNZEICHEN,
     gruppen: ["Kosovo"],
     regionen: ["Kosovo"],
-    regionLabel: "Bezirk",
-    kuerzelTyp: "Bezirk",
+    regionLabel: "Bezirke",
+    kuerzelTyp: "Bezirke",
     euText: "RKS",
     emoji: "🇽🇰",
     euFarbe: "#003399",
     euStern: false,
     nrMuster: "234-AB",
     hatWappen: false,
+    // Landkarten-Silhouette + sechs Sterne zu detailreich - stattdessen
+    // die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#244AA5"] },
   });
 })();

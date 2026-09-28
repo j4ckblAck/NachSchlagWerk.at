@@ -16,5 +16,8 @@
     euStern: true,
     nrMuster: "AB-1234",
     hatWappen: false,
+    // Echtes Verhaeltnis ist 2:1:2 (dunkelrot/weiss/dunkelrot) - hier
+    // ueber fuenf Baender angenaehert.
+    flagge: { typ: "h", farben: ["#9E3039", "#9E3039", "#fff", "#9E3039", "#9E3039"] },
   });
 })();

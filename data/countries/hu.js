@@ -13,7 +13,11 @@
   // Bezirkscode - aus dem Kuerzel ist keine Region mehr ablesbar.
   // ============================================================
   const UNGARN_KENNZEICHEN = [
-    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Ungarn" },
+    // "AA" ist das nichtssagende, rein fortlaufende ERSTE Buchstaben-
+    // paar - genau wie Albaniens "AB" hier als EIN echtes, eintippbares
+    // Kuerzel angelegt (kein Platzhalter mehr) und per "standardKuerzel"
+    // unten automatisch vorausgewaehlt, sobald Ungarn ausgewaehlt wird.
+    { code: "AA", bezirk: "(kein Regionsbezug)", bundesland: "Ungarn" },
  { code: "TX", bezirk: "Taxi",              gelb: true, bundesland: "Ungarn" },
  { code: "EV", bezirk: "Elektro-/Plug-in-Hybridfahrzeug", gruenHg: true, bundesland: "Ungarn" },
  // Sonderkennzeichen (Quelle: Wikipedia "Kfz-Kennzeichen (Ungarn)").
@@ -25,13 +29,15 @@
  { code: "OT", bezirk: "Oldtimer",   bundesland: "Ungarn" },
  { code: "SP", bezirk: "Motorsport-Fahrzeug",                     bundesland: "Ungarn" },
  {
+   // Kein zweizeiliges Format mit Wappen wie die normalen Kennzeichen -
+   // nur Zifferblock + Laendercode, darum "keinWappen".
    code: "CD", bezirk: "Diplomat (Corps Diplomatique)",
- nrMuster: "123-345", blauHg: true,
+ nrMuster: "123-345", blauHg: true, keinWappen: true,
  bundesland: "Ungarn",
  },
  {
    code: "CK", bezirk: "Konsuln (Corps Consulaire)",
- nrMuster: "12-34", rot: true,
+ nrMuster: "12-34", rot: true, keinWappen: true,
  bundesland: "Ungarn",
  },
   ];
@@ -47,8 +53,19 @@
     euStern: true,
     // War vorher faelschlich "CH-123" (das ist die Schweiz) - echtes
     // ungarisches Format seit 2022 ist AA-AA-123 (zwei Buchstaben,
-    // Wappen, zwei weitere Buchstaben, dreistellige Zahl).
-    nrMuster: "AA-123",
+    // Wappen, zwei weitere Buchstaben, dreistellige Zahl). Das ZWEITE
+    // Buchstabenpaar hier bewusst "BC" statt "AA" - sonst wiederholt
+    // sich "AA" im Leerzustand-Beispiel unnoetig ("AA"+Wappen+"AA-123"
+    // sah aus wie ein Kopierfehler statt zwei unabhaengiger Buchstaben-
+    // paare).
+    nrMuster: "BC-123",
     hatWappen: false,
+    // "AA" (der erste, echte Eintrag oben) soll schon geladen sein,
+    // sobald Ungarn ausgewaehlt ist - auch ohne dass extra etwas in
+    // Feld 2 getippt wird (siehe kzLandWechseln).
+    standardKuerzel: true,
+    // Vereinfachtes ungarisches Staatswappen (siehe landFlaggeSvg,
+    // spec.typ "hu").
+    flagge: { typ: "hu" },
   });
 })();

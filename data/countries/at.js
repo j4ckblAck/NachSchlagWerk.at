@@ -186,7 +186,7 @@ const SONDERKENNZEICHEN = [
     gruppen: KENNZEICHEN_ORDER,
     regionen: BUNDESLAND_LISTE,
     regionLabel: "Bundesland",
-    kuerzelTyp: "Bezirk",
+    kuerzelTyp: "Bezirke",
     euText: "A",
     emoji: "🇦🇹",
     euFarbe: "#003399",

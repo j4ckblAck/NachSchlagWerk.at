@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Island" }, bundesland: "Island", codeVersteckt: true, nichtEingebbar: true },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Island" },
     { code: "CD", bezirk: "Diplomaten (Corps Diplomatique)", nrMuster: "A12", gruenHg: true, weissText: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Island", {
@@ -18,5 +18,8 @@
     nrMuster: "AB 123",
     blau: true,
     hatWappen: false,
+    // Nordisches Kreuz laesst sich nicht als Streifenmuster darstellen -
+    // stattdessen die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#02529C"] },
   });
 })();

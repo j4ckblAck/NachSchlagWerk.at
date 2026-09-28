@@ -17,5 +17,8 @@
     euStern: false,
     nrMuster: "1234 AB",
     hatWappen: false,
+    // Die gelbe Sonne mit acht Strahlen ist zu detailreich - stattdessen
+    // die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#D20000"] },
   });
 })();

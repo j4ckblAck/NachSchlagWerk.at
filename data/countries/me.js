@@ -45,5 +45,8 @@
     euStern: false,
     nrMuster: "AB 123",
     hatWappen: false,
+    // Goldener Rahmen + Staatswappen zu detailreich - stattdessen die
+    // dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#C40308"] },
   });
 })();

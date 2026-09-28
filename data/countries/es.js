@@ -18,5 +18,8 @@
     euStern: true,
     nrMuster: "1234 BCD",
     hatWappen: false,
+    // Echtes Verhaeltnis ist 1:2:1 (gelbes Band doppelt so breit) -
+    // Wappen auf dem gelben Band hier weggelassen (zu klein erkennbar).
+    flagge: { typ: "h", farben: ["#AA151B", "#F1BF00", "#AA151B"] },
   });
 })();

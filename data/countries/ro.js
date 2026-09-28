@@ -75,5 +75,6 @@
     euStern: true,
     nrMuster: "12 ABC",
     hatWappen: false,
+    flagge: { typ: "v", farben: ["#002B7F", "#FCD116", "#CE1126"] },
   });
 })();

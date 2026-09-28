@@ -42,5 +42,8 @@ const SK_SONDERKENNZEICHEN = [
     euStern: true,
     nrMuster: "123 AB",
     hatWappen: false,
+    // Doppelkreuz-Wappen am Mast weggelassen - der weiss-blau-rote
+    // Streifenhintergrund bleibt.
+    flagge: { typ: "h", farben: ["#fff", "#0B4EA2", "#EE1C25"] },
   });
 })();

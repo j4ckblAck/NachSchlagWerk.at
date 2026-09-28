@@ -54,5 +54,6 @@
     euStern: true,
     nrMuster: "1234 AB",
     hatWappen: false,
+    flagge: { typ: "h", farben: ["#fff", "#00966E", "#D62612"] },
   });
 })();

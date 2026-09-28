@@ -15,5 +15,8 @@
     euStern: false,
     nrMuster: "34 ABC 123",
     hatWappen: false,
+    // Halbmond + Stern zu detailreich fuer diese Groesse - stattdessen
+    // die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#E30A17"] },
   });
 })();

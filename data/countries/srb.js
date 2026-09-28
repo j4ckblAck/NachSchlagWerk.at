@@ -104,5 +104,8 @@
     euStern: false,
     nrMuster: "123-AB",
     hatWappen: false,
+    // Staatswappen auf der Grenze weggelassen - der rot-blau-weisse
+    // Streifenhintergrund bleibt.
+    flagge: { typ: "h", farben: ["#C6363C", "#0C4076", "#fff"] },
   });
 })();

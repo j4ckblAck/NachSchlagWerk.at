@@ -1,10 +1,15 @@
 // data/countries/fl.js — Liechtenstein: ein landesweites Kuerzel.
 (function () {
 // ============================================================
-// Liechtenstein: nur ein einziges, landesweites Kuerzel (FL)
+// Liechtenstein: nur ein einziges, landesweites Kuerzel - anders als
+// z.B. Luxemburg/Frankreich steht dieses Kuerzel ("FL") tatsaechlich
+// GROSS auf dem echten Kennzeichen selbst (siehe "FL 1234" auf dem
+// schwarzen Schild) statt nur im Eurofeld daneben, darum hier code:
+// "FL" (NICHT "---"/kzOhneKuerzel) - sonst bleibt das Eingabefeld auf
+// der Tafel leer.
 // ============================================================
 const LIECHTENSTEIN_KENNZEICHEN = [
-  { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Liechtenstein" },
+  { code: "FL", bezirk: "Liechtenstein (landesweit)", bundesland: "Liechtenstein" },
 ];
 
   registerLand("Liechtenstein", {
@@ -19,5 +24,8 @@ const LIECHTENSTEIN_KENNZEICHEN = [
     dunkel: true,
     nrMuster: "1234",
     hatWappen: false,
+    // Gekroentes Landeswappen (siehe landFlaggeSvg, spec.typ "li") -
+    // steht am echten Kennzeichen rechts neben der Nummer.
+    flagge: { typ: "li" },
   });
 })();

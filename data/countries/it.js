@@ -59,6 +59,9 @@ const ITALIEN_KENNZEICHEN = [
 
   registerLand("Italien", {
     euBandRechts: true,
+    // Oranger Kreis oben im rechten blauen Feld (statt Albaniens
+    // weissem Ring unten) - siehe .kz-schild-eu2-orange in style.css.
+    euBandRechtsOrange: true,
     kennzeichen: ITALIEN_KENNZEICHEN,
     gruppen: ITALIEN_ORDER,
     regionen: ITALIEN_ORDER,
@@ -69,5 +72,10 @@ const ITALIEN_KENNZEICHEN = [
     euStern: true,
     nrMuster: "123 BB",
     hatWappen: false,
+    // Kein "flagge" hier - am echten italienischen Kennzeichen steht
+    // zwischen Kuerzel und Nummer KEIN Wappen/Flaggensymbol (die
+    // Wappen-Box bleibt darum leer/eingeklappt, siehe kzWappenZeigen).
+    // Trennpunkt zwischen Kuerzel und Nummer, wie bei Albanien.
+    mittelpunkt: true,
   });
 })();

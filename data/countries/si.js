@@ -68,12 +68,15 @@ const SI_SONDERKENNZEICHEN = [
     kennzeichen: SLOWENIEN_KENNZEICHEN.concat(SI_SONDERKENNZEICHEN),
     gruppen: ["Slowenien", "Sonderkennzeichen"],
     regionen: ["Slowenien", "Sonderkennzeichen"],
-    regionLabel: "Bezirk",
+    regionLabel: "Bezirke",
     euText: "SLO",
     emoji: "🇸🇮",
     euFarbe: "#003399",
     euStern: true,
     nrMuster: "HG-123",
     hatWappen: false,
+    // Bezirks-Wappen fuer LJ/CE/MB, sonst das vereinfachte Staatswappen
+    // als Rueckfallebene (siehe landFlaggeSvg/siBezirkSvg, spec.typ "si").
+    flagge: { typ: "si" },
   });
 })();

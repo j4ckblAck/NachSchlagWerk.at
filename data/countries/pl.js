@@ -38,5 +38,6 @@
     euStern: true,
     nrMuster: "WX 12345",
     hatWappen: false,
+    flagge: { typ: "h", farben: ["#fff", "#DC143C"] },
   });
 })();

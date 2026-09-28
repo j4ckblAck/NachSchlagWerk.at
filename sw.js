@@ -1,4 +1,4 @@
-const CACHE_NAME = "dienstgrade-cache-v30";
+const CACHE_NAME = "dienstgrade-cache-v32";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

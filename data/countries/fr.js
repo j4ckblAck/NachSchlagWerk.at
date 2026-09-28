@@ -15,5 +15,6 @@
     euStern: true,
     nrMuster: "AB-123-CD",
     hatWappen: false,
+    flagge: { typ: "v", farben: ["#0055A4", "#fff", "#EF4135"] },
   });
 })();

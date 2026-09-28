@@ -751,6 +751,13 @@ registerLand("Deutschland", {
   euStern: true,
   nrMuster: "AB 123",
   hatWappen: false,
+  // Die zwei kleinen Kreise rechts auf dem deutschen Kennzeichen (oben
+  // die HU-Pruefplakette, unten die Zulassungsplakette mit dem
+  // Landeswappen) - siehe landFlaggeSvg()/deBundeslandSvg() in
+  // js/kennzeichen.js, spec.typ "de". Ohne dieses "flagge"-Feld bleibt
+  // die Stelle komplett leer, weil weder hatWappen noch WAPPEN_DATEI
+  // fuer Deutschland gesetzt sind.
+  flagge: { typ: "de" },
   hatKarte: true,
 });
 })();

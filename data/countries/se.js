@@ -2,7 +2,7 @@
 // Quelle: Referenzrecherche Kfz-Kennzeichen Europa, Sep 2026.
 (function () {
   const KENNZEICHEN = [
-    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Schweden },
+    { code: "---", bezirk: "(kein Regionsbezug)", bundesland: "Schweden" },
     { code: "CD", bezirk: "Diplomat (Corps Diplomatique)", blauHg: true, bundesland: "Sonderkennzeichen" },
   ];
   registerLand("Schweden", {
@@ -16,5 +16,8 @@
     euStern: true,
     nrMuster: "ABC 123",
     hatWappen: false,
+    // Nordisches Kreuz laesst sich nicht als Streifenmuster darstellen -
+    // stattdessen die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#006AA7"] },
   });
 })();

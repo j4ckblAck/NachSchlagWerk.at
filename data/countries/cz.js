@@ -50,5 +50,8 @@ const TSCHECHIEN_KENNZEICHEN = [
     euStern: true,
     nrMuster: "12-345",
     hatWappen: false,
+    // Weiss oben, rot unten, blauer Keil von links (siehe landFlaggeSvg,
+    // spec.typ "keil").
+    flagge: { typ: "keil", farben: ["#fff", "#D7141A", "#11457E"] },
   });
 })();

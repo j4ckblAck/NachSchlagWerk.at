@@ -17,5 +17,8 @@
     euStern: false,
     nrMuster: "AB 12345",
     hatWappen: false,
+    // Nordisches Kreuz laesst sich nicht als Streifenmuster darstellen -
+    // stattdessen die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#BA0C2F"] },
   });
 })();

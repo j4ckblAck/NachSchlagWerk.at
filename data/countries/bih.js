@@ -16,5 +16,8 @@
     euStern: false,
     nrMuster: "A12-B-345",
     hatWappen: false,
+    // Blaues Feld mit gelbem Dreieck + weissen Sternen - zu detailreich
+    // fuer eine kleine Grafik, darum nur die Grundfarbe.
+    flagge: { typ: "h", farben: ["#002395"] },
   });
 })();

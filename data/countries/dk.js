@@ -15,5 +15,9 @@
     euStern: true,
     nrMuster: "AB 12 345",
     hatWappen: false,
+    // Nordisches Kreuz (versetztes weisses Kreuz auf Rot) laesst sich
+    // nicht als einfaches Streifenmuster darstellen - stattdessen die
+    // dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#C60C30"] },
   });
 })();

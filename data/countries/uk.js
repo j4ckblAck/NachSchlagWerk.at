@@ -15,5 +15,8 @@
     euStern: false,
     nrMuster: "AB12 CDE",
     hatWappen: false,
+    // Der Union Jack (versetzte Kreuze) laesst sich nicht als
+    // Streifenmuster darstellen - stattdessen die dominante Grundfarbe.
+    flagge: { typ: "h", farben: ["#012169"] },
   });
 })();

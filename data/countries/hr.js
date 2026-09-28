@@ -54,5 +54,8 @@
     euStern: true,
     nrMuster: "1234-AB",
     hatWappen: false,
+    // Das Schachbrett-Wappen in der Mitte ist zu detailreich fuer diese
+    // Groesse - der rot-weiss-blaue Streifenhintergrund bleibt.
+    flagge: { typ: "h", farben: ["#FF0000", "#FFFFFF", "#171796"] },
   });
 })();

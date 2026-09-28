@@ -15,5 +15,9 @@
     euStern: true,
     nrMuster: "ABC-1234",
     hatWappen: false,
+    // Neun blau-weisse Streifen (hier auf fuenf vereinfacht) statt des
+    // Kreuzes oben links, das bei dieser Groesse ohnehin nicht erkennbar
+    // waere.
+    flagge: { typ: "h", farben: ["#0D5EAF", "#fff", "#0D5EAF", "#fff", "#0D5EAF"] },
   });
 })();

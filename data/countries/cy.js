@@ -16,5 +16,9 @@
     euStern: true,
     nrMuster: "ABC 123",
     hatWappen: false,
+    // Die echte Flagge ist fast ganz weiss (Inselkarte + Olivenzweige) -
+    // auf weissem Kennzeichengrund unsichtbar, darum ersatzweise die
+    // charakteristische Kupferfarbe der Insel-Silhouette.
+    flagge: { typ: "h", farben: ["#D57800"] },
   });
 })();

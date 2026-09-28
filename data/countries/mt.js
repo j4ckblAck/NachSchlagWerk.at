@@ -15,5 +15,8 @@
     euStern: true,
     nrMuster: "ABC 123",
     hatWappen: false,
+    // George-Cross-Abzeichen oben links weggelassen - der weiss-rote
+    // Streifenhintergrund bleibt.
+    flagge: { typ: "v", farben: ["#fff", "#CF142B"] },
   });
 })();

@@ -21,5 +21,8 @@
     euStern: false,
     nrMuster: "1234 AB-7",
     hatWappen: false,
+    // Echtes Verhaeltnis ist 2:1 Rot:Gruen, hier ueber drei gleich hohe
+    // Baender angenaehert (statt der Ornament-Zierborte am Mast).
+    flagge: { typ: "h", farben: ["#D22730", "#D22730", "#007A3D"] },
   });
 })();
