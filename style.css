@@ -23,32 +23,80 @@
    hidden-Attribut angezeigt (sie stapeln sich dann untereinander). */
 [hidden] { display: none !important; }
 
+/* ---------- Startbildschirm (Logo + rot-weiss-roter Ladestreifen) ---------- */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #111214;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  transition: opacity .4s ease;
+}
+.splash-weg { opacity: 0; pointer-events: none; }
+.splash-logo {
+  width: min(46vw, 220px);
+  height: auto;
+  opacity: 0;
+  transform: scale(.86);
+  animation: splash-logo .7s cubic-bezier(.2, .8, .2, 1) .05s forwards;
+}
+.splash-streifen {
+  width: min(46vw, 220px);
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .08);
+}
+.splash-streifen span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #e30613 33%, #fff 33% 66%, #e30613 66%);
+  animation: splash-streifen .8s ease-in-out .3s forwards;
+}
+@keyframes splash-logo { to { opacity: 1; transform: scale(1); } }
+@keyframes splash-streifen { to { width: 100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo, .splash-streifen span { animation-duration: .01s; animation-delay: 0s; }
+}
+
 :root {
-  --nacht: #101826;
-  --nacht-hell: #1a2536;
-  --karte: #203046;
-  --linie: #2f4159;
+  /* Neutrale Grautoene, Rot-Weiss-Rot nur als kleines Detail */
+  --kopf: #1c1d21;           /* Kopfzeile */
+  --nacht: #111214;
+  --nacht-hell: #18191c;
+  --karte: #202125;
+  --linie: #303238;
   --bordeaux: #6b2130;
   --gold: #c9a227;
   --silber: #c3c9d4;
-  --rot: #c8102e;
+  --rot: #e30613;
+  --akzent: #e4e5e8;         /* neutral: helles Grau auf dunklem Hintergrund */
+  --akzent-text: #16171b;
   --gruen: #3f9e5c;
-  --text: #eef1f6;
-  --text-leise: #9aa7ba;
+  --text: #f1f2f4;
+  --text-leise: #a2a5ad;
 }
 
 :root[data-theme="hell"] {
-  --nacht: #f4f5f7;
+  --kopf: #2e3036;
+  --nacht: #f3f3f5;
   --nacht-hell: #ffffff;
   --karte: #ffffff;
-  --linie: #d8dce3;
+  --linie: #dcdde2;
   --bordeaux: #8a2c3d;
   --gold: #a17a14;
   --silber: #6b7482;
-  --rot: #c8102e;
+  --rot: #e30613;
+  --akzent: #2e3036;         /* neutral: Dunkelgrau wie die Kopfzeile */
+  --akzent-text: #ffffff;
   --gruen: #2f8a4f;
-  --text: #1b2330;
-  --text-leise: #5b6474;
+  --text: #16171b;
+  --text-leise: #5c5f68;
 }
 :root[data-theme="hell"] .lernkarte img,
 :root[data-theme="hell"] .ueberblick-item img,
@@ -100,8 +148,15 @@ body {
   align-items: center;
   gap: .5rem;
   padding: .9rem 1rem;
-  background: var(--nacht-hell);
-  border-bottom: 1px solid var(--linie);
+  background: var(--kopf);
+  border-top: 3px solid var(--rot);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  /* Kopfzeile ist in beiden Themes dunkelgrau - Farben dafuer lokal setzen */
+  --text: #ffffff;
+  --text-leise: #c9cce6;
+  --linie: rgba(255, 255, 255, .28);
+  --karte: rgba(255, 255, 255, .12);
+  color: var(--text);
 }
 .kopf-titel { display: flex; align-items: center; gap: .6rem; }
 .kopf-aktionen { margin-left: auto; display: flex; gap: .5rem; }
@@ -149,13 +204,13 @@ body {
 .hinweis {
   margin: .8rem 1rem 0;
   padding: .8rem .9rem;
-  border-left: 3px solid var(--gold);
+  border-left: 3px solid var(--akzent);
   background: #2a2313;
   border-radius: 0 10px 10px 0;
   font-size: .9rem;
   color: #f0e4c0;
 }
-.hinweis code { color: var(--gold); }
+.hinweis code { color: var(--akzent); }
 
 /* ---------- Quiz ---------- */
 main {
@@ -221,7 +276,7 @@ main {
 }
 .antwort img { max-width: 100%; max-height: 118px; }
 .antwort:active { transform: scale(.97); }
-.antwort:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.antwort:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 
 .antwort.richtig {
   border-color: var(--gruen);
@@ -243,7 +298,7 @@ main {
   border: 1px solid var(--linie);
   font-size: .95rem;
 }
-.rueckmeldung b { color: var(--gold); }
+.rueckmeldung b { color: var(--akzent); }
 
 .weiter {
   width: 100%;
@@ -251,8 +306,8 @@ main {
   padding: 1rem;
   border: none;
   border-radius: 12px;
-  background: var(--gold);
-  color: #221c06;
+  background: var(--akzent);
+  color: var(--akzent-text);
   font-family: inherit;
   font-size: 1.05rem;
   font-weight: 700;
@@ -315,7 +370,7 @@ main {
   background: var(--linie);
   overflow: hidden;
 }
-.balken div { height: 100%; background: var(--gold); }
+.balken div { height: 100%; background: var(--akzent); }
 .stat-gruppe {
   margin: 1.4rem 0 .2rem;
   font-size: .8rem;
@@ -383,10 +438,23 @@ main {
   color: var(--text);
   background: var(--karte);
 }
-.kachel-lernen { background: linear-gradient(135deg, #203046, #16324a); border-color: #2c4c68; }
+.kachel-lernen { background: linear-gradient(135deg, #25262b, #1c1d21); border-color: #36383f; }
 .kachel-quiz   { background: linear-gradient(135deg, var(--bordeaux), #4a1622); border-color: #83313f; }
 .kachel-titel { font-size: 1.15rem; font-weight: 700; }
 .kachel-text  { font-size: .85rem; color: var(--text-leise); }
+.beta-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: .4rem;
+  padding: .1rem .45rem;
+  border: 1px solid var(--rot);
+  border-radius: 6px;
+  color: var(--rot);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
 .kachel:active:not(:disabled) { transform: scale(.98); }
 .kachel:disabled {
   opacity: .55;
@@ -419,7 +487,7 @@ main {
   overflow: hidden;
   margin-bottom: .4rem;
 }
-.fortschritt-leiste div { height: 100%; background: var(--gold); transition: width .25s ease; }
+.fortschritt-leiste div { height: 100%; background: var(--akzent); transition: width .25s ease; }
 .fortschritt-text {
   margin: 0 0 1rem;
   font-size: .8rem;
@@ -450,8 +518,8 @@ main {
 .lernkarte .gruppe-tag {
   display: inline-block;
   font-size: .75rem;
-  color: var(--gold);
-  border: 1px solid var(--gold);
+  color: var(--akzent);
+  border: 1px solid var(--akzent);
   border-radius: 999px;
   padding: .15rem .7rem;
   margin-bottom: .2rem;
@@ -479,7 +547,7 @@ main {
   font-size: 1.02rem;
   font-weight: 700;
 }
-.knopf-gold { background: var(--gold); color: #221c06; }
+.knopf-gold { background: var(--akzent); color: var(--akzent-text); }
 .knopf-blass { background: var(--karte); color: var(--text); border: 1px solid var(--linie); }
 .knopf:active { transform: scale(.98); }
 .knopf:disabled { opacity: .4; }
@@ -496,9 +564,9 @@ main {
   padding: .4rem;
 }
 
-/* ---------- Quiz: sechs Antworten ---------- */
+/* ---------- Quiz: Antworten in zwei Spalten ---------- */
 
-.antworten.text6 { grid-template-columns: 1fr 1fr; gap: .5rem; }
+.antworten.text6 { grid-template-columns: 1fr 1fr; grid-auto-flow: column; gap: .5rem; }
 .antworten.text6 .antwort { padding: .7rem .5rem; font-size: .92rem; text-align: center; }
 
 .antwort.richtig-blitz {
@@ -533,7 +601,7 @@ main {
   border-radius: 999px;
   white-space: nowrap;
 }
-.status-offen     { background: #2a3345; color: var(--text-leise); }
+.status-offen     { background: #2a2b30; color: var(--text-leise); }
 .status-gelernt   { background: #2a3313; color: #e3d98a; }
 .status-gemeistert{ background: #123822; color: #7fe3a4; }
 
@@ -548,7 +616,7 @@ main {
   background: var(--nacht-hell);
   color: var(--text);
 }
-.gruppen-aktionen button.primaer { background: var(--gold); color: #221c06; border: none; }
+.gruppen-aktionen button.primaer { background: var(--akzent); color: var(--akzent-text); border: none; }
 .gruppen-aktionen button:disabled { opacity: .4; }
 
 .kachel-gemischt {
@@ -603,7 +671,7 @@ main {
 .quiz-kontext {
   text-align: center;
   font-size: .8rem;
-  color: var(--gold);
+  color: var(--akzent);
   margin: 0 0 .2rem;
   letter-spacing: .03em;
 }
@@ -653,6 +721,7 @@ main {
   background: rgba(255,255,255,.06);
   padding: 3px;
 }
+.abk-karte-bild-breit { width: 140px; height: 56px; }
 .abk-karte-inhalt { flex: 1; min-width: 0; }
 .abk-kurz {
   flex-shrink: 0;
@@ -760,7 +829,7 @@ main {
 .kachel-prozent {
   font-size: .85rem;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--akzent);
   flex-shrink: 0;
 }
 .mini-balken {
@@ -775,7 +844,7 @@ main {
 .mini-balken span {
   display: block;
   height: 100%;
-  background: var(--gold);
+  background: var(--akzent);
   width: 0%;
   transition: width .3s ease;
 }
@@ -1332,6 +1401,16 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   flex-shrink: 0;
   padding-left: 1px;
 }
+/* Einstellige Zusatznummer (z.B. "BP"): Ziffer rechtsbuendig und den
+   5px-Abstand zwischen den Feldern aufheben, damit "1" und "4729" wie
+   auf der echten Tafel als eine Nummer "14729" zusammenstehen. */
+.kz-schild-nr-kurz.kz-schild-nr-einstellig {
+  width: calc(.62em + 10px);
+  min-width: calc(.62em + 10px);
+  text-align: right;
+  padding-right: 0;
+  margin-right: -5px;
+}
 .kz-schild-nr-suffix:empty { display: none; }
 .kz-schild-dunkel .kz-schild-nr-suffix { color: #f4f3ef; }
 /* Albaniens "MM": feste Ziffern stehen VOR dem eintippbaren
@@ -1469,18 +1548,20 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
 .kz-ergebnis-label {
   color: var(--text-leise);
   white-space: nowrap;
+  align-self: baseline;
 }
-.kz-ergebnis-wert { color: var(--text); }
+.kz-ergebnis-wert { color: var(--text); align-self: baseline; }
 .kz-ergebnis-wert b { color: var(--gold); }
 /* Feste Farben, ueberall gleich: die Landeszeile immer blau, das
    Kuerzel selbst immer orange - unabhaengig davon, ob es ein Bezirk,
    ein Kanton, ein Sonderzeichen o.ae. ist. */
 .kz-ergebnis-blau { color: #1450a4; font-weight: 700; }
+:root:not([data-theme="hell"]) .kz-ergebnis-blau { color: #7ea2ff; }
 .kz-ergebnis-orange { color: #b8860b; font-weight: 700; }
 /* Etwas Abstand vor der zweiten Zeilengruppe (z.B. Garnisonsnummer bei
    slowenisch "SV"), damit klar erkennbar bleibt, dass hier ein neuer,
    zusammengehoeriger Abschnitt beginnt. */
-.kz-ergebnis-label-zweit { margin-top: .5rem; }
+.kz-ergebnis-zweit { margin-top: .5rem; }
 /* Kleine Marke, die Sonderkennzeichen (Institution, kein echter Ort)
    optisch von einem echten Bezirks-/Regionskuerzel unterscheidet. */
 .kz-ergebnis-marke {
@@ -1700,3 +1781,52 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   padding: .25rem .4rem;
 }
 .kz-bezirk { font-size: .92rem; }
+
+/* ============ App installieren (Dialog) ============ */
+.install-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, .55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+}
+@media (min-width: 600px) { .install-overlay { align-items: center; } }
+.install-dialog {
+  width: 100%;
+  max-width: 380px;
+  background: var(--nacht-hell);
+  color: var(--text);
+  border: 1px solid var(--linie);
+  border-radius: 18px;
+  padding: 1.4rem 1.3rem 1.1rem;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+  animation: install-rein .25s ease-out;
+}
+@keyframes install-rein { from { transform: translateY(20px); opacity: 0; } }
+.install-logo { width: 64px; height: 64px; border-radius: 14px; }
+.install-dialog h2 { margin: .7rem 0 .4rem; font-size: 1.15rem; }
+.install-dialog p { margin: 0 0 1rem; color: var(--text-leise); font-size: .92rem; line-height: 1.4; }
+.install-anleitung {
+  text-align: left;
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+  font-size: .92rem;
+  line-height: 1.7;
+}
+.install-anleitung svg { vertical-align: -3px; margin-left: .2rem; }
+.install-knoepfe { display: flex; gap: .6rem; }
+.install-knoepfe button {
+  flex: 1;
+  padding: .8rem;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.install-nein { background: none; border: 1px solid var(--linie); color: var(--text); }
+.install-ja { background: var(--akzent); border: 1px solid var(--akzent); color: var(--akzent-text); }

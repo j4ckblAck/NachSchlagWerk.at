@@ -948,6 +948,13 @@ function kzNrBuchstaben(treffer) {
   return !!(treffer && treffer.nrArt === "buchstaben");
 }
 
+// Wie viele Zeichen der Zusatznummer eintippbar sind - Standard 2 (z.B.
+// "SV"-Garnisonsnummer), per "nrLaenge" pro Kuerzel anpassbar (z.B. 1
+// bei "BP": Ziffer der Landespolizeidirektion).
+function kzNrLaenge(treffer) {
+  return (treffer && treffer.nrLaenge) || 2;
+}
+
 // Feld 3 (Zusatznummer/-kuerzel, z.B. Garnisonsstandort bei "SV" oder
 // Teilstreitkraft bei "MM") spiegelt seinen Wert in kzSchildNr -
 // kzHerkunftAktualisieren (unveraendert) uebernimmt von dort die
@@ -960,7 +967,7 @@ function kzFeld3Input() {
   const wert = (kzNrBuchstaben(treffer)
     ? feld3.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "")
     : feld3.value.replace(/\D/g, "")
-  ).slice(0, 2);
+  ).slice(0, kzNrLaenge(treffer));
   if (feld3.value !== wert) feld3.value = wert;
   document.getElementById("kzSchildNr").value = wert;
   kzHerkunftAktualisieren();
@@ -1143,10 +1150,13 @@ function kzIstSonderkuerzel(treffer) {
 // und kzHerkunftAktualisieren (angehaengte zweite Zeilengruppe, "zweit"
 // setzt dafuer eine eigene Abstands-/Trennlinien-Klasse).
 function kzZeilenZuHtml(zeilen, zweit) {
-  return zeilen.map(([label, wert]) =>
-    '<span class="kz-ergebnis-label' + (zweit ? " kz-ergebnis-label-zweit" : "") + '">' + label + ':</span>' +
-    '<span class="kz-ergebnis-wert">' + wert + "</span>"
-  ).join("");
+  // Abstand vor einer zweiten Zeilengruppe nur bei deren ERSTER Zeile und
+  // bei Label UND Wert - sonst rutscht das Label tiefer als der Wert
+  return zeilen.map(([label, wert], i) => {
+    const abstand = zweit && i === 0 ? " kz-ergebnis-zweit" : "";
+    return '<span class="kz-ergebnis-label' + abstand + '">' + label + ':</span>' +
+      '<span class="kz-ergebnis-wert' + abstand + '">' + wert + "</span>";
+  }).join("");
 }
 
 // Die "Land"-Zeile ([Kuerzel] Landesname, immer blau) - wird sowohl
@@ -1347,7 +1357,8 @@ function kzKarteAufbauen(landName, karte) {
     bezirke = Object.keys(karte.bezirkPfade).map(name => {
       const kuerzel = karte.bezirkKuerzel && karte.bezirkKuerzel[atBezirkBundesland(name)];
       const titel = kuerzel ? name + " (" + kuerzel + ")" : name;
-      return '<path class="kz-karte-bezirk" data-bezirk="' + name + '" d="' + karte.bezirkPfade[name] + '"><title>' + titel + "</title></path>";
+      const bl = typeof atBezirkBundesland === "function" ? atBezirkBundesland(name) : "";
+      return '<path class="kz-karte-bezirk" data-bezirk="' + name + '" data-bundesland="' + bl + '" d="' + karte.bezirkPfade[name] + '"><title>' + titel + "</title></path>";
     }).join("");
   }
   // Eigene Umriss-Ebene NUR fuer die Regionsgrenzen, ganz oben drauf
@@ -1389,7 +1400,7 @@ function kzKarteAufbauen(landName, karte) {
     aussen + regionen + bezirke + grenzen + grenzstriche + nachbarNamen + "</svg>";
 }
 
-function kzKarteAktualisieren(land, treffer) {
+function kzKarteAktualisieren(land, treffer, bundeslandAuswahl) {
   const box = document.getElementById("kzKarteBox");
   // Die Karte gibt's nur, wenn das Land das in registerLand explizit
   // anfordert (hatKarte: true) - unabhaengig vom Bundesland-Wappen-Bild.
@@ -1421,11 +1432,18 @@ function kzKarteAktualisieren(land, treffer) {
   // Flaechen optisch verdeckt - markiert man sie trotzdem (z.B. Wien,
   // Sonderkennzeichen, oder Bezirke, die in der Quelle fehlen), scheint
   // die Farbe nur genau dort durch, wo kein Bezirk sie bedeckt.
+  // Sonderkennzeichen: ohne Auswahl das ganze Land (auch die Bezirks-
+  // flaechen, sonst schimmert nur Wien durch); mit gewaehlter Zusatzziffer
+  // (z.B. "BP" 1 = LPD Burgenland) das ganze jeweilige Bundesland.
+  const ganzesBundesland = geheimBund && bundeslandAuswahl ? bundeslandAuswahl : null;
+  const ganzesLand = geheimBund && !ganzesBundesland;
   document.querySelectorAll("#kzKarte .kz-karte-bezirk").forEach(p => {
-    p.classList.toggle("kz-karte-aktiv", p.dataset.bezirk === bezirk);
+    const aktiv = ganzesLand || (ganzesBundesland ? p.dataset.bundesland === ganzesBundesland : p.dataset.bezirk === bezirk);
+    p.classList.toggle("kz-karte-aktiv", aktiv);
   });
   document.querySelectorAll("#kzKarte .kz-karte-bundesland").forEach(p => {
-    const aktiv = geheimBund || (!bezirk && p.dataset.bundesland === bundesland);
+    const aktiv = ganzesLand || (ganzesBundesland ? p.dataset.bundesland === ganzesBundesland
+      : (!bezirk && p.dataset.bundesland === bundesland));
     p.classList.toggle("kz-karte-aktiv", aktiv);
   });
 }
@@ -1588,10 +1606,13 @@ function kzTafelAktualisieren(land, treffer) {
     // schlaegt CSS-Klasse) und die zweistellige editierbare Nummer
     // wird viel zu breit dargestellt.
     nrFeld.style.width = "";
+    // Einstellige Zusatznummer (z.B. "BP"): schmaleres Feld, das ohne
+    // Luecke direkt an den fixen Rest der Nummer anschliesst
+    nrFeld.classList.toggle("kz-schild-nr-einstellig", kzNrLaenge(treffer) === 1);
     if (!nrFeld.dataset.editStart) {
       nrFeld.value = "";
-      nrFeld.maxLength = 2;
-      nrFeld.placeholder = kzNrBuchstaben(treffer) ? "AA" : "00";
+      nrFeld.maxLength = kzNrLaenge(treffer);
+      nrFeld.placeholder = (kzNrBuchstaben(treffer) ? "A" : "0").repeat(kzNrLaenge(treffer));
       nrFeld.dataset.editStart = "1";
     }
     nrSuffixFeld.textContent = treffer.nrSuffix || "";
@@ -1605,6 +1626,7 @@ function kzTafelAktualisieren(land, treffer) {
     kzHerkunftAktualisieren();
   } else {
     nrFeld.removeAttribute("maxlength");
+    nrFeld.classList.remove("kz-schild-nr-einstellig");
     nrFeld.classList.remove("kz-schild-code-leer");
     nrSuffixFeld.textContent = "";
     nrSuffixFeld.className = "kz-schild-nr-suffix";
@@ -1694,7 +1716,7 @@ function kzHerkunftAktualisieren() {
   const wert = (kzNrBuchstaben(treffer)
     ? quelle.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, "")
     : quelle.value.replace(/\D/g, "")
-  ).slice(0, 2);
+  ).slice(0, kzNrLaenge(treffer));
   if (quelle.value !== wert) quelle.value = wert;
   if (treffer.nrEingebbar && nrFeld.value !== wert) nrFeld.value = wert;
   // Orange bei leer kommt jetzt vom Fokus (siehe kzFokusAktualisieren),
@@ -1723,6 +1745,16 @@ function kzHerkunftAktualisieren() {
   const tabelle = document.getElementById("kzErgebnisTabelle");
   const info = document.getElementById("kzGarnisonInfo");
   info.hidden = true;
+  // Zusatzziffer steht fuer ein Bundesland (z.B. "BP"): Karte markiert
+  // dieses Bundesland und "Zugehörigkeit" nennt die zustaendige LPD
+  const gewaehltesBundesland = treffer.nrHerkunftIstBundesland && bedeutungText ? bedeutungText : null;
+  if (treffer.nrHerkunftIstBundesland) {
+    try { kzKarteAktualisieren(land, treffer, gewaehltesBundesland); } catch (e) {}
+  }
+  const basis = gewaehltesBundesland
+    ? (tabelle.dataset.basis || "").replace('<span class="kz-ergebnis-wert">Staat</span>',
+        '<span class="kz-ergebnis-wert">Staat · LPD ' + gewaehltesBundesland + "</span>")
+    : (tabelle.dataset.basis || "");
   if (!wert) {
     tabelle.innerHTML = tabelle.dataset.basis || "";
     // Zusatzkuerzel geleert - Tafel zurueck auf das Basis-Kuerzel selbst
@@ -1749,7 +1781,7 @@ function kzHerkunftAktualisieren() {
   // "Sonderzeichen"). Label ist pro Land ueber nrHerkunftLabel anpassbar
   // (Standard: "Garnisonsstandort", bei Albanien "Sonderzeichen").
   const artLabel = treffer.nrHerkunftLabel || "Garnisonsstandort";
-  const zusatzZeilen = wert.length < 2
+  const zusatzZeilen = wert.length < kzNrLaenge(treffer)
     ? [["Zusatzkürzel", '<span class="kz-ergebnis-orange">' + wert + "</span>"]]
     : bedeutungText
       ? [
@@ -1759,7 +1791,7 @@ function kzHerkunftAktualisieren() {
       : [
           ["Zusatzkürzel", '<span class="kz-ergebnis-orange">[' + wert + "] keine bekannte Zuordnung</span>"],
         ];
-  tabelle.innerHTML = (tabelle.dataset.basis || "") + kzZeilenZuHtml(zusatzZeilen, true);
+  tabelle.innerHTML = basis + kzZeilenZuHtml(zusatzZeilen, true);
 }
 document.getElementById("kzSchildNr").addEventListener("input", kzHerkunftAktualisieren);
 

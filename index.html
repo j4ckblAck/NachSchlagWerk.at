@@ -3,10 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101826">
+<meta name="theme-color" content="#2e3036">
 <link rel="manifest" href="manifest.json">
+<script>
+  // Installations-Angebot des Browsers so frueh wie moeglich abfangen -
+  // es kann schon kommen, bevor js/install.js geladen ist
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    window.nswInstallEreignis = e;
+  });
+</script>
 <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-maskable-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hauptmenü NachSchlagWerk">
@@ -14,9 +22,32 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
+<!-- Startbildschirm: nur beim ersten Oeffnen pro Sitzung, Tippen ueberspringt -->
+<div id="splash" class="splash" aria-hidden="true">
+  <img src="icon-512.png" alt="" class="splash-logo">
+  <div class="splash-streifen"><span></span></div>
+</div>
+<script>
+(function () {
+  var s = document.getElementById("splash");
+  var gesehen = false;
+  try {
+    gesehen = sessionStorage.getItem("splash-gesehen") === "1";
+    sessionStorage.setItem("splash-gesehen", "1");
+  } catch (e) {}
+  if (gesehen || location.hash) { s.remove(); return; }
+  var weg = function () {
+    if (!s.isConnected) return;
+    s.classList.add("splash-weg");
+    setTimeout(function () { s.remove(); }, 400);
+  };
+  s.addEventListener("click", weg);
+  setTimeout(weg, 1300);
+})();
+</script>
 
 <header class="kopf">
   <div class="kopf-titel">
@@ -28,24 +59,46 @@
     <button id="navZurueck" class="nav-icon" hidden aria-label="Zurück">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
+    <button id="installBtn" class="nav-icon" hidden aria-label="App installieren" title="App installieren">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+    </button>
     <button id="navHome" class="nav-icon" aria-label="Hauptmenü">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
     </button>
   </div>
 </header>
 
+<!-- ========== App installieren (siehe js/install.js) ========== -->
+<div id="installDialog" class="install-overlay" hidden>
+  <div class="install-dialog" role="dialog" aria-modal="true" aria-labelledby="installTitel">
+    <img src="icon-192.png" alt="" class="install-logo">
+    <h2 id="installTitel">NachSchlagWerk installieren?</h2>
+    <p id="installText"></p>
+    <ol id="installAnleitung" class="install-anleitung" hidden>
+      <li>Unten auf <b>Teilen</b> tippen
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v8h14v-8"/></svg></li>
+      <li><b>Zum Home-Bildschirm</b> wählen</li>
+      <li>Mit <b>Hinzufügen</b> bestätigen</li>
+    </ol>
+    <div class="install-knoepfe">
+      <button id="installNein" class="install-nein">Später</button>
+      <button id="installJa" class="install-ja">Installieren</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== STARTSEITE (App-Home / Nachschlagewerk) ========== -->
 <main id="home" class="screen">
   <p class="intro">Wählen Sie bitte eine Kategorie.</p>
 
   <button id="gehModulDienstgrade" class="kachel kachel-modul">
-    <span class="kachel-titel">Dienstgrade</span>
-    <span class="kachel-text">Abzeichen und Kurzbezeichnungen nachschlagen, mit eigenem Lernprogramm</span>
+    <span class="kachel-titel">Uniform - Unterscheidungszeichen</span>
+    <span class="kachel-text">Distinktionen, Kappenembleme und Schulterspangen der Polizei</span>
   </button>
 
   <button id="gehModulKennzeichen" class="kachel kachel-modul">
-    <span class="kachel-titel">KFZ-Kennzeichen</span>
-    <span class="kachel-text">Bezirkskürzel auf Kfz-Kennzeichen nachschlagen</span>
+    <span class="kachel-titel">Kfz-Kennzeichen <span class="beta-label">Beta</span></span>
+    <span class="kachel-text">Länder- und Bezirkskürzel nachschlagen</span>
   </button>
 </main>
 
@@ -60,37 +113,37 @@
 
     <button id="gehGemischtMC" class="kachel kachel-klein">
       <span class="kachel-kopf">
-        <span class="kachel-titel">Dienstgrade – mit Auswahl</span>
+        <span class="kachel-titel">Distinktionen · Auswahlfragen</span>
         <span class="kachel-prozent" id="gemischtProzentMC">0%</span>
       </span>
-      <span class="kachel-text" id="gemischtStatusMC">Meistere mindestens eine Gruppe</span>
+      <span class="kachel-text" id="gemischtStatusMC">Alle Distinktionen gemischt – richtigen Namen auswählen</span>
       <span class="mini-balken"><span id="gemischtBalkenMC"></span></span>
     </button>
 
     <button id="gehGemischtKarte" class="kachel kachel-klein">
       <span class="kachel-kopf">
-        <span class="kachel-titel">Dienstgrade – ohne Auswahl</span>
+        <span class="kachel-titel">Distinktionen · Karteikarten</span>
         <span class="kachel-prozent" id="gemischtProzentKarte">0%</span>
       </span>
-      <span class="kachel-text" id="gemischtStatusKarte">Meistere mindestens eine Gruppe</span>
+      <span class="kachel-text" id="gemischtStatusKarte">Alle Distinktionen gemischt – Namen selbst aufdecken</span>
       <span class="mini-balken"><span id="gemischtBalkenKarte"></span></span>
     </button>
 
     <button id="gehUniformMC" class="kachel kachel-klein">
       <span class="kachel-kopf">
-        <span class="kachel-titel">Auf der Uniform – mit Auswahl</span>
+        <span class="kachel-titel">Uniformfotos · Auswahlfragen</span>
         <span class="kachel-prozent" id="uniformProzentMC">0%</span>
       </span>
-      <span class="kachel-text">Echtes Foto statt Abzeichen-Ausschnitt</span>
+      <span class="kachel-text">Auf der Uniform erkennen – richtigen Namen auswählen</span>
       <span class="mini-balken"><span id="uniformBalkenMC"></span></span>
     </button>
 
     <button id="gehUniformKarte" class="kachel kachel-klein">
       <span class="kachel-kopf">
-        <span class="kachel-titel">Auf der Uniform – ohne Auswahl</span>
+        <span class="kachel-titel">Uniformfotos · Karteikarten</span>
         <span class="kachel-prozent" id="uniformProzentKarte">0%</span>
       </span>
-      <span class="kachel-text">Echtes Foto, Name selbst aufdecken</span>
+      <span class="kachel-text">Auf der Uniform erkennen – Namen selbst aufdecken</span>
       <span class="mini-balken"><span id="uniformBalkenKarte"></span></span>
     </button>
   </div>
@@ -119,7 +172,6 @@
   <div id="hinweis" class="hinweis" hidden></div>
 
   <p class="quiz-kontext" id="quizKontext"></p>
-  <p class="frage-typ">Welcher Dienstgrad ist das?</p>
   <img id="frageBild" class="frage-bild" src="" alt="Abzeichen">
 
   <div id="antworten" class="antworten"></div>
@@ -205,7 +257,7 @@
       </div>
       <span class="kz-eingabe-trenner">–</span>
       <div class="kz-eingabe-feld-wrap" id="kzFeld3Wrap">
-        <input id="kzFeld3" class="kz-eingabe-feld" type="text" maxlength="2"
+        <input id="kzFeld3" class="kz-eingabe-feld" type="text" maxlength="4"
                autocomplete="off" inputmode="numeric" aria-label="Zusatznummer" disabled>
         <div class="kz-feld1-vorschlaege" id="kzFeld3Vorschlaege" hidden></div>
       </div>
@@ -251,12 +303,11 @@
 
 <!-- ========== DIENSTGRADE - UEBERSICHT (Kurzbezeichnungen) ========== -->
 <main id="abk" class="screen" hidden>
-  <h2 class="modul-titel">Dienstgrade</h2>
-
   <button id="gehLernprogramm" class="kachel kachel-modul">
     <span class="kachel-titel">Lernprogramm</span>
-    <span class="kachel-text">Dienstgrade lernen und im Quiz abfragen</span>
+    <span class="kachel-text">Distinktionen nach Verwendungsgruppen lernen und abfragen</span>
   </button>
+
 
   <div id="abkListe" class="abk-liste"></div>
   <p class="abk-quelle">Quelle: <a href="img/tafel.pdf" target="_blank" rel="noopener">Amtliches Referenzdokument (PDF, BMI-Vorschrift)</a></p>
@@ -317,5 +368,6 @@
 <script src="js/core.js"></script>
 <script src="js/dienstgrade.js"></script>
 <script src="js/kennzeichen.js"></script>
+<script src="js/install.js"></script>
 </body>
 </html>

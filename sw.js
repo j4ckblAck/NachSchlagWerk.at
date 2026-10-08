@@ -1,4 +1,4 @@
-const CACHE_NAME = "dienstgrade-cache-v32";
+const CACHE_NAME = "dienstgrade-cache-v70";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -14,10 +14,30 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Einfache Strategie: erst versuchen aus dem Netz zu laden, bei Erfolg
-// im Cache ablegen; klappt kein Netz, aus dem Cache bedienen. So
-// funktioniert die App auch offline, sobald sie einmal geladen wurde.
+// Bilder aendern sich selten: zuerst aus dem Cache (sofort da), nur wenn
+// noch nicht vorhanden aus dem Netz. Bei einer neuen Version (CACHE_NAME
+// hochzaehlen) wird der Cache ohnehin geleert.
+// Alles andere (HTML/JS/CSS): erst Netz, bei Erfolg im Cache ablegen,
+// ohne Netz aus dem Cache - so bleibt die App offline nutzbar.
+const IST_BILD = /\.(webp|jpg|jpeg|png|svg|pdf)$/i;
+
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+  const url = new URL(event.request.url);
+
+  if (IST_BILD.test(url.pathname)) {
+    event.respondWith(
+      caches.match(event.request).then((treffer) => treffer || fetch(event.request).then((antwort) => {
+        if (antwort.ok) {
+          const kopie = antwort.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, kopie));
+        }
+        return antwort;
+      }))
+    );
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((antwort) => {

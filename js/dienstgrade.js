@@ -13,11 +13,16 @@ const SPEICHER_RUNDEN  = "dienstgrade-runden-v1";
 const BILD_PFAD = "img/";
 const BILD_PFAD_UNIFORM = "img_uniform/";
 const LETZTE_MERKEN = 4;
-const ANTWORT_ANZAHL = 6;
+const ANTWORT_ANZAHL = 8;   // Antwortmoeglichkeiten bei den grossen Quizzen
 const AUTO_WEITER_MS = 850;
 
 let quizStand = ladenJSON(SPEICHER_QUIZ, {});
 let gruppenStand = ladenJSON(SPEICHER_GRUPPEN, {});   // { "E2a": {lernFertig, gemeistert} }
+// Gruppe hiess frueher "E2b / VB-S" - gespeicherten Lernfortschritt uebernehmen
+if (gruppenStand["E2b / VB-S"] && !gruppenStand["E2b"]) {
+  gruppenStand["E2b"] = gruppenStand["E2b / VB-S"];
+  delete gruppenStand["E2b / VB-S"];
+}
 let letzteRunden = ladenJSON(SPEICHER_RUNDEN, {});    // { "gemischtMC": {richtig, gesamt}, ... }
 let verfuegbareBilder = new Set();
 
@@ -53,7 +58,7 @@ function bilderPruefen() {
     const bild = new Image();
     bild.onload = () => { verfuegbareBilder.add(r.id); fertig(); };
     bild.onerror = () => fertig();
-    bild.src = BILD_PFAD + r.id + ".png";
+    bild.src = BILD_PFAD + r.id + ".webp";
   })));
 }
 
@@ -93,8 +98,8 @@ function startbildschirmAktualisieren() {
     liste.appendChild(karte);
   });
 
-  document.getElementById("gemischtStatusMC").textContent = "Mischt alle 22 Dienstgrade";
-  document.getElementById("gemischtStatusKarte").textContent = "Mischt alle 22 Dienstgrade";
+  document.getElementById("gemischtStatusMC").textContent = "Alle Distinktionen gemischt – richtigen Namen auswählen";
+  document.getElementById("gemischtStatusKarte").textContent = "Alle Distinktionen gemischt – Namen selbst aufdecken";
 
   // Jede Kachel zeigt NUR ihre eigene letzte Runde, nicht synchron mit
   // den anderen Modi.
@@ -156,7 +161,7 @@ function lernKarteZeichnen() {
     const zeilen = karte.raenge.map((r, i) => {
       const hatBild = verfuegbareBilder.has(r.id);
       return '<div class="ueberblick-item"><span class="nr">' + (i + 1) + '.</span>' +
-        (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="" onerror="this.style.display=\'none\'">' : "") +
+        (hatBild ? '<img src="' + BILD_PFAD + r.id + '.webp" alt="" onerror="this.style.display=\'none\'">' : "") +
         '<span class="name">' + r.name + "</span></div>";
     }).join("");
     box.innerHTML = "<h2>Überblick – aufsteigende Reihenfolge</h2>" +
@@ -168,7 +173,7 @@ function lernKarteZeichnen() {
     box.className = "lernkarte";
     box.innerHTML =
       '<span class="gruppe-tag">' + r.gruppe + "</span>" +
-      (hatBild ? '<img src="' + BILD_PFAD + r.id + '.png" alt="' + r.name + '" onerror="this.style.display=\'none\'">' : "") +
+      (hatBild ? '<img src="' + BILD_PFAD + r.id + '.webp" alt="' + r.name + '" onerror="this.style.display=\'none\'">' : "") +
       "<h2>" + r.name + "</h2>" +
       (r.hinweis ? '<p class="rang-hinweis">' + r.hinweis + "</p>" : "");
   }
@@ -220,6 +225,13 @@ function mischen(liste) {
     [kopie[i], kopie[j]] = [kopie[j], kopie[i]];
   }
   return kopie;
+}
+
+// Antwortmoeglichkeiten immer in Dienstgrad-Reihenfolge (wie in RANKS)
+// anzeigen statt zufaellig - so findet man die richtige schneller.
+function nachRangOrdnen(liste) {
+  const pos = id => RANKS.findIndex(r => r.id === id);
+  return [...liste].sort((a, b) => pos(a.id) - pos(b.id));
 }
 
 function ablenkerWaehlen(ziel, anzahl) {
@@ -284,8 +296,8 @@ function gemischtesQuizStarten(variante) {
   warteschlange = mischen(gemischtenPool().map(r => r.id));
   lektionGesamt = warteschlange.length;
   document.getElementById("quizKontext").textContent = variante === "karte"
-    ? "Gemischtes Quiz – ohne Auswahl, du kennst diese Ränge schon"
-    : "Gemischtes Quiz – mit Auswahl";
+    ? "Distinktionen · Karteikarten"
+    : "Distinktionen · Auswahlfragen";
   document.getElementById("gruppeFertig").hidden = true;
   document.getElementById("frageBild").style.visibility = "visible";
   zeigeBildschirm("quiz");
@@ -330,8 +342,8 @@ function uniformStarten(variante) {
   warteschlange = mischen(RANKS.map(r => r.id));
   lektionGesamt = warteschlange.length;
   document.getElementById("quizKontext").textContent = variante === "karte"
-    ? "Auf der Uniform erkennen – ohne Auswahl"
-    : "Auf der Uniform erkennen – mit Auswahl";
+    ? "Uniformfotos · Karteikarten"
+    : "Uniformfotos · Auswahlfragen";
   document.getElementById("gruppeFertig").hidden = true;
   document.getElementById("frageBild").style.visibility = "visible";
   zeigeBildschirm("quiz");
@@ -390,27 +402,53 @@ function zeigeAbschluss(text) {
 
 /* ---- gemeinsame Frage-/Antwort-Darstellung ---- */
 
+// Bei Uniformfotos wird das Foto (foto1-3) schon beim Vorladen ausgewuerfelt
+// und hier gemerkt, damit genau das vorgeladene Bild angezeigt wird.
+let gewaehltesFoto = {};
+
 function bildQuelleFuer(ziel) {
   if (quizModus === "uniform-mc" || quizModus === "uniform-karte") {
-    const foto = ["foto1", "foto2", "foto3"][Math.floor(Math.random() * 3)];
-    return BILD_PFAD_UNIFORM + foto + "/" + ziel.id + ".jpg";
+    if (!gewaehltesFoto[ziel.id]) {
+      gewaehltesFoto[ziel.id] = ["foto1", "foto2", "foto3"][Math.floor(Math.random() * 3)];
+    }
+    return BILD_PFAD_UNIFORM + gewaehltesFoto[ziel.id] + "/" + ziel.id + ".jpg";
   }
-  return BILD_PFAD + ziel.id + ".png";
+  return BILD_PFAD + ziel.id + ".webp";
+}
+
+// Die naechsten Bilder der Warteschlange schon im Hintergrund laden,
+// damit sie sofort da sind, wenn die Frage kommt.
+const vorgeladen = new Map();
+function naechsteBilderVorladen() {
+  warteschlange.slice(0, 3).forEach(id => {
+    const ziel = RANKS.find(r => r.id === id);
+    if (!ziel) return;
+    const url = bildQuelleFuer(ziel);
+    if (vorgeladen.has(url)) return;
+    const img = new Image();
+    img.src = url;
+    vorgeladen.set(url, img);
+  });
 }
 
 function frageZeichnen(ziel, nachAntwort, weiterFn, explizitOptionen) {
   aktuelleFrage = { ziel, nachAntwort, weiterFn };
+  setTimeout(naechsteBilderVorladen, 0);
   if (explizitOptionen) {
-    aktuelleFrage.optionen = mischen(explizitOptionen);
+    aktuelleFrage.optionen = nachRangOrdnen(explizitOptionen);
+  } else if (quizModus === "gruppe") {
+    // Gruppen-Quiz: immer alle Dienstgrade dieser Gruppe zur Auswahl
+    aktuelleFrage.optionen = RANKS.filter(r => r.gruppe === ziel.gruppe);
   } else {
     const ablenker = ablenkerWaehlen(ziel, ANTWORT_ANZAHL - 1);
-    aktuelleFrage.optionen = mischen([ziel, ...ablenker]);
+    aktuelleFrage.optionen = nachRangOrdnen([ziel, ...ablenker]);
   }
 
   const bild = document.getElementById("frageBild");
   bild.style.visibility = "visible";
   bild.onerror = function () { this.style.visibility = "hidden"; };
   bild.src = bildQuelleFuer(ziel);
+  delete gewaehltesFoto[ziel.id];   // beim naechsten Mal wieder zufaelliges Foto
   bild.classList.toggle("frage-bild-foto", quizModus === "uniform-mc" || quizModus === "uniform-karte");
   document.getElementById("rueckmeldung").hidden = true;
   document.getElementById("weiterBtn").hidden = true;
@@ -421,6 +459,8 @@ function frageZeichnen(ziel, nachAntwort, weiterFn, explizitOptionen) {
   box.hidden = false;
   box.innerHTML = "";
   box.className = "antworten text6";
+  // zwei Spalten, aber spaltenweise befuellt: links oben->unten, dann rechts
+  box.style.gridTemplateRows = "repeat(" + Math.ceil(aktuelleFrage.optionen.length / 2) + ", auto)";
   aktuelleFrage.optionen.forEach(o => {
     const b = document.createElement("button");
     b.className = "antwort";
@@ -435,12 +475,14 @@ function frageZeichnen(ziel, nachAntwort, weiterFn, explizitOptionen) {
 
 function frageZeichnenKarte(ziel, nachAntwort, weiterFn) {
   aktuelleFrage = { ziel, nachAntwort, weiterFn };
+  setTimeout(naechsteBilderVorladen, 0);
   sperre = false;
 
   const bild = document.getElementById("frageBild");
   bild.style.visibility = "visible";
   bild.onerror = function () { this.style.visibility = "hidden"; };
   bild.src = bildQuelleFuer(ziel);
+  delete gewaehltesFoto[ziel.id];   // beim naechsten Mal wieder zufaelliges Foto
   bild.classList.toggle("frage-bild-foto", quizModus === "uniform-mc" || quizModus === "uniform-karte");
   document.getElementById("rueckmeldung").hidden = true;
   document.getElementById("weiterBtn").hidden = true;
@@ -556,7 +598,7 @@ function leisteAktualisieren() {
    ============================================================ */
 
 const ABK_FARBKLASSE = {
-  "E2b / VB-S": "abk-kurz-e2b",
+  "E2b": "abk-kurz-e2b",
   "E2a": "abk-kurz-e2a",
   "E1": "abk-kurz-e1",
   "Sonstige": "abk-kurz-sonstige"
@@ -576,11 +618,28 @@ function abkZeichnen() {
       const karte = document.createElement("div");
       karte.className = "abk-karte";
       karte.innerHTML =
-        (hatBild ? '<img class="abk-karte-bild" src="' + BILD_PFAD + r.id + '.png" alt="" onerror="this.style.display=\'none\'">' : "") +
+        (hatBild ? '<img class="abk-karte-bild" src="' + BILD_PFAD + r.id + '.webp" alt="" onerror="this.style.display=\'none\'">' : "") +
         '<div class="abk-karte-inhalt">' +
         '<div class="abk-tooltip-titel">' + r.name +
         ' <span class="abk-kurz ' + farbe + '">' + (r.abk || "-") + "</span></div>" +
-        '<div class="abk-hinweis">' + (r.hinweis || "Keine weiteren Angaben.") + "</div>" +
+        (r.hinweis ? '<div class="abk-hinweis">' + r.hinweis + "</div>" : "") +
+        "</div>";
+      box.appendChild(karte);
+    });
+  });
+  ZUSATZ_ABZEICHEN.forEach(abschnitt => {
+    const kopf = document.createElement("p");
+    kopf.className = "stat-gruppe";
+    kopf.textContent = abschnitt.titel;
+    box.appendChild(kopf);
+    abschnitt.eintraege.forEach(e => {
+      const karte = document.createElement("div");
+      karte.className = "abk-karte";
+      karte.innerHTML =
+        '<img class="abk-karte-bild' + (abschnitt.breit ? ' abk-karte-bild-breit' : '') +
+        '" src="' + BILD_PFAD + e.bild + '.webp" alt="" onerror="this.style.display=\'none\'">' +
+        '<div class="abk-karte-inhalt">' +
+        '<div class="abk-tooltip-titel">' + e.name + "</div>" +
         "</div>";
       box.appendChild(karte);
     });
@@ -602,7 +661,9 @@ function abkZeichnen() {
    ============================================================ */
 
 document.getElementById("themaBtn").addEventListener("click", themaUmschalten);
-document.getElementById("navHome").addEventListener("click", () => zeigeBildschirm("home"));
+document.getElementById("navHome").addEventListener("click", () => {
+  if (quizAbbrechenBestaetigt()) zeigeBildschirm("home");
+});
 
 // Von der Startseite geht's direkt zur Dienstgrade-Uebersicht
 // (Kurzbezeichnungen) - das Lernprogramm (Gruppen + Quizzes) ist von
@@ -652,7 +713,7 @@ document.getElementById("resetQuizBtn").addEventListener("click", () => {
 
 bilderPruefen().then(() => {
   if (verfuegbareBilder.size < RANKS.length) {
-    const fehlen = RANKS.filter(r => !verfuegbareBilder.has(r.id)).map(r => r.id + ".png");
+    const fehlen = RANKS.filter(r => !verfuegbareBilder.has(r.id)).map(r => r.id + ".webp");
     const box = document.getElementById("hinweis");
     box.innerHTML = "Es fehlen noch Abzeichen in <code>img/</code>: <code>" + fehlen.join("</code>, <code>") + "</code>";
     box.hidden = false;

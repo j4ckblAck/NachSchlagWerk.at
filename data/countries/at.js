@@ -166,10 +166,26 @@ const WAPPEN_DATEI = {
 // Kuerzel - NUR bei FW (Feuerwehr) steht am Ende der Nummer zusaetzlich
 // ein Bezirks-Vormerkbuchstabe. Die Diplomaten-Kennzeichen (CD/CC/WD/WK)
 // haben einen Bindestrich vor der (bis zu 5-stelligen) Nummer.
+const AT_BP_LPD = {
+  "1": "Burgenland",
+  "2": "Kärnten",
+  "3": "Niederösterreich",
+  "4": "Oberösterreich",
+  "5": "Salzburg",
+  "6": "Steiermark",
+  "7": "Tirol",
+  "8": "Vorarlberg",
+  "9": "Wien",
+};
+
 const SONDERKENNZEICHEN = [
   { code: "A",  bezirk: "Höchste Repräsentanten", nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "BH", bezirk: "Bundesheer",                                      nrMuster: "12345", bundesland: "Sonderkennzeichen" },
-  { code: "BP", bezirk: "Bundespolizei",                                   nrMuster: "12345", bundesland: "Sonderkennzeichen" },
+  // BP: die erste Ziffer der Nummer steht fuer die zustaendige
+  // Landespolizeidirektion (alphabetisch gereiht), z.B. BP 14729 =
+  // Burgenland. Quelle: AustriaWiki "Kfz-Kennzeichen (Österreich)", Okt 2026.
+  { code: "BP", bezirk: "Bundespolizei", nrEingebbar: true, nrLaenge: 1, nrSuffix: "4729",
+    nrHerkunft: AT_BP_LPD, nrHerkunftLabel: "Landespolizeidirektion", nrHerkunftIstBundesland: true, bundesland: "Sonderkennzeichen" },
   { code: "FW", bezirk: "Feuerwehr", nrMuster: "231 VO", eigenesWappen: "at-fw", wappenText: "Feuerwehr", bundesland: "Sonderkennzeichen" },
   { code: "JW", bezirk: "Justizwache",                                    nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "FV", bezirk: "Finanzverwaltung",                               nrMuster: "12345", bundesland: "Sonderkennzeichen" },
