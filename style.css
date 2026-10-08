@@ -1412,6 +1412,19 @@ body.fest .karten-name { padding: .9rem 1rem; margin: .4rem 0 .6rem; font-size: 
   margin-right: -5px;
 }
 .kz-schild-nr-suffix:empty { display: none; }
+/* Oesterreich: Kuerzel und Nummer gleich nah am Wappen - die Nummer
+   bekommt links nur so viel Polster wie das Kuerzel rechts (2px), statt
+   der sonst ueblichen 10px. Kuerzel ist rechts-, Nummer linksbuendig,
+   die ganze Gruppe bleibt in der weissen Flaeche zentriert. */
+.kz-schild-at .kz-schild-nr { padding-left: 2px; padding-right: 0; }
+.kz-schild-at .kz-schild-nr-kurz { padding-left: 2px; }
+.kz-schild-at .kz-schild-nr-kurz.kz-schild-nr-einstellig {
+  /* Breite = gemessene Ziffernbreite (kzSchildEinpassen), damit auch
+     eine schmale "1" direkt am Wappen und an der restlichen Nummer sitzt */
+  min-width: 0;
+  text-align: center;
+  letter-spacing: 0;
+}
 .kz-schild-dunkel .kz-schild-nr-suffix { color: #f4f3ef; }
 /* Albaniens "MM": feste Ziffern stehen VOR dem eintippbaren
    Buchstabenpaar ("123PU" statt "PU123", siehe nrSuffixVorn in al.js) -

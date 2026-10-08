@@ -182,9 +182,9 @@ const SONDERKENNZEICHEN = [
   { code: "A",  bezirk: "Höchste Repräsentanten", nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   { code: "BH", bezirk: "Bundesheer",                                      nrMuster: "12345", bundesland: "Sonderkennzeichen" },
   // BP: die erste Ziffer der Nummer steht fuer die zustaendige
-  // Landespolizeidirektion (alphabetisch gereiht), z.B. BP 14729 =
+  // Landespolizeidirektion (alphabetisch gereiht), z.B. BP 10495 =
   // Burgenland. Quelle: AustriaWiki "Kfz-Kennzeichen (Österreich)", Okt 2026.
-  { code: "BP", bezirk: "Bundespolizei", nrEingebbar: true, nrLaenge: 1, nrSuffix: "4729",
+  { code: "BP", bezirk: "Bundespolizei", nrEingebbar: true, nrLaenge: 1, nrSuffix: "0495",
     nrHerkunft: AT_BP_LPD, nrHerkunftLabel: "Landespolizeidirektion", nrHerkunftIstBundesland: true, bundesland: "Sonderkennzeichen" },
   { code: "FW", bezirk: "Feuerwehr", nrMuster: "231 VO", eigenesWappen: "at-fw", wappenText: "Feuerwehr", bundesland: "Sonderkennzeichen" },
   { code: "JW", bezirk: "Justizwache",                                    nrMuster: "12345", bundesland: "Sonderkennzeichen" },

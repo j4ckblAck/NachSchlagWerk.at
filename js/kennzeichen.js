@@ -85,9 +85,33 @@ function kzSchildEinpassen() {
     // gleich wieder auf die Textbreite zurueckstellen und es doch
     // sichtbar machen.
     if (!codeVersteckt) kzFeldBreiteSetzen(code, code.value || code.placeholder || "0");
-    kzFeldBreiteSetzen(nr, nr.value);
+    // Einstellige Zusatznummer (z.B. "BP"): genau eine Ziffernbreite (1ch,
+    // Ziffern sind in der Tafelschrift gleich breit) statt gemessen -
+    // die Messung kann je nach Geraet/Ladezustand der Schrift zu breit
+    // ausfallen und dann eine Luecke vor dem Rest der Nummer reissen
+    if (nr.classList.contains("kz-schild-nr-einstellig")) {
+      nr.style.width = "calc(1ch + 2px)";
+    } else {
+      kzFeldBreiteSetzen(nr, nr.value || nr.placeholder || "0");
+    }
   }
 }
+
+// Die Tafel-Schrift (Oswald) wird erst geladen, wenn sie zum ersten Mal
+// gebraucht wird - die erste Vermessung passiert dann noch mit der
+// schmaleren Ersatzschrift, danach wuerde die Nummer rechts ueberstehen.
+// Darum nach dem Laden der Schrift und bei jeder Groessenaenderung des
+// Fensters (z.B. Handy drehen) nochmal einpassen.
+function kzSchildNeuEinpassen() {
+  if (document.getElementById("kennzeichen").hidden) return;
+  kzSchildEinpassen();
+}
+if (document.fonts) {
+  document.fonts.addEventListener("loadingdone", kzSchildNeuEinpassen);
+  document.fonts.load('500 40px "Oswald"').catch(() => {});
+  document.fonts.load('700 40px "Oswald"').catch(() => {});
+}
+window.addEventListener("resize", kzSchildNeuEinpassen);
 
 function kzAktuellesLand() {
   return LAENDER[kzAktuellesLandName] || LAENDER["Österreich"];
